@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://covidence.engineering/automatically-refresh-staging-db/</loc>
-<lastmod>2017-12-11T00:00:00+11:00</lastmod>
-</url>
-<url>
 <loc>http://covidence.engineering/archive/</loc>
 </url>
 <url>
@@ -15,32 +11,5 @@
 </url>
 <url>
 <loc>http://covidence.engineering/tag/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/tag/heroku/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/tag/postgres/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/tag/staging/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/tag/automation/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/category/operations/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/category/developer-workflow/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/2017/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/2017/12/</loc>
-</url>
-<url>
-<loc>http://covidence.engineering/2017/12/11/</loc>
 </url>
 </urlset>
