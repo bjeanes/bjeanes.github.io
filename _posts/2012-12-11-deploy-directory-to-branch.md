@@ -9,8 +9,6 @@ tags:
   - shell
 ---
 
-### Overview
-
 This post outlines a mechanism for using one branch as a the source to generate
 a compiled artifact into another branch. This is achieved without resorting to
 moving files around a working directory and staging dirty changes away safely,
