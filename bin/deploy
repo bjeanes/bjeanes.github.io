@@ -27,6 +27,9 @@ git add -fA ./_site
 # Write tree to an object
 tree=$(git write-tree --prefix=_site)
 
+# Un-stage the build directory
+git reset -- ./_site
+
 # Get the author info from current commit (so the deployment commit has the
 # same details)
 export GIT_AUTHOR_NAME=$(git show -s --format='%an' HEAD)
@@ -42,7 +45,4 @@ commit=$(git commit-tree -p refs/remotes/origin/$branch -m "Deploy $identifier" 
 git update-ref refs/heads/$branch $commit
 
 git push -f origin refs/heads/$branch
-
-# Un-stage the build directory
-git reset -- ./_site
 
