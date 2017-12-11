@@ -1,0 +1,10 @@
+steps:
+  - command: bundle install && bin/deploy
+    label: ":jekyll: :arrow_right: :github:"
+    agents:
+      - "queue=*"
+    branches: "source"
+    plugins:
+      docker#v1.0.0:
+        image: "ruby:2.4"
+        workdir: /usr/src/app

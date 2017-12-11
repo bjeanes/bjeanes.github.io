@@ -30,7 +30,7 @@ include:
 
 exclude:
   - bin
-  - Dockerfile
+  - .buildkite
   - index.md
   - Gemfile
   - Gemfile.lock
