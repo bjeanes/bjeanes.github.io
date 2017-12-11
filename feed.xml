@@ -1,1 +1,390 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://covidence.engineering/feed.xml" rel="self" type="application/atom+xml" /><link href="http://covidence.engineering/" rel="alternate" type="text/html" /><updated>2017-12-11T18:58:53+11:00</updated><id>http://covidence.engineering/</id><title type="html">Covidence Engineering</title></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://covidence.engineering/feed.xml" rel="self" type="application/atom+xml" /><link href="http://covidence.engineering/" rel="alternate" type="text/html" /><updated>2017-12-11T23:03:51+11:00</updated><id>http://covidence.engineering/</id><title type="html">Covidence Engineering</title><entry><title type="html">Deploy a sub-directory as a branch</title><link href="http://covidence.engineering/deploy-directory-to-branch/" rel="alternate" type="text/html" title="Deploy a sub-directory as a branch" /><published>2017-12-11T00:00:00+11:00</published><updated>2017-12-11T00:00:00+11:00</updated><id>http://covidence.engineering/deploy-directory-to-branch</id><content type="html" xml:base="http://covidence.engineering/deploy-directory-to-branch/">&lt;p&gt;This post outlines a mechanism for using one branch as the source to generate a
+compiled artifact into another branch. This is achieved without resorting to
+moving files around a working directory and staging dirty changes away safely,
+by leveraging some neat internals of Git.&lt;/p&gt;
+
+&lt;h3 id=&quot;why&quot;&gt;Why?&lt;/h3&gt;
+
+&lt;p&gt;But first, why would someone want to do this?&lt;/p&gt;
+
+&lt;p&gt;In general, storing (deterministically) buildable artifacts in a repository can
+be unneccessary and even problematic. For example: building a binary which
+can’t run on all platforms that might use the repository; or creating large
+files which grow the repository size rapidly (e.g. JARs).&lt;/p&gt;
+
+&lt;p&gt;In the past, I have been in situations where using Git’s object model to store
+an immutable history of changes in compiled outputs has been useful, in
+particular for analytical purposes.&lt;/p&gt;
+
+&lt;p&gt;However, this time, the reason is rather mundane: GitHub’s Jekyll compilation
+whitelists certain plugins (for good, security-related reasons) and I had set
+up this blog using a theme and plugin combination that apparently is not
+compatible with GitHub-built Jekyll projects.&lt;/p&gt;
+
+&lt;h3 id=&quot;how&quot;&gt;How&lt;/h3&gt;
+
+&lt;p&gt;GitHub expects to find source files for GitHub Pages deployment in either the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; branch (depending on whether its building a project page
+or a user/org page). All that was necessary was to generate the compiled files
+into that appropriate branch.&lt;/p&gt;
+
+&lt;p&gt;However, I did not want it to be up to the person making changes to the blog to
+have to remember to generate and commit the generated files. In addition, it was
+important to me that the Git history of source changes was not conflated with
+the adjacent need to store the compiled version.&lt;/p&gt;
+
+&lt;p&gt;That meant:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;As much automated as possible&lt;/li&gt;
+  &lt;li&gt;The compiled branch (&lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;, in this case) should be nothing but the
+generated files and a separate commit history.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;understanding-git-commit&quot;&gt;Understanding &lt;code class=&quot;highlighter-rouge&quot;&gt;git commit&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;When you run a command like &lt;code class=&quot;highlighter-rouge&quot;&gt;git commit .&lt;/code&gt;, Git is doing a few of things
+of interest internally:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git-write-tree&lt;/code&gt; stores the current state of your (staged) files as a tree&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git-commit-tree&lt;/code&gt; creates a commit for that tree (and, usually, a parent
+commit)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git-update-ref&lt;/code&gt; Updating a ref (branch) to point to that new commit&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;By dropping down a level and taking control of these primitives directly, we
+can actually exercise a little bit more control over what is in the commit and
+how that commit relates to the rest of the repository’s history.&lt;/p&gt;
+
+&lt;h4 id=&quot;writing-a-tree-at-a-custom-root&quot;&gt;Writing a tree at a custom root&lt;/h4&gt;
+
+&lt;p&gt;The key ingredient that we will leverage is the &lt;code class=&quot;highlighter-rouge&quot;&gt;--prefix&lt;/code&gt; flag to
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git-write-tree&lt;/code&gt;. This allows us to create a tree object rooted at an arbitrary
+directory!&lt;/p&gt;
+
+&lt;p&gt;For example, compare the following:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git show $(git write-tree)
+tree c97ce6b80599da62e34a684a245dec5df1228b8d
+
+.buildkite/
+.gitignore
+CNAME
+Gemfile
+Gemfile.lock
+_config.yml
+_data/
+_drafts/
+assets/
+bin/
+index.html
+pages/
+
+$ git show $(git write-tree --prefix pages)
+tree 8e479816fadad469d16bcb16c24413feb780765f
+
+archive.html
+category.html
+tag.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;piecing-it-together&quot;&gt;Piecing it together&lt;/h3&gt;
+
+&lt;p&gt;The main caveat to account for is that &lt;code class=&quot;highlighter-rouge&quot;&gt;git-write-tree&lt;/code&gt; will only write staged
+or committed files. I don’t want to keep the built files in the source branch
+so I have the build directory ignored, which means those files are neither
+committed nor staged.&lt;/p&gt;
+
+&lt;p&gt;To work around this, a &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/deploy&lt;/code&gt; script temporarily stages the files for the
+duration of the commit building. &lt;strong&gt;NOTE&lt;/strong&gt;, because I am deploying to &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;
+branch, I configured the repository’s default branch to be &lt;code class=&quot;highlighter-rouge&quot;&gt;source&lt;/code&gt; and the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;bin/deploy&lt;/code&gt; script lived there, along with all the Jekyll source files.&lt;/p&gt;
+
+&lt;p&gt;Here’s a simplified version of the script:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;branch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;build_dir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dist&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# This can be substituted for any command which builds artifacts to a&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# specific directory&lt;/span&gt;
+bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll build &lt;span class=&quot;nt&quot;&gt;--destination&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$build_dir&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Force the files to be added, regardless of .gitignore&lt;/span&gt;
+git add &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$build_dir&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Write tree to an object&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;tree&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git write-tree &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$build_dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Un-stage the build so it is back to being ignored&lt;/span&gt;
+git reset &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$build_dir&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Create a new commit for that tree as a child of target branch's commit&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;commit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git commit-tree &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$branch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Deploy&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$tree&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Update the GitHub Pages' branch to the new commit&lt;/span&gt;
+git update-ref refs/heads/&lt;span class=&quot;nv&quot;&gt;$branch&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$commit&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Push the compiled branch to GitHub&lt;/span&gt;
+git push origin &lt;span class=&quot;nv&quot;&gt;$branch&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;automated-builds&quot;&gt;Automated builds&lt;/h3&gt;
+
+&lt;p&gt;I used our existing &lt;a href=&quot;https://buildkite.com&quot;&gt;Buildkite&lt;/a&gt; CI setup to quickly add
+a build which essentially just called &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/deploy&lt;/code&gt; to automatically deploy
+changes we made to GitHub (much the way that GitHub would automatically deploy
+changes if I were committing directly to &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&quot;some-changes-for-resilience&quot;&gt;Some changes for resilience&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;I wanted to preserve committer/authorship metadata for the deploy commits to
+make it clear whose latest change is deployed. To handle this, the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;bin/deploy&lt;/code&gt; script takes these details from the commit being built and sets
+some env vars before we generate the deploy commit:&lt;/p&gt;
+
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GIT_AUTHOR_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git show &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'%an'&lt;/span&gt; HEAD&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GIT_COMMITTER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$GIT_AUTHOR_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GIT_AUTHOR_EMAIL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git show &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'%ae'&lt;/span&gt; HEAD&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GIT_COMMITTER_EMAIL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$GIT_AUTHOR_EMAIL&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;commit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git commit-tree &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$branch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Deploy&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$tree&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;I wanted to make it clear which commit had been deployed, so I augmented the
+commit creation step to record a description of the source commit in the commit
+message, including whether or not the working directory had uncommitted
+changes:&lt;/p&gt;
+
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;identifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git describe &lt;span class=&quot;nt&quot;&gt;--dirty&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--always&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# e.g. &quot;213c9af&quot;, &quot;213c9a-dirty&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;commit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git commit-tree &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$branch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Deploy &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$identifier&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$tree&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For maximum re-usability, I have the script detect the target branch based on
+the type of repository (project or user/org):&lt;/p&gt;
+
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Determine which branch GitHub pages is built from, for this repository&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;remote&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git config remote.origin.url&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$remote&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.github.io &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$remote&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.github.io.git &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;branch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;master
+&lt;span class=&quot;k&quot;&gt;else
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;branch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gh-pages
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;To still work in CI where a clean checkout has occurred without necessarily
+creating local branch refs, I use long-form names
+(&lt;code class=&quot;highlighter-rouge&quot;&gt;refs/remotes/origin/$branch&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;refs/heads/$branch&lt;/code&gt;, as appropriate)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;result&quot;&gt;Result&lt;/h3&gt;
+
+&lt;p&gt;Feel free to have a look at the &lt;a href=&quot;https://github.com/covidence/covidence.github.io&quot;&gt;repository for this
+blog&lt;/a&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; branch
+contains the history of deployed changes and the &lt;code class=&quot;highlighter-rouge&quot;&gt;source&lt;/code&gt; branch contains the
+history of source changes.&lt;/p&gt;
+
+&lt;p&gt;This blog post was deployed in this manner.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://gist.github.com/nobuoka/d0f088df57d50e4cda1a&quot;&gt;Related gist&lt;/a&gt;&lt;/p&gt;</content><author><name>Bo Jeanes</name><email>bo@covidence.org</email></author><category term="git" /><category term="github" /><category term="shell" /><summary type="html">This post outlines a mechanism for using one branch as the source to generate a compiled artifact into another branch. This is achieved without resorting to moving files around a working directory and staging dirty changes away safely, by leveraging some neat internals of Git.</summary></entry><entry><title type="html">Automatically refresh staging databases weekly from production snapshot</title><link href="http://covidence.engineering/automatically-refresh-staging-db/" rel="alternate" type="text/html" title="Automatically refresh staging databases weekly from production snapshot" /><published>2017-12-11T00:00:00+11:00</published><updated>2017-12-11T00:00:00+11:00</updated><id>http://covidence.engineering/automatically-refresh-staging-db</id><content type="html" xml:base="http://covidence.engineering/automatically-refresh-staging-db/">&lt;p&gt;To get the most out of staging environments, it is important to have production
+quality data (in both variety and size) at your disposal to identify potential
+production problems before your customers do. For example, good data allows
+developers to check that new features behave as expected with real-world data,
+that a bugfix actually fixes a bug for a known scenario, or to benchmark a
+database migration or the performance of new code.&lt;/p&gt;
+
+&lt;p&gt;Like many technology companies, at &lt;a href=&quot;https://www.covidence.org&quot;&gt;Covidence&lt;/a&gt; we
+use staging environment in a number of these critical ways, and more. In fact,
+we actually use several different staging environments, some persistent and
+some temporary.&lt;/p&gt;
+
+&lt;h3 id=&quot;production-deployments&quot;&gt;Production Deployments&lt;/h3&gt;
+
+&lt;p&gt;In production, we run two main deployments: &lt;code class=&quot;highlighter-rouge&quot;&gt;production&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;demo&lt;/code&gt;. Our
+&lt;code class=&quot;highlighter-rouge&quot;&gt;production&lt;/code&gt; environment is… just that. Our &lt;code class=&quot;highlighter-rouge&quot;&gt;demo&lt;/code&gt; environment is version of
+our application that acts as a kind of playground for potential customers to
+evaluate our product or for existing customers to learn or experiment with the
+product without risking their production data. Data in this environment is
+expunged on a rolling basis.&lt;/p&gt;
+
+&lt;h3 id=&quot;non-production-deployments&quot;&gt;Non-production Deployments&lt;/h3&gt;
+
+&lt;p&gt;In staging, we have one environment each to mirror the production versions:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;staging&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;demo-staging&lt;/code&gt;. These two deployments automatically get the
+latest version of the code that has passed our continuous integration test
+suite. The expectation is that these environments should be reasonably stable
+and relatively safe to deploy to the production environments.&lt;/p&gt;
+
+&lt;p&gt;Additionally, we have a &lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt; environment which deploys the latest code,
+regardless of build status. This environment is expected to be less stable and
+is sometimes used to deploy feature branches that need to see production
+quality data before it can be merged to &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;. This also tends to be the
+environment in which migrations are tested and benchmarked.&lt;/p&gt;
+
+&lt;p&gt;Lastly, we use an excellent feature of Heroku Pipelines to create disposable
+staging apps for any open pull request to allow us to sanity check and QA test
+the change.&lt;/p&gt;
+
+&lt;h3 id=&quot;data&quot;&gt;Data&lt;/h3&gt;
+
+&lt;p&gt;Of all those environments, only the pull request apps have “seed” data.
+&lt;code class=&quot;highlighter-rouge&quot;&gt;staging&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;demo-staging&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt; always have a recent snapshot of
+production data to work with.&lt;/p&gt;
+
+&lt;p&gt;Keeping fresh production quality data in staging environments is a really
+common problem for many companies and can often go along time without a
+solution. However, we knew that it was an important problem to solve if we were
+to work efficiently and effectively with our small team.&lt;/p&gt;
+
+&lt;p&gt;I want to share how we leverage some handy features of &lt;a href=&quot;https://www.heroku.com/postgres&quot;&gt;Heroku
+Postgres&lt;/a&gt; to have effortless, push-button
+production quality data in these staging environments.&lt;/p&gt;
+
+&lt;h3 id=&quot;scheduled-and-push-button-database-forks&quot;&gt;Scheduled and push-button database forks&lt;/h3&gt;
+
+&lt;p&gt;Basically, we use Heroku’s database “forking” functionality, environment
+variable-based configuration and database promotion, the Heroku Toolbelt, and a
+few Heroku API calls to orchestrate a replacement DB.&lt;/p&gt;
+
+&lt;p&gt;We wrap up these steps in a script which runs every Sunday night via a
+scheduled Buildkite job or whenever we push the “Build” button manually. This
+means that our staging environment is never stale by more than about a week.&lt;/p&gt;
+
+&lt;p&gt;The steps to do this for each app are:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a new database as a &lt;code class=&quot;highlighter-rouge&quot;&gt;--fast --fork&lt;/code&gt; of the production database, which
+will use a compination of Postgres Write-Ahead Logs and leader-follower
+replication to relatively quickly prepare a new database as a replica and
+once it has caught up to the primary database, will separate from it as a
+standalone instance.&lt;/li&gt;
+  &lt;li&gt;Keep track of the name of the old DB and the new DB.&lt;/li&gt;
+  &lt;li&gt;When the replica is fully prepared and ready to process queries, promote it
+via environment variables on and a restart of the application.&lt;/li&gt;
+  &lt;li&gt;De-provision the old database so we aren’t paying for it.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;For our &lt;code class=&quot;highlighter-rouge&quot;&gt;demo&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;demo-staging&lt;/code&gt; copy, the dataset is actually so small that we
+are using cheaper plans which don’t support Heroku’s forking, so for that we do
+something slightly different:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create new database&lt;/li&gt;
+  &lt;li&gt;Initiate a copy of data from the production version to staging version
+(essentially a dump and then restore)&lt;/li&gt;
+  &lt;li&gt;Once complete, promote new database and de-provision old one, as above.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;code&quot;&gt;Code&lt;/h4&gt;
+
+&lt;p&gt;Here’s the actual script we use, more-or-less un-changed:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ex&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Pass in Heroku API token&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# We run this script in a stateless Docker image, so to make the script a bit&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# cleaner, we just write out the credentials to a file that the Heroku Toolbelt&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# knows to read.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-lq&lt;/span&gt; api.heroku.com ~/.netrc 2&amp;gt;/dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+  &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;machine api.heroku.com&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; ~/.netrc
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;  login dev+heroku@covidence.org&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.netrc
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;  password &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$token&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.netrc
+
+  chmod 0600 ~/.netrc
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Helper function for calling Heroku API&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;hapi &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  curl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--fail&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--silent&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--netrc&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--header&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Accept: application/vnd.heroku+json; version=3'&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    https://api.heroku.com&lt;span class=&quot;nv&quot;&gt;$*&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Routine to wait for DB to be caught up, then promote it and de-provision the&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# old instance.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;promote &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+
+  heroku pg:wait &lt;span class=&quot;nt&quot;&gt;--wait-interval&lt;/span&gt; 10 &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt;
+  heroku pg:unfollow &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--confirm&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt;::NEW_DATABASE &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true
+  &lt;/span&gt;heroku addons:attach &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt;::DATABASE &lt;span class=&quot;nt&quot;&gt;--as&lt;/span&gt; OLD_DATABASE
+  heroku pg:promote &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; NEW_DATABASE
+  heroku addons:detach &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; NEW_DATABASE
+  heroku addons:destroy &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--confirm&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; OLD_DATABASE
+  heroku run:detached &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; rails runner &lt;span class=&quot;s1&quot;&gt;'Ops::Staging::Search.massacre!'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Routine to create a new DB with a deterministic name so that we can more&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# easily promote it later.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# There is also some logic here to recover from a build which got interrupted&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# mid-way so that we don't accumulate orphaned DBs that we have to pay for.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;create &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;plan&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;
+
+  &lt;span class=&quot;nb&quot;&gt;shift &lt;/span&gt;2
+
+  &lt;span class=&quot;nv&quot;&gt;existing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;hapi /addons/&lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt;::DATABASE | jq &lt;span class=&quot;nt&quot;&gt;-Mr&lt;/span&gt; .name&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;hapi /addons/&lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt;::NEW_DATABASE | jq &lt;span class=&quot;nt&quot;&gt;-Mr&lt;/span&gt; .name &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$new&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;heroku addons:create &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; heroku-postgresql:&lt;span class=&quot;nv&quot;&gt;$plan&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;--as&lt;/span&gt; NEW_DATABASE &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;$*&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else
+    if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$new&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$existing&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+      &lt;/span&gt;heroku addons:detach &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; NEW_DATABASE
+      create &lt;span class=&quot;nv&quot;&gt;$app&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$plan&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else
+      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# already got a new one in waiting&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fi
+  fi&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Takes a snapshot and copies it. This takes longer, breaks the destination&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# DB until it has completed, so is only used for demo to demo-staging, which&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# use Hobby DBs which cannot be followed/forked.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# One benefit of this which might be worth applying to staging/dev is that the&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# destination data sizes (tables+indexes) are much smaller, which suits the&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# smaller instance sizes used there.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;copy &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;dst&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;
+
+  heroku pg:copy &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;::DATABASE NEW_DATABASE &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--wait-interval&lt;/span&gt; 10 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--app&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--confirm&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$dst&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Create new DBs and trigger loading of data&lt;/span&gt;
+create covidence-dev     premium-0 &lt;span class=&quot;nt&quot;&gt;--fork&lt;/span&gt; covidence-production::DATABASE &lt;span class=&quot;nt&quot;&gt;--fast&lt;/span&gt;
+create covidence-staging premium-2 &lt;span class=&quot;nt&quot;&gt;--fork&lt;/span&gt; covidence-production::DATABASE &lt;span class=&quot;nt&quot;&gt;--fast&lt;/span&gt;
+create covidence-demo-staging hobby-basic
+copy covidence-demo covidence-demo-staging
+
+&lt;span class=&quot;c&quot;&gt;# Promote DBs (these steps block until each DB to be ready for promotion)&lt;/span&gt;
+promote covidence-dev
+promote covidence-staging
+promote covidence-demo-staging
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Bo Jeanes</name><email>bo@covidence.org</email></author><category term="heroku" /><category term="postgres" /><category term="staging" /><category term="automation" /><category term="shell" /><summary type="html">To get the most out of staging environments, it is important to have production quality data (in both variety and size) at your disposal to identify potential production problems before your customers do. For example, good data allows developers to check that new features behave as expected with real-world data, that a bugfix actually fixes a bug for a known scenario, or to benchmark a database migration or the performance of new code.</summary></entry></feed>
