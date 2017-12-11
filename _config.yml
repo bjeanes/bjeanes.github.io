@@ -23,13 +23,14 @@ kramdown:
   syntax_highlighter: rouge
 
 sass:
-    sass_dir: _sass
+  sass_dir: _sass
 
 include:
   - _pages
 
 exclude:
   - bin
+  - Dockerfile
   - index.md
   - Gemfile
   - Gemfile.lock
