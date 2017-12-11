@@ -8,7 +8,7 @@
 set -ex
 
 # Determine which branch GitHub pages is built from, for this repository
-remote=$(git remote get-url origin)
+remote=$(git config remote.origin.url)
 if [[ $remote = *.github.io ]] || [[ $remote = *.github.io.git ]]; then
   branch=master
 else
