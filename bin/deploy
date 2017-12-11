@@ -30,8 +30,6 @@ tree=$(git write-tree --prefix=_site)
 # Un-stage the build directory
 git reset -- ./_site
 
-env
-
 # Get the author info from current commit (so the deployment commit has the
 # same details)
 export GIT_AUTHOR_NAME=$(git show -s --format='%an' HEAD)
@@ -49,9 +47,6 @@ export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-$(git show -s --format='%ce' 
 # Create a new commit for that tree as a child of current branch's commit
 identifier=$(git describe --dirty --always)
 commit=$(git commit-tree -p refs/remotes/origin/$branch -m "Deploy $identifier" $tree)
-
-env
-git show --pretty=fuller $commit
 
 # Set the github pages branch to the new object
 git update-ref refs/heads/$branch $commit
