@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Builds the current site and pushes the resulting directory as the root of the
+# target branch (gh-pages or master, depending on repository type).
+
+# TODO: Ensure working directory is clean and push it too
+
+set -ex
+
+# Determine which branch GitHub pages is built from, for this repository
+remote=$(git remote get-url origin)
+if [[ $remote = *.github.io ]] || [[ $remote = *.github.io.git ]]; then
+  branch=master
+else
+  branch=gh-pages
+fi
+
+# Build the site
+bundle exec jekyll build \
+  --destination ./_site \
+  --no-watch \
+  --strict_front_matter
+
+# Stage build directory to index
+git add -fA ./_site
+
+# Write tree to an object
+tree=$(git write-tree --prefix=_site)
+
+# Create a new commit for that tree as a child of current branch's commit
+commit=$(git commit-tree -p $branch -m "Deploy" $tree)
+
+# Set the github pages branch to the new object
+git update-ref refs/heads/$branch $commit
+
+git push -f origin refs/heads/$branch
+
+# Un-stage the build directory
+git reset -- ./_site
+
