@@ -200,4 +200,6 @@ history of source changes.
 
 This blog post was deployed in this manner.
 
+----
 
+[Related gist](https://gist.github.com/nobuoka/d0f088df57d50e4cda1a)
