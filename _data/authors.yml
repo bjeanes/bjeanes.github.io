@@ -1,0 +1,11 @@
+bo:
+  name:          "Bo Jeanes"
+  picture:       "/assets/images/bo.jpg"
+  url:           "http://bjeanes.com"
+  email:         "bo@covidence.org"
+  bio:           "CTO @ Covidence"
+  post_meta_bio: "CTO @ Covidence"
+  cta:           "Follow"
+  cta_url:       "https://twitter.com/bjeanes"
+  twitter:       "bjeanes"
+  google_plus:   "+BoJeanes"

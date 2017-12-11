@@ -1,0 +1,50 @@
+theme: minimal-jekyll-theme
+
+title: Covidence Engineering
+url: http://covidence.engineering
+logo: https://pbs.twimg.com/profile_images/378800000836114876/024f5aadfab57a6117546b65cc3bf7fe_400x400.png
+
+twitter:
+  username: "Covidence"
+
+social:
+  links:
+    - https://www.covidence.org
+    - https://twitter.com/Covidence
+    - https://github.com/covidence
+
+permalink: /:title/
+date_format: "%-d %b %Y"
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+
+sass:
+    sass_dir: _sass
+
+include:
+  - _pages
+
+exclude:
+  - bin
+  - index.md
+  - Gemfile
+  - Gemfile.lock
+
+jekyll-archives:
+  layout: 'archive'
+  enabled:
+    - categories
+    - tags
+    - year
+    - month
+    - day
+  permalinks:
+    year: '/:year/'
+    month: '/:year/:month/'
+    day: '/:year/:month/:day/'
+    tag: '/tag/:name/'
+    category: '/category/:name/'
