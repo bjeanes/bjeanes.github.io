@@ -8,6 +8,7 @@ steps:
       docker#v1.0.0:
         image: "ruby:2.4"
         workdir: /usr/src/app
+        debug: true
         environment:
           - GIT_COMMITTER_NAME="Covidence Bot"
           - GIT_COMMITTER_EMAIL="dev+github@covidence.org"
