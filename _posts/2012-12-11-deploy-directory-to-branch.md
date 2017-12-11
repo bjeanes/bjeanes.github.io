@@ -9,8 +9,8 @@ tags:
   - shell
 ---
 
-This post outlines a mechanism for using one branch as a the source to generate
-a compiled artifact into another branch. This is achieved without resorting to
+This post outlines a mechanism for using one branch as the source to generate a
+compiled artifact into another branch. This is achieved without resorting to
 moving files around a working directory and staging dirty changes away safely,
 by leveraging some neat internals of Git.
 
