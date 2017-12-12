@@ -26,6 +26,8 @@ use staging environment in a number of these critical ways, and more. In fact,
 we actually use several different staging environments, some persistent and
 some temporary.
 
+{% include figure image_path="/assets/images/heroku-pipelines.png" alt="Heroku Pipelines" caption="Heroku Pipelines" %}{: .full .tc}
+
 ### Production Deployments
 
 In production, we run two main deployments: `production` and `demo`. Our
