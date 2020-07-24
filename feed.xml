@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://covidence.engineering/feed.xml" rel="self" type="application/atom+xml" /><link href="http://covidence.engineering/" rel="alternate" type="text/html" /><updated>2017-12-12T05:56:50+00:00</updated><id>http://covidence.engineering/</id><title type="html">Covidence Engineering</title><entry><title type="html">Deploy a sub-directory as a branch</title><link href="http://covidence.engineering/deploy-directory-to-branch/" rel="alternate" type="text/html" title="Deploy a sub-directory as a branch" /><published>2017-12-11T00:00:00+00:00</published><updated>2017-12-11T00:00:00+00:00</updated><id>http://covidence.engineering/deploy-directory-to-branch</id><content type="html" xml:base="http://covidence.engineering/deploy-directory-to-branch/">&lt;p&gt;This post outlines a mechanism for using one branch as the source to generate a
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="https://bjeanes.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://bjeanes.com/" rel="alternate" type="text/html" /><updated>2020-07-24T16:59:40+10:00</updated><id>https://bjeanes.com/</id><title type="html">Bo Jeanes</title><author><name>bo</name></author><entry><title type="html">Deploy a sub-directory as a branch</title><link href="https://bjeanes.com/deploy-directory-to-branch/" rel="alternate" type="text/html" title="Deploy a sub-directory as a branch" /><published>2017-12-11T00:00:00+11:00</published><updated>2017-12-11T00:00:00+11:00</updated><id>https://bjeanes.com/deploy-directory-to-branch</id><content type="html" xml:base="https://bjeanes.com/deploy-directory-to-branch/">&lt;p&gt;This post outlines a mechanism for using one branch as the source to generate a
 compiled artifact into another branch. This is achieved without resorting to
 moving files around a working directory and staging dirty changes away safely,
 by leveraging some neat internals of Git.&lt;/p&gt;
@@ -187,7 +187,7 @@ creating local branch refs, I use long-form names
 
 &lt;h3 id=&quot;result&quot;&gt;Result&lt;/h3&gt;
 
-&lt;p&gt;Feel free to have a look at the &lt;a href=&quot;https://github.com/covidence/covidence.github.io&quot;&gt;repository for this
+&lt;p&gt;Feel free to have a look at the &lt;a href=&quot;https://github.com/covidence/covidence.github.io&quot;&gt;repository for the
 blog&lt;/a&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; branch
 contains the history of deployed changes and the &lt;code class=&quot;highlighter-rouge&quot;&gt;source&lt;/code&gt; branch contains the
 history of source changes.&lt;/p&gt;
@@ -196,7 +196,7 @@ history of source changes.&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://gist.github.com/nobuoka/d0f088df57d50e4cda1a&quot;&gt;Related gist&lt;/a&gt;&lt;/p&gt;</content><author><name>Bo Jeanes</name><email>bo@covidence.org</email></author><category term="git" /><category term="github" /><category term="shell" /><summary type="html">This post outlines a mechanism for using one branch as the source to generate a compiled artifact into another branch. This is achieved without resorting to moving files around a working directory and staging dirty changes away safely, by leveraging some neat internals of Git.</summary></entry><entry><title type="html">Automatically refresh staging databases weekly from production snapshot</title><link href="http://covidence.engineering/automatically-refresh-staging-db/" rel="alternate" type="text/html" title="Automatically refresh staging databases weekly from production snapshot" /><published>2017-12-11T00:00:00+00:00</published><updated>2017-12-11T00:00:00+00:00</updated><id>http://covidence.engineering/automatically-refresh-staging-db</id><content type="html" xml:base="http://covidence.engineering/automatically-refresh-staging-db/">&lt;p&gt;To get the most out of staging environments, it is important to have production
+&lt;p&gt;&lt;a href=&quot;https://gist.github.com/nobuoka/d0f088df57d50e4cda1a&quot;&gt;Related gist&lt;/a&gt;&lt;/p&gt;</content><author><name>Bo Jeanes</name><email>blog@bjeanes.com</email></author><category term="git" /><category term="github" /><category term="shell" /><summary type="html">This post outlines a mechanism for using one branch as the source to generate a compiled artifact into another branch. This is achieved without resorting to moving files around a working directory and staging dirty changes away safely, by leveraging some neat internals of Git.</summary></entry><entry><title type="html">Automatically refresh staging databases weekly from production snapshot</title><link href="https://bjeanes.com/automatically-refresh-staging-db/" rel="alternate" type="text/html" title="Automatically refresh staging databases weekly from production snapshot" /><published>2017-12-11T00:00:00+11:00</published><updated>2017-12-11T00:00:00+11:00</updated><id>https://bjeanes.com/automatically-refresh-staging-db</id><content type="html" xml:base="https://bjeanes.com/automatically-refresh-staging-db/">&lt;p&gt;To get the most out of staging environments, it is important to have production
 quality data (in both variety and size) at your disposal to identify potential
 production problems before your customers do. For example, good data allows
 developers to check that new features behave as expected with real-world data,
@@ -209,7 +209,7 @@ we actually use several different staging environments, some persistent and
 some temporary.&lt;/p&gt;
 
 &lt;figure class=&quot;full tc&quot;&gt;
-  &lt;img src=&quot;http://covidence.engineering/assets/images/heroku-pipelines.png&quot; alt=&quot;Heroku Pipelines&quot; /&gt;
+  &lt;img src=&quot;https://bjeanes.com/assets/images/heroku-pipelines.png&quot; alt=&quot;Heroku Pipelines&quot; /&gt;
   
     &lt;figcaption&gt;Heroku Pipelines
 &lt;/figcaption&gt;
@@ -395,4 +395,4 @@ copy covidence-demo covidence-demo-staging
 promote covidence-dev
 promote covidence-staging
 promote covidence-demo-staging
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Bo Jeanes</name><email>bo@covidence.org</email></author><category term="heroku" /><category term="postgres" /><category term="staging" /><category term="automation" /><category term="shell" /><summary type="html">To get the most out of staging environments, it is important to have production quality data (in both variety and size) at your disposal to identify potential production problems before your customers do. For example, good data allows developers to check that new features behave as expected with real-world data, that a bugfix actually fixes a bug for a known scenario, or to benchmark a database migration or the performance of new code.</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Bo Jeanes</name><email>blog@bjeanes.com</email></author><category term="heroku" /><category term="postgres" /><category term="staging" /><category term="automation" /><category term="shell" /><summary type="html">To get the most out of staging environments, it is important to have production quality data (in both variety and size) at your disposal to identify potential production problems before your customers do. For example, good data allows developers to check that new features behave as expected with real-world data, that a bugfix actually fixes a bug for a known scenario, or to benchmark a database migration or the performance of new code.</summary></entry></feed>

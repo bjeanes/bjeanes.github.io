@@ -1,1 +1,1 @@
-Sitemap: http://covidence.engineering/sitemap.xml
+Sitemap: https://bjeanes.com/sitemap.xml
