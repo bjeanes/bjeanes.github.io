@@ -14,7 +14,7 @@ social:
     - https://twitter.com/bjeanes
     - https://github.com/bjeanes
 
-permalink: /:title/
+permalink: /:year/:month/:title/
 date_format: "%-d %b %Y"
 
 markdown: kramdown
@@ -44,10 +44,10 @@ jekyll-archives:
     - tags
     - year
     - month
-    - day
+    # - day
   permalinks:
     year: "/:year/"
     month: "/:year/:month/"
-    day: "/:year/:month/:day/"
+    # day: "/:year/:month/:day/"
     tag: "/tag/:name/"
     category: "/category/:name/"
