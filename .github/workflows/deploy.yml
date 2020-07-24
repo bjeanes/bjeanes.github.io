@@ -1,0 +1,19 @@
+name: Deploy GH Pages
+on:
+  push:
+    branches: [source]
+jobs:
+  deploy:
+    name: "deploy"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "2.6" # Version range or exact version of a Ruby version to use, using semvers version range syntax.
+      - run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          bin/deploy

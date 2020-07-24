@@ -1,16 +1,15 @@
 bo:
-  name:          "Bo Jeanes"
-  picture:       "/assets/images/bo.jpg"
-  url:           "http://bjeanes.com"
-  email:         "bo@covidence.org"
-  post_meta_bio: "CTO @ Covidence"
+  name: "Bo Jeanes"
+  picture: "/assets/images/bo.jpg"
+  url: "http://bjeanes.com"
+  email: "blog@bjeanes.com"
+  # post_meta_bio: "Previous CTO @ Covidence"
   bio: |
     Bo is a software engineer who cares deeply about simplicity in design and
     building complex behaviours out of simple primitives. Bo primarily works in
     Ruby day-to-day, though is a functional programmer at heart and a fan of
     programming languages generally, with particular soft spots for Clojure,
     Elixir, and Rust.
-  cta:           "Follow"
-  cta_url:       "https://twitter.com/bjeanes"
-  twitter:       "bjeanes"
-  google_plus:   "+BoJeanes"
+  cta: "Follow"
+  cta_url: "https://twitter.com/bjeanes"
+  twitter: "bjeanes"

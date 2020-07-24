@@ -193,7 +193,7 @@ changes if I were committing directly to `master`/`gh-pages`).
 
 ### Result
 
-Feel free to have a look at the [repository for this
+Feel free to have a look at the [repository for the
 blog](https://github.com/covidence/covidence.github.io). The `master` branch
 contains the history of deployed changes and the `source` branch contains the
 history of source changes.

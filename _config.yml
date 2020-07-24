@@ -1,17 +1,18 @@
 theme: minimal-jekyll-theme
 
-title: Covidence Engineering
-url: http://covidence.engineering
-logo: https://pbs.twimg.com/profile_images/378800000836114876/024f5aadfab57a6117546b65cc3bf7fe_400x400.png
+title: Bo Jeanes
+url: https://bjeanes.com
+logo: https://avatars2.githubusercontent.com/u/2560?s=200&v=4
+
+author: bo
 
 twitter:
-  username: "Covidence"
+  username: "bjeanes"
 
 social:
   links:
-    - https://www.covidence.org
-    - https://twitter.com/Covidence
-    - https://github.com/covidence
+    - https://twitter.com/bjeanes
+    - https://github.com/bjeanes
 
 permalink: /:title/
 date_format: "%-d %b %Y"
@@ -31,12 +32,13 @@ include:
 exclude:
   - bin
   - .buildkite
+  - .github
   - index.md
   - Gemfile
   - Gemfile.lock
 
 jekyll-archives:
-  layout: 'archive'
+  layout: "archive"
   enabled:
     - categories
     - tags
@@ -44,8 +46,8 @@ jekyll-archives:
     - month
     - day
   permalinks:
-    year: '/:year/'
-    month: '/:year/:month/'
-    day: '/:year/:month/:day/'
-    tag: '/tag/:name/'
-    category: '/category/:name/'
+    year: "/:year/"
+    month: "/:year/:month/"
+    day: "/:year/:month/:day/"
+    tag: "/tag/:name/"
+    category: "/category/:name/"
