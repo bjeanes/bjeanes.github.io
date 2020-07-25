@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Meta Robots Tag -->
+  <meta name="robots" content="all">
+
+  <!-- Site Author -->
+  <meta name="author" content="bo">
+
+  <!-- Atom Feed -->
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Bo Jeanes Feed">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/minimal.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <!-- Analytics -->
+  
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Bo Jeanes</title>
+<meta property="og:title" content="Bo Jeanes" />
+<meta name="author" content="Bo Jeanes" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://bjeanes.com/2009/06/" />
+<meta property="og:url" content="https://bjeanes.com/2009/06/" />
+<meta property="og:site_name" content="Bo Jeanes" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2009-06-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@bjeanes" />
+<meta name="twitter:creator" content="@bjeanes" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://bjeanes.com/2009/06/"},"description":null,"@type":"BlogPosting","url":"https://bjeanes.com/2009/06/","name":null,"headline":"Bo Jeanes","dateModified":"2009-06-01T00:00:00+00:00","datePublished":"2009-06-01T00:00:00+00:00","sameAs":null,"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://avatars2.githubusercontent.com/u/2560?s=200&v=4"},"name":"Bo Jeanes"},"image":null,"author":{"@type":"Person","name":"Bo Jeanes"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body class="black-90 ">
+
+<div class="flex flex-column items-center">
+  <div class="mw7 w-100 ph3 ph4-ns">
+    <h1 class="f5 fw4 lh-title mb0 pb2 bb b--light-gray">Posts from June 2009</h1>
+
+    
+    <a class="link black-80 hover-silver" href="/2009/06/unescaping-utf-8-strings-in-ruby-1-9/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jun 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Unescaping UTF-8 Strings in Ruby 1.9</h3>
+        <p class="f5 fw3 lh-copy mv2">Today <a href="http://frozenplague.net">Radar</a> and I encountered a little issue
+with <code class="highlighter-rouge">String</code> encodings in Ruby 1.9. In this project, some Merb UTF-8
+params needed to be unescaped. We spent some trying to force strings
+into UTF-8 encoding but for some reason while the encoding was UTF–8,
+the actual contents of the strings were getting massacred.
+
+Long story short:
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># In Ruby 1.9</span>
+
+<span class="c1"># Broken</span>
+<span class="nb">puts</span> <span class="no">URI</span><span class="o">::</span><span class="n">unescape</span><span class="p">(</span><span class="s2">"Baden-W%C3%BCrttemberg"</span><span class="p">)</span> <span class="c1"># =&gt; "Baden-WÃ¼rttemberg"</span>
+
+<span class="c1"># Working</span>
+<span class="nb">puts</span> <span class="no">CGI</span><span class="o">::</span><span class="n">unescape</span><span class="p">(</span><span class="s2">"Baden-W%C3%BCrttemberg"</span><span class="p">)</span> <span class="c1"># =&gt; "Baden-Württemberg"</span>
+</code></pre></div></div>
+
+Another lesson we learnt on our adventures today is the following:
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m1</span> <span class="o">=</span> <span class="s2">"Munich"</span>
+<span class="nb">puts</span> <span class="o">=</span> <span class="n">m1</span><span class="p">.</span><span class="nf">encoding</span>  <span class="c1"># let's suppose it is something other than UTF-8, such as ASCII-8Bit</span>
+
+<span class="n">m2</span> <span class="o">=</span> <span class="s2">"München"</span>
+<span class="nb">puts</span> <span class="o">=</span> <span class="n">m2</span><span class="p">.</span><span class="nf">encoding</span>  <span class="c1"># let's suppose we have a UTF-8 encoded string</span>
+
+
+<span class="c1"># The following will raise an exception about mismatched encodings</span>
+<span class="n">m3</span> <span class="o">=</span> <span class="n">m1</span> <span class="o">&lt;&lt;</span> <span class="n">m2</span>
+
+<span class="c1"># The easiest way to get around this is to do the concatenation like so:</span>
+<span class="n">m3</span> <span class="o">=</span> <span class="n">m3</span> <span class="o">=</span> <span class="n">m1</span> <span class="o">&lt;&lt;</span> <span class="n">m2</span><span class="p">.</span><span class="nf">force_encoding</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
+</code></pre></div></div>
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>30 Jun 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  Less than 1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/06/rubycocoa-and-keychain-access/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jun 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">RubyCocoa and Keychain access</h3>
+        <p class="f5 fw3 lh-copy mv2">There have been a few posts asking how to access and manipulate the
+Keychain from within RubyCocoa but no answers supplied. As someone who
+is just getting into RubyCocoa (and Cocoa all together for that matter),
+I thought I’d document once and for all the process I took to get it
+working.
+
+I am running on Leopard and while 10.5 is supposed to ship with
+BridgeSupport for most frameworks, the Security framework must have been
+left out. After playing around with using other frameworks (such as the
+AddressBook framework) and seeing how they were used, I did a bit of
+digging in the Apple Developer Documentation (incredible resource for
+anyone starting out) and stumbled across this gem: <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html#//apple_ref/doc/uid/TP40005426">Generate Framework
+Metadata</a>
+
+After reading this, I was accessing the keychain within 5 minutes.
+Here’s how:
+
+<ol>
+  <li>
+    Run the following commands (first one will take some time):
+
+    <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">gen_bridge_metadata -f Security -o Security.bridgesupport
+mkdir -p /Library/BridgeSupport
+mv Security.bridgesupport /Library/BridgeSupport
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    Open an IRB session to test it:
+  </li>
+</ol>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">&gt;&gt; require 'osx/cocoa'
+</span><span class="p">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="no">OSX</span><span class="p">.</span><span class="nf">require_framework</span> <span class="s1">'Security'</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="n">defined?</span> <span class="no">OSX</span><span class="o">::</span><span class="no">SecKeychainAddGenericPassword</span><span class="p">()</span>
+<span class="o">=&gt;</span> <span class="s2">"method"</span>
+</code></pre></div></div>
+Hoorah! Two steps! Well, one because the second one was just testing…
+Now go make password-able RubyCocoa application! I am not sure how to
+pull this off with deployable apps but I suggest your apps could ship
+with the file or run those commands on first-run or if the
+Security.bridgesupport file doesn’t exist. Note: I have not tested
+either of those scenarios, but I would guess the latter would be more
+reliable for cross-version development (i.e. Tiger + Leopard)
+
+<h3 id="how-to-use-these-methods">How to use these methods</h3>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Require needed libraries</span>
+
+<span class="nb">require</span> <span class="s1">'osx/cocoa'</span>
+<span class="kp">include</span> <span class="no">OSX</span>
+<span class="n">require_framework</span> <span class="s1">'Security'</span>
+
+<span class="c1"># Set up some relevant variables</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="s2">"Test Service"</span>
+<span class="n">account</span> <span class="o">=</span> <span class="s2">"MyUsername"</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s2">"MyPassword"</span>
+
+<span class="c1"># Add password to default keychain (first param)</span>
+
+<span class="no">SecKeychainAddGenericPassword</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="n">service</span><span class="p">.</span><span class="nf">length</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">account</span><span class="p">.</span><span class="nf">length</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">password</span><span class="p">.</span><span class="nf">length</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>
+
+<span class="c1"># Finding a password in default keychain (first param)</span>
+
+<span class="n">status</span><span class="p">,</span> <span class="o">*</span><span class="n">password</span> <span class="o">=</span> <span class="no">SecKeychainFindGenericPassword</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="n">service</span><span class="p">.</span><span class="nf">length</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">account</span><span class="p">.</span><span class="nf">length</span><span class="p">,</span> <span class="n">account</span><span class="p">)</span>
+
+<span class="c1"># Password-related data</span>
+<span class="n">password_length</span> <span class="o">=</span> <span class="n">password</span><span class="p">.</span><span class="nf">shift</span> <span class="c1"># =&gt; 10</span>
+<span class="n">password_data</span> <span class="o">=</span> <span class="n">password</span><span class="p">.</span><span class="nf">shift</span> <span class="c1"># OSX::ObjcPtr object</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">password_data</span><span class="p">.</span><span class="nf">bytestr</span><span class="p">(</span><span class="n">password_length</span><span class="p">)</span>
+
+<span class="c1"># The last item is another OSX::ObjcPtr. I haven't figured </span>
+<span class="c1"># out how to cast or use this yet but will post when I've</span>
+<span class="c1"># figured it out</span>
+<span class="n">keychain_item</span> <span class="o">=</span> <span class="n">password</span><span class="p">.</span><span class="nf">shift</span>
+
+<span class="c1"># Yay it works! You can also check the password exists</span>
+<span class="c1"># in the Keychain Access utility. I've confirmed that</span>
+<span class="c1"># this works</span>
+<span class="nb">puts</span> <span class="n">password</span> <span class="c1"># =&gt; "MyPassword"</span>
+</code></pre></div></div>
+
+<h3 id="update-4808-below-is-a-fix-for-the-rexml-bug-some-people-have">[UPDATE 4/8/08]: Below is a fix for the REXML bug some people have</h3>
+been getting (myself included)
+
+There is good news for anyone that has been getting the following error:
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>undefined local variable or method `trans’ for &lt;UNDEFINED&gt; … &lt;/&gt;:REXML::Document
+Usage: gen_bridge_metadata [options] &lt;headers…&gt;
+Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
+</code></pre></div></div>
+
+There is a very simple fix. This is caused by a typo in the source of
+REXML. It’s such a massive bug I can’t believe it made it into the
+release of Ruby but i did some poking around and it looks like they
+renamed a method and didn’t change all references to it.
+
+There are two ways to fix it—patching REXML; and patching <code class="highlighter-rouge">gen_bridge_metadata</code>.
+
+Personally I prefer patching the generator for peace of mind and have submitted the patch at
+<a href="http://bridgesupport.macosforge.org/trac/ticket/1">http://bridgesupport.macosforge.org/trac/ticket/1</a>,
+but I’ll show both fixes.
+
+<h4 id="patching-genbridgemetadata">Patching gen<em>bridge</em>metadata</h4>
+
+<ol>
+  <li>Open <code class="highlighter-rouge">/usr/bin/gen_bridge_metadata and find the method definition for
+</code>generate_xml`</li>
+  <li>Replace <code class="highlighter-rouge">0</code> in the <code class="highlighter-rouge">xml_document.write()</code> with <code class="highlighter-rouge">-1</code> (both occurrences)</li>
+  <li>Save!</li>
+</ol>
+
+<h4 id="patching-rexml">Patching REXML</h4>
+
+<ol>
+  <li>Open
+<code class="highlighter-rouge">/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rexml/document.rb</code></li>
+  <li>Find the line that has <code class="highlighter-rouge">if trans</code> and change it to <code class="highlighter-rouge">if transitive</code></li>
+  <li>Save!</li>
+</ol>
+
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>29 Jun 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  2 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/06/generating-sound-from-sine-waves-on-the-iphone/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jun 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Generating Sound from Sine Waves on the iPhone</h3>
+        <p class="f5 fw3 lh-copy mv2">A few months ago I saw this extremely addictive flash game/toy called
+<a href="http://lab.andre-michelle.com/tonematrix">ToneMatrix</a>.
+
+My immediate thought was: “This would make quite possibly the coolest iPhone application ever.”
+
+So my good friend, <a href="http://twitter.com/sync1983">Anthony Mittaz</a>, and I
+decided to have a crack at it but hit one immediate hurdle; however
+proficient an iPhone developer Anthony is, he hadn’t done anything to do
+with sound, and nor had I, in <em>any</em> language/framework, let alone on the
+iPhone. Let me tell you this: Apple’s documentation in this area is
+severely lacking. Tangent: well, almost all Apple documentation on
+specialised things is pretty sparse.
+
+I think we spent about two weeks’ worth of nights reading documentation,
+source code (Cocoa, iPhone, Java, C, and others), and plain outright
+stabbing in the dark code-wise getting not much more than ugly pops and
+crackles. Whenever we thought we had a clean note working, we’d change
+the frequency to what <strong>should</strong> be another nice clean note, and would
+instead get ear-shattering screeches.
+
+Nonetheless we persevered and were even able to come up with a nifty
+little piece of code that could take an array of frequencies and play
+them together in what could be made to sound like a pleasant chord.
+
+Here is the relevant code:
+
+<h2 id="code">Code</h2>
+
+<strong>TonePlayer.h</strong>
+
+<pre><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+#include &lt;AudioUnit/AudioUnit.h&gt;
+#include &lt;math.h&gt;
+
+#define kTonesAvailable 16
+#define kOutputBus 0
+#define kInputBus 1
+#define kNumChannels 2
+
+@interface TonePlayer : NSObject {
+  AudioComponentInstance audioUnit;
+  AudioStreamBasicDescription audioFormat;
+  float phase[kTonesAvailable];
+  float frequencies[kTonesAvailable];
+}
+
+-(OSStatus)start;
+-(OSStatus)stop;
+-(void)resetFrequencies;
+-(void)cleanUp;
+-(void)intialiseAudio;
+@end
+
+// Some C function headers to get arount compile errors while I refactor to be more readable
+float phaseOffsetFromFrequency(float);
+OSStatus RenderCallback(void*, AudioUnitRenderActionFlags*, const AudioTimeStamp*, UInt32, UInt32, AudioBufferList*);
+</code></pre>
+
+<strong>TonePlayer.m</strong>
+
+<pre><code class="language-objective-c">#import "TonePlayer.h"
+
+typedef struct {
+  @defs(TonePlayer);
+} SinewaveDef;
+
+@implementation TonePlayer
+
+static float gSampleRate = 44100.;
+static float notes[111]  = {
+      8.1758, 8.6620, 9.1770, 9.7227, 10.3009, 10.9134, 11.5623, 12.2499, 
+      12.9783, 13.7500, 14.5676, 15.4339, 16.3516, 17.3239, 18.3540, 19.4454,
+      20.6017, 21.8268, 23.1247, 24.4997, 25.9565, 27.5000, 29.1352, 30.8677, 
+      32.7032, 34.6478, 36.7081, 38.8909, 41.2034, 43.6535, 46.2493, 48.9994, 
+      51.9131, 55.0000, 58.2705, 61.7354, 65.4064, 69.2957, 73.4162, 77.7817, 
+      82.4069, 87.3071, 92.4986, 97.9989, 103.8262, 110.0000, 116.5409, 123.4708,
+      130.8128, 138.5913, 146.8324, 155.5635, 164.8138, 174.6141, 184.9972, 
+      195.9977, 207.6523, 220.0000, 233.0819, 246.9417, 261.6256, 277.1826, 
+      293.6648, 311.1270, 329.6276, 349.2282, 369.9944, 391.9954, 415.3047, 
+      440.0000, 466.1638, 493.8833, 523.2511, 554.3653, 587.3295, 622.2540, 
+      659.2551, 698.4565, 739.9888, 783.9909, 830.6094, 880.0000, 932.3275, 
+      987.7666, 1046.5023, 1108.7305, 1174.6591, 1244.5079, 1318.5102, 1396.9129, 
+      1479.9777, 1567.9817, 1661.2188, 1760.0000, 1864.6550, 1975.5332, 2093.0045, 
+      2217.4610, 2349.3181, 2489.0159, 2637.0205, 2793.8259, 2959.9554, 3135.9635, 
+      3322.4376, 3520.0000, 3729.3101, 3951.0664, 4186.0090, 4434.9221, 4698.6363
+  };
+
+OSStatus    RenderCallback(void                          *inRefCon,
+                           AudioUnitRenderActionFlags    *ioActionFlags,
+                           const AudioTimeStamp          *inTimeStamp,
+                           UInt32                        inBusNumber,
+                           UInt32                        inNumberFrames,
+                           AudioBufferList               *ioData)
+{
+  SinewaveDef* def = inRefCon;
+  
+  float *outL = ioData-&gt;mBuffers[0].mData;
+  float *outR = ioData-&gt;mBuffers[1].mData;
+
+  float wave, j;
+  float freqs[kTonesAvailable];
+  
+  memset(freqs, 0.0f, sizeof(freqs));
+  
+  for (int i=0; i&lt; inNumberFrames; i++){
+    wave = 0.0f;
+    j = 0.0f;
+    
+    for(int m = 0; m &lt; kTonesAvailable; ++m) {
+      if(def-&gt;frequencies[m] != 0) {
+        if(freqs[m] == 0) freqs[m] = phaseOffsetFromFrequency(def-&gt;frequencies[m]);
+
+        wave += 0.5 * sinf(def-&gt;phase[m]);
+        def-&gt;phase[m] += freqs[m];
+        
+        ++j;
+      }
+    }
+    
+    wave /= j;
+    
+    *outL++ = wave;
+    *outR++ = wave;
+  }
+
+  return noErr;
+}
+
+float phaseOffsetFromFrequency(float frequency) {
+  return (float)(frequency * 2.0 * M_PI / gSampleRate);
+}
+
+-(void)resetFrequencies{
+  memset(frequencies, 0.0f, sizeof(frequencies));
+  memset(phase, 0.0f, sizeof(phase));
+}
+
+-(OSStatus)start{
+  [self resetFrequencies];
+  OSStatus status = AudioOutputUnitStart(audioUnit);
+  
+  // See http://www.phys.unsw.edu.au/jw/notes.html for note numbers
+  frequencies[0] = notes[60]; // C
+  frequencies[1] = notes[64]; // E
+  frequencies[2] = notes[67]; // G
+  
+  sleep(1);
+  
+  frequencies[0] = notes[64];
+  frequencies[1] = notes[67];
+  frequencies[2] = notes[71];
+  
+  sleep(1);
+  
+  frequencies[0] = notes[74];
+  frequencies[1] = notes[67];
+  frequencies[2] = notes[70];
+  
+  
+  return status;
+}
+
+-(OSStatus)stop{
+  return AudioOutputUnitStop(audioUnit);
+}
+
+-(void)cleanUp{
+  AudioUnitUninitialize(audioUnit);
+}
+
+-(AudioStreamBasicDescription)audioFormat{
+  return audioFormat;
+}
+
+// Below code is a cut down version (for output only) of the code written by
+// Micheal "Code Fighter" Tyson (punch on Mike)
+// See http://michael.tyson.id.au/2008/11/04/using-remoteio-audio-unit/ for details
+-(void)intialiseAudio{
+  OSStatus status;
+  
+  // Describe audio component
+  AudioComponentDescription desc;
+  desc.componentType = kAudioUnitType_Output;
+  desc.componentSubType = kAudioUnitSubType_RemoteIO;
+  desc.componentFlags = 0;
+  desc.componentFlagsMask = 0;
+  desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+  
+  // Get component
+  AudioComponent inputComponent = AudioComponentFindNext(NULL, &amp;desc);
+  
+  // Get audio units
+  status = AudioComponentInstanceNew(inputComponent, &amp;audioUnit);
+  
+  UInt32 flag = 1;
+  // Enable IO for playback
+  status = AudioUnitSetProperty(audioUnit, 
+                  kAudioOutputUnitProperty_EnableIO, 
+                  kAudioUnitScope_Output, 
+                  kOutputBus,
+                  &amp;flag, 
+                  sizeof(flag));
+
+  // Describe format
+        audioFormat.mSampleRate = gSampleRate;
+  audioFormat.mFormatID = kAudioFormatLinearPCM;
+  audioFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+  audioFormat.mFramesPerPacket = 1;
+  audioFormat.mBytesPerPacket = sizeof(Float32);
+  audioFormat.mBytesPerFrame = sizeof(Float32);
+  audioFormat.mChannelsPerFrame = kNumChannels;
+  audioFormat.mBitsPerChannel = 32;
+  
+  //Apply format
+  status = AudioUnitSetProperty(audioUnit, 
+                  kAudioUnitProperty_StreamFormat, 
+                  kAudioUnitScope_Input, 
+                  kOutputBus, 
+                  &amp;audioFormat, 
+                  sizeof(audioFormat));
+   
+  // Set up the playback  callback
+  AURenderCallbackStruct callbackStruct;
+  callbackStruct.inputProc = RenderCallback;
+  //set the reference to "self" this becomes *inRefCon in the playback callback
+  callbackStruct.inputProcRefCon = self;
+  
+  status = AudioUnitSetProperty(audioUnit, 
+                  kAudioUnitProperty_SetRenderCallback, 
+                  kAudioUnitScope_Global, 
+                  kOutputBus,
+                  &amp;callbackStruct, 
+                  sizeof(callbackStruct));
+  
+  // Initialise
+  status = AudioUnitInitialize(audioUnit);
+}
+
+@end
+</code></pre>
+
+I really wish that I could remember how most of it worked, or, more
+importantly, the multitude of projects whose code we had to look at to
+get it working. If you recognise any of the code or can help add
+references on how people can build up a nice list of references for
+people to use if are following a similar pursuit.
+
+If you are wondering what ever happened to the application we were
+building, it seems we weren’t the only ones who recognised the potential
+of ToneMatrix as an iPhone application. During the 2-3 weeks of us
+developing the sound generation code, about 5-6 ToneMatrix clones were
+added to the AppStore. While most were crap, there was one that we felt
+left little to be improved upon and we therefore recommend everyone goes
+and downloads
+<a href="http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=313573137&amp;mt=8">Melodica</a>.
+It’s just as addictive as the Flash version, only portable!
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>29 Jun 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  4 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/06/colemak/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jun 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Colemak</h3>
+        <p class="f5 fw3 lh-copy mv2">About a year ago I found out about the <a href="http://colemak.com">Colemak</a>
+keyboard layout. This is what it looks like:
+
+<img src="http://colemak.com/wiki/images/8/80/Colemak_layout_2.png" alt="image" />
+
+I was instantly intrigued and was drawn to a few key features:
+
+<ul>
+  <li>Easy to learn</li>
+  <li>Caps lock is replaced with backspace (making backspace closer to
+fingers and getting rid of the useless caps lock)</li>
+  <li>Obvious health benefits (just look how much your fingers need to
+move when using QWERTY <a href="http://colemak.com/Compare">here</a>)</li>
+  <li>It’s not QWERTY, which was designed <a href="http://colemak.com/FAQ#What.27s_wrong_with_the_QWERTY_layout.3F">without any consideration to
+ergonomic or efficiency
+aspects</a>.</li>
+</ul>
+
+Long story short: it took me a few tries to commit to learning it (3
+tries over year in fact). Eventually I went cold turkey for a week and
+haven’t looked back. Typing is more comfortable and faster already.
+
+Getting Colemak on OS X is as simple as following <a href="http://colemak.com/Mac">the simple
+Installation instructions</a>. The instructions
+seem out of date when it comes to re-mapping caps lock to backspace. It
+is as simple as downloading
+<a href="http://www.pqrs.org/tekezo/macosx/keyremap4macbook/extra.html">PCKeyboardHack</a>,
+installing it, rebooting, and choosing the option in its preference pane
+to remap caps lock to delete (key code 51).
+
+<h3 id="snow-leopard">Snow Leopard</h3>
+
+Colemak itself works fine under Snow Leopard, however the PCKeyboardHack
+utility does not work, because it is hardcoded to only load the kernel
+driver if it recognises the OS version. Luckily it is open source, and I
+was able to import the Mercurial project into a
+<a href="http://github.com">GitHub</a>
+<a href="http://github.com/bjeanes/PCKeyboardHack">project</a>, modify it, and
+build a version that works fine on Snow Leopard.
+
+<h3 id="dead-keys-that-apple-uses-on-the-qwerty-layout">Dead Keys that Apple uses on the QWERTY layout</h3>
+
+One thing I loved about the QWERTY layout on OS X was the sensible dead
+key and alternate character behaviours, allowing users to quickly and
+logically input characters such as: , é, ¡, ¿, », ‡, °, etc. The
+version of Colemak, for one reason or another, moved or simply didn’t
+have many of these shortcuts.
+
+So, I created my own Colemak layout bundle that moves the dead key
+positions to preserve the associations with the character position
+changes from QWERTY to Colemak. This means, for example,  can be
+created by pressing ⌥⇧K on either keyboard layout (where K is the key
+that outputs K, not the key that physically says K on it).
+
+My version of the Colemak bundle is available on <a href="http://github.com/bjeanes/colemak">my
+GitHub</a> and a direct download to a
+zip file is available
+<a href="http://cloud.github.com/downloads/bjeanes/colemak/ColemakKeyboardLayouts.bundle.zip">here</a>.
+Simply put the .bundle file in your <code class="highlighter-rouge">~/Library/Keyboard Layouts</code>
+directory. The bundle includes both the original keyboard layout and my
+re-created one so you can switch between them if you need both, for any
+reason.
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>29 Jun 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  2 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/06/snow-leopard-for-the-ruby-developer/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jun 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Snow Leopard for the Ruby Developer</h3>
+        <p class="f5 fw3 lh-copy mv2">After the 2009 WWDC release, I decided to give Snow Leopard a try on my
+production machine. Crossing my fingers, expecting a plethora of broken
+gems and databases, I wiped my hard drive clean and installed the latest
+build.
+
+Much to my surprise, most things worked flawlessly and exactly as it did
+on Leopard.
+
+<h3 id="what-ships-with-snow-leopard">What Ships with Snow Leopard</h3>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> gem <span class="nt">--version</span>
+<span class="go">1.3.1
+
+</span><span class="gp">$</span> ruby <span class="nt">--version</span>
+<span class="go">ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0]
+
+</span><span class="gp">$</span> gem list
+<span class="go">
+*** LOCAL GEMS ***
+ 
+actionmailer (2.2.2, 1.3.6)
+actionpack (2.2.2, 1.13.6)
+actionwebservice (1.2.6)
+activerecord (2.2.2, 1.15.6)
+activeresource (2.2.2)
+activesupport (2.2.2, 1.4.4)
+acts_as_ferret (0.4.3)
+capistrano (2.5.2)
+cgi_multipart_eof_fix (2.5.0)
+daemons (1.0.10)
+dnssd (0.6.0)
+fastthread (1.0.1)
+fcgi (0.8.7)
+ferret (0.11.6)
+gem_plugin (0.2.3)
+highline (1.5.0)
+hpricot (0.6.164)
+libxml-ruby (1.1.2)
+mongrel (1.1.5)
+needle (1.3.0)
+net-scp (1.0.1)
+net-sftp (2.0.1, 1.1.1)
+net-ssh (2.0.4, 1.1.4)
+net-ssh-gateway (1.0.0)
+rails (2.2.2, 1.2.6)
+rake (0.8.3)
+RedCloth (4.1.1)
+ruby-openid (2.1.2)
+ruby-yadis (0.3.4)
+rubynode (0.1.5)
+sqlite3-ruby (1.2.4)
+termios (0.9.4)
+xmpp4r (0.4)
+</span></code></pre></div></div>
+
+Quite possibly these default gems and versions will change between now
+and the final release of Snow Leopard. For instance, this seed comes
+with Rails 2.2.2, even though we are already at 2.3.2. Snow Leopard
+doesn’t come out till September and by then we could have an even newer
+version of Rails that might be bundled.
+
+<h3 id="what-doesnt-work-and-how-to-fix-it">What doesn’t work, and how to fix it.</h3>
+
+<strong>Textmate</strong> - Everything works fine except for the following shortcuts:
+⌘←, ⌘→, ⌘⇧←, and ⌘⇧→. These shortcuts are for moving the text insertion
+point to beginning and end of line, and selecting to beginning and end
+of line, respectively. The fix is easy, simply download and double click
+the TextMate macros attached to <a href="http://ticket.macromates.com/show?ticket_id=0FDE7076">this
+ticket</a>
+
+<strong>Nokogiri</strong> - Nokogiri installs fine but gives error “native.bundle:
+mach-o, but wrong architecture” when used. Getting around this is as
+easy as running
+<code class="highlighter-rouge">sudo gem install nokogiri -s http://tenderlovemaking.com/</code> to get the
+latest development release which includes a fix for this.
+
+<strong>do_sqlite3</strong> - I haven’t personally used this or tried to fix it but
+I saw report of it not working <a href="http://twitter.com/benlovell/status/2182275909">by
+@benlovell</a>
+
+<strong>Passenger PrefPane</strong> - Preference pane does not load. No known fix
+(it’s probably an easy fix but I haven’t looked enough into it to try).
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>28 Jun 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/06/ghost-manage-hostnames-effortlessly/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jun 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Ghost - Manage hostnames effortlessly</h3>
+        <p class="f5 fw3 lh-copy mv2"><h3 id="background">Background</h3>
+
+Ghost is a gem that provides a command and a Ruby API for managing
+hostnames locally, much as people do manually by editing <code class="highlighter-rouge">/etc/hosts</code>
+now.
+
+Sometime last year I was having to add lots of
+<a href="http://modrails.com/">Passenger</a> virtual hosts on my development
+machine and felt that having to constantly edit the <code class="highlighter-rouge">/etc/hosts</code> file
+was a bit archaic for my liking and that there must be a nicer way of
+accomplishing the same task.
+
+Having seen the <a href="http://www.fngtps.com/2008/09/passenger-preference-pane-v1-1">Passenger Preference
+Pane</a>
+added hostnames without requiring the user to do anything special, I had
+a peak into its <a href="http://github.com/alloy/passengerpane">source</a> and
+discovered the <code class="highlighter-rouge">dscl</code> (<a href="http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/dscl.1.html">man
+page</a>)
+command that comes with Leopard.
+
+For the hell of it I decided to write my
+<a href="http://github.com/bjeanes/ghost">Ghost</a> gem using this command and use
+it to make a nice wrapper that has an easier syntax than <code class="highlighter-rouge">dscl</code>, and
+that is less effort than manually editing my hosts file. Happy with the
+result, a few other people requested support for other unix systems and
+<a href="http://newtonsinlaws.com">Mitchell V Riley</a> was kind enough to patch
+Ghost to fall back to processing and editing the <code class="highlighter-rouge">/etc/hosts</code> file when
+not on Leopard.
+
+<h3 id="usage">Usage</h3>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> ghost add mydevsite.local
+<span class="gp">  [Adding] mydevsite.local -&gt;</span> 127.0.0.1
+<span class="go">
+</span><span class="gp">$</span> ghost add staging-server.local 67.207.136.164
+<span class="gp">  [Adding] staging-server.local -&gt;</span> 67.207.136.164
+<span class="go">
+</span><span class="gp">$</span> ghost list
+<span class="go">Listing 2 host(s):
+</span><span class="gp">  mydevsite.local      -&gt;</span> 127.0.0.1
+<span class="gp">  staging-server.local -&gt;</span> 67.207.136.164
+<span class="go">
+</span><span class="gp">$</span> ghost delete mydevsite.local
+<span class="go">  [Deleting] mydevsite.local
+
+</span><span class="gp">$</span> ghost list
+<span class="go">Listing 1 host(s):
+</span><span class="gp">  staging-server.local -&gt;</span> 67.207.136.164
+<span class="go">
+</span><span class="gp">$</span> ghost modify staging-server.local 64.233.167.99
+<span class="gp">  [Modifying] staging-server.local -&gt;</span> 64.233.167.99
+<span class="go">
+</span><span class="gp">$</span> ghost list
+<span class="go">Listing 1 host(s):
+</span><span class="gp">  staging-server.local -&gt;</span> 64.233.167.99
+<span class="go">
+</span><span class="gp">$</span> ghost empty
+<span class="go">  [Emptying] Done.
+
+</span><span class="gp">$</span> ghost list
+<span class="go">Listing 0 host(s):
+</span></code></pre></div></div>
+
+<h3 id="other">Other</h3>
+
+Since creating Ghost I’ve used the Ruby library to add an initializer to
+my Rails projects that add the domain locally if running under Passenger
+in development mode (some configuration is needed to let it do this as
+it needs sudo).
+
+Also, I have heard reports that entries in the <code class="highlighter-rouge">/etc/hosts</code> file are
+ignored in Snow Leopard. I haven’t tried because I only ever use Ghost
+now, but I do know that Ghost still works well.
+
+<h3 id="caveats">Caveats</h3>
+
+It only works on Unix-based systems and the <code class="highlighter-rouge">/etc/hosts</code> path is
+hard-coded. Windows support is entirely possible if somebody wants to
+use it. It isn’t something I am likely to do as I haven’t booted Windows
+in at least a year. In fact, I don’t think I have even ever installed
+Ruby on Windows before…
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>28 Jun 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+
+  </div>
+</div>
+
+<footer class="flex justify-start items-baseline mw7 center w-100 ph3 ph4-ns mt4 mb2 lh-copy">
+  <nav class="flex flex-row flex-wrap">
+    <span class="f7 fw3 silver mr3 ttc"><a href="https://bjeanes.com/" class="f7 fw5 silver hover-silver link underline-hover" title="Bo Jeanes">Bo jeanes</a> &copy; 2020</span>
+    
+
+    
+    <span class="f7 fw3 silver mr3">Designed with <a href="https://desiredpersona.com/themes/" class="f7 fw3 silver hover-silver link underline-hover mr3" target="_blank">Minimal Theme</a></span>
+    
+  </nav>
+</footer>
+
+</body>
+</html>

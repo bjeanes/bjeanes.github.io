@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Meta Robots Tag -->
+  <meta name="robots" content="all">
+
+  <!-- Site Author -->
+  <meta name="author" content="bo">
+
+  <!-- Atom Feed -->
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Bo Jeanes Feed">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/minimal.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <!-- Analytics -->
+  
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Bo Jeanes</title>
+<meta property="og:title" content="Bo Jeanes" />
+<meta name="author" content="Bo Jeanes" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://bjeanes.com/2009/09/" />
+<meta property="og:url" content="https://bjeanes.com/2009/09/" />
+<meta property="og:site_name" content="Bo Jeanes" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2009-09-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@bjeanes" />
+<meta name="twitter:creator" content="@bjeanes" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://bjeanes.com/2009/09/"},"description":null,"@type":"BlogPosting","url":"https://bjeanes.com/2009/09/","name":null,"headline":"Bo Jeanes","dateModified":"2009-09-01T00:00:00+00:00","datePublished":"2009-09-01T00:00:00+00:00","sameAs":null,"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://avatars2.githubusercontent.com/u/2560?s=200&v=4"},"name":"Bo Jeanes"},"image":null,"author":{"@type":"Person","name":"Bo Jeanes"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body class="black-90 ">
+
+<div class="flex flex-column items-center">
+  <div class="mw7 w-100 ph3 ph4-ns">
+    <h1 class="f5 fw4 lh-title mb0 pb2 bb b--light-gray">Posts from September 2009</h1>
+
+    
+    <a class="link black-80 hover-silver" href="/2009/09/proof-that-chendo-is-a-robot/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Sep 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Proof that @chendo is a robot</h3>
+        <p class="f5 fw3 lh-copy mv2">Today I casually tweeted a hypothesis that
+<a href="http://twitter.com/chendo">@chendo</a> drained my battery. The image below
+shows the amusing responses that followed:
+
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>4 Sep 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  Less than 1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/09/using-apache-as-a-basicauth-proxy-to-an-internal-resource/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Sep 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Using Apache as a BasicAuth proxy to an internal resource</h3>
+        <p class="f5 fw3 lh-copy mv2">This article isn’t named ideally so if you have a better title, tell me.
+
+This is the scenario: we have a simple HTTP resource on the internal
+network at <a href="http://mocra.com">Mocra</a>. This resource is a closed source
+tool which is great except that it has one drawback — there are only two
+security modes: basic authentication on, or basic authentication off.
+There is only one username/password and you can’t control when or by
+whom it is required.
+
+Now, my preferred behaviour here is to be able to give out multiple
+login/passwords and also to only require authentication <strong>outside</strong> of
+our local network. I set out to get this working.
+
+I devised this solution a few months ago (which is why it’s using Apache
+at all) but I thought it might be of some use to someone. I created an
+Apache VirtualHost to act as a proxy between this resource and its
+clients. It looks like this:
+
+<div class="language-apache highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">&lt;</span><span class="nl">VirtualHost</span><span class="sr"> *:80</span><span class="p">&gt;
+</span>  <span class="c"># This virtual host proxies requests for the internal resource</span>
+  <span class="nc">ServerName</span> external.resource.com
+
+  <span class="c"># Set auth header to base64 encoded 'username:password' </span>
+  <span class="c"># where username and password are the credentials for internal resource</span>
+  <span class="nc">RequestHeader</span> <span class="ss">set</span> Authorization "Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+
+  <span class="nc">ProxyPass</span> /resource_path/ http://192.168.1.123:1337/resource_path/
+  <span class="nc">ProxyPassReverse</span> /resource_path/ http://192.168.1.123:1337/resource_path/
+
+  <span class="p">&lt;</span><span class="nl">Location</span><span class="sr"> /</span><span class="p">&gt;
+</span>    <span class="nc">Order</span> allow,deny
+    <span class="nc">Allow</span> <span class="ss">from</span> 192.168.1.0/24 <span class="c"># our local subnet</span>
+    <span class="nc">Allow</span> <span class="ss">from</span> 127.0.0.1 <span class="c"># duh</span>
+    <span class="nc">Allow</span> <span class="ss">from</span> 1.3.3.7 <span class="c"># our external router IP</span>
+
+    <span class="nc">AuthType</span> basic
+    <span class="nc">AuthName</span> "Our Internal Resource"
+    <span class="c"># where all the external login/passwords are</span>
+    <span class="nc">AuthUserFile</span> /var/www/.htpasswd 
+    Require <span class="ss">valid-user</span>
+
+    <span class="c"># this is the secret sauce that allows EITHER</span>
+    <span class="c"># local access or Basic Auth access</span>
+    <span class="nc">Satisfy</span> Any 
+  &lt;/Location&gt;
+
+  <span class="nc">RewriteEngine</span> <span class="ss">on</span>
+  <span class="nc">RewriteRule</span> ^/?$ http://external.resource.com:80/resource_path/ [R]
+<span class="p">&lt;/</span><span class="nl">VirtualHost</span><span class="p">&gt;
+</span></code></pre></div></div>
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>2 Sep 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+
+  </div>
+</div>
+
+<footer class="flex justify-start items-baseline mw7 center w-100 ph3 ph4-ns mt4 mb2 lh-copy">
+  <nav class="flex flex-row flex-wrap">
+    <span class="f7 fw3 silver mr3 ttc"><a href="https://bjeanes.com/" class="f7 fw5 silver hover-silver link underline-hover" title="Bo Jeanes">Bo jeanes</a> &copy; 2020</span>
+    
+
+    
+    <span class="f7 fw3 silver mr3">Designed with <a href="https://desiredpersona.com/themes/" class="f7 fw3 silver hover-silver link underline-hover mr3" target="_blank">Minimal Theme</a></span>
+    
+  </nav>
+</footer>
+
+</body>
+</html>

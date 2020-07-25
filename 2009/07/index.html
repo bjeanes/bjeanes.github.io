@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Meta Robots Tag -->
+  <meta name="robots" content="all">
+
+  <!-- Site Author -->
+  <meta name="author" content="bo">
+
+  <!-- Atom Feed -->
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Bo Jeanes Feed">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/minimal.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <!-- Analytics -->
+  
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Bo Jeanes</title>
+<meta property="og:title" content="Bo Jeanes" />
+<meta name="author" content="Bo Jeanes" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://bjeanes.com/2009/07/" />
+<meta property="og:url" content="https://bjeanes.com/2009/07/" />
+<meta property="og:site_name" content="Bo Jeanes" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2009-07-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@bjeanes" />
+<meta name="twitter:creator" content="@bjeanes" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://bjeanes.com/2009/07/"},"description":null,"@type":"BlogPosting","url":"https://bjeanes.com/2009/07/","name":null,"headline":"Bo Jeanes","dateModified":"2009-07-01T00:00:00+00:00","datePublished":"2009-07-01T00:00:00+00:00","sameAs":null,"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://avatars2.githubusercontent.com/u/2560?s=200&v=4"},"name":"Bo Jeanes"},"image":null,"author":{"@type":"Person","name":"Bo Jeanes"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body class="black-90 ">
+
+<div class="flex flex-column items-center">
+  <div class="mw7 w-100 ph3 ph4-ns">
+    <h1 class="f5 fw4 lh-title mb0 pb2 bb b--light-gray">Posts from July 2009</h1>
+
+    
+    <a class="link black-80 hover-silver" href="/2009/07/using-fields-for-can-generate-invalid-html/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Using fields_for can generate invalid HTML</h3>
+        <p class="f5 fw3 lh-copy mv2">Just a quick post so show you how <code class="highlighter-rouge">fields_for</code> form
+helper can cause invalid HTML when used in combination with
+<code class="highlighter-rouge">accepts_nested_attributes_for</code> in your views.
+
+If you are for any reason editing/creating your child objects in a
+tabular form, your view might look something like this:
+
+<div class="language-rhtml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@todo_list</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span>      <span class="ss">:name</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:name</span> <span class="cp">%&gt;</span>
+
+  <span class="nt">&lt;h3&gt;</span>To Do Items:<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;table&gt;</span>
+    <span class="nt">&lt;thead&gt;</span>
+      <span class="nt">&lt;tr&gt;</span>
+        <span class="nt">&lt;th&gt;</span>To Do Item<span class="nt">&lt;/th&gt;</span>
+        <span class="nt">&lt;th&gt;</span>Due Date<span class="nt">&lt;/th&gt;</span>
+        <span class="nt">&lt;th&gt;</span>Done?<span class="nt">&lt;/th&gt;</span>
+      <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/thead&gt;</span>
+    <span class="nt">&lt;tbody&gt;</span>
+      <span class="cp">&lt;%</span> <span class="n">f</span><span class="p">.</span><span class="nf">fields_for</span> <span class="ss">:items</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+          <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">item</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:content</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+          <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">item</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:due_date</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+          <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">item</span><span class="p">.</span><span class="nf">check_box</span>  <span class="ss">:done</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/tbody&gt;</span>
+  <span class="nt">&lt;/table&gt;</span>
+  
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s1">'Save'</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+At first glance this looks fine. However, when the <code class="highlighter-rouge">ToDoList</code>
+model has <code class="highlighter-rouge">accepts_nested_attributes_for :items</code>, the
+<code class="highlighter-rouge">fields_for</code> helper also outputs a hidden field for each
+existing <code class="highlighter-rouge">Item</code> instance with it’s ID.
+
+This means that we get the following HTML:
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"/to_do_lists/1"</span> <span class="na">class=</span><span class="s">"edit_to_do_list"</span> <span class="na">id=</span><span class="s">"edit_to_do_list_1"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"margin:0;padding:0;display:inline"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"_method"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"put"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"authenticity_token"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"CE2jyRoewbwsqu4eX8AFWFqsgrMfCN35Jzy6b43MhsA="</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"to_do_list_name"</span><span class="nt">&gt;</span>Name<span class="nt">&lt;/label&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_name"</span> <span class="na">name=</span><span class="s">"to_do_list[name]"</span> <span class="na">size=</span><span class="s">"30"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">"Sup"</span> <span class="nt">/&gt;</span>
+
+  <span class="nt">&lt;h3&gt;</span>To Do Items:<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;table&gt;</span>
+    <span class="nt">&lt;thead&gt;</span>
+      <span class="nt">&lt;tr&gt;</span>
+        <span class="nt">&lt;th&gt;</span>To Do Item<span class="nt">&lt;/th&gt;</span>
+        <span class="nt">&lt;th&gt;</span>Due Date<span class="nt">&lt;/th&gt;</span>
+        <span class="nt">&lt;th&gt;</span>Done?<span class="nt">&lt;/th&gt;</span>
+      <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/thead&gt;</span>
+    <span class="nt">&lt;tbody&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_0_id"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][0][id]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+          <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_0_content"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][0][content]"</span> <span class="na">size=</span><span class="s">"30"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">"arst"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+          <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_0_due_date"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][0][due_date]"</span> <span class="na">size=</span><span class="s">"30"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">"2009-07-30"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+          <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][0][done]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"0"</span> <span class="nt">/&gt;&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_0_done"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][0][done]"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_1_id"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][1][id]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"2"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+          <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_1_content"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][1][content]"</span> <span class="na">size=</span><span class="s">"30"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">"arst"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+          <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_1_due_date"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][1][due_date]"</span> <span class="na">size=</span><span class="s">"30"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">"2009-07-30"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+          <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][1][done]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"0"</span> <span class="nt">/&gt;&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_1_done"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][1][done]"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/tbody&gt;</span>
+  <span class="nt">&lt;/table&gt;</span>
+  
+  <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_submit"</span> <span class="na">name=</span><span class="s">"commit"</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Save"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div>
+
+The keen eye will notice the hidden <code class="highlighter-rouge">&lt;input&gt;</code> tags that are direct
+children of the <code class="highlighter-rouge">tbody</code>:
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;tbody&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_0_id"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][0][id]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;tr&gt;</span><span class="c">&lt;!-- clip! --&gt;</span><span class="nt">&lt;/tr&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"to_do_list_items_attributes_1_id"</span> <span class="na">name=</span><span class="s">"to_do_list[items_attributes][1][id]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"2"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;tr&gt;</span><span class="c">&lt;!-- clip! --&gt;</span><span class="nt">&lt;/tr&gt;</span>
+<span class="nt">&lt;/tbody&gt;</span>
+</code></pre></div></div>
+
+This is not a valid place for an <code class="highlighter-rouge">&lt;input&gt;</code> tag.
+
+I’ve put an example project demonstrating this on <a href="http://github.com/bjeanes/fields_for_invalid_html">my
+GitHub</a>
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>30 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/ultraviolet-tools/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Ultraviolet Tools</h3>
+        <p class="f5 fw3 lh-copy mv2">A few weeks ago, I was modifying my clone of Enki (my blogging platform)
+to use <a href="http://ultraviolet.rubyforge.org/">Ultraviolet</a> instead of
+<a href="http://coderay.rubychan.de/">CodeRay</a>, as it supports using both
+<a href="http://macromates.com">TextMate</a> themes and syntaxes. This means I can
+extend it fairly limitlessly and use TextMate itself to modify the
+themes an syntaxes.
+
+However, Ultraviolet doesn’t come with the best tools to turn the
+TextMate syntax and theme files into files Ultraviolet can use, and the
+ones that it does provide puts those translated files INTO the gem on
+your system. This means that you can’t easily deploy or share them.
+
+So, to remedy this I made a small gem <a href="http://github.com/bjeanes/ultraviolet-tools">Ultraviolet
+Tools</a> that provides two
+command line tools: <code class="highlighter-rouge">uv-create-syntax</code> and <code class="highlighter-rouge">uv-create-theme</code>.
+
+They aren’t very complicated, nor very documented, but they are
+straight-forward to use:
+
+<h3 id="install">Install</h3>
+
+Install Ultraviolet Tools with
+<code class="highlighter-rouge">sudo gem install bjeanes-ultraviolet-tools -s http://gems.github.com</code>.
+
+<h3 id="usage">Usage</h3>
+
+<h4 id="themes">Themes</h4>
+
+Run <code class="highlighter-rouge">uv-create-theme path/to/theme.tmTheme</code>
+
+<h4 id="syntaxes">Syntaxes</h4>
+
+Run <code class="highlighter-rouge">uv-create_syntax path/to/syntax.plist</code> or
+<code class="highlighter-rouge">uv-create_syntax path/to/bundle/with/syntaxes.tmBundle</code>
+
+<h3 id="using-the-resulting-files">Using the resulting files</h3>
+
+Use <a href="http://github.com/bjeanes/ultraviolet">my fork of ultraviolet</a> as
+it has an option to change the load path for themes and syntaxes so that
+you can load them out of your application files.
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>30 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/creating-new-postgres-user-and-db/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Creating new Postgres User and DB</h3>
+        <p class="f5 fw3 lh-copy mv2">This post is mostly a reminder for me in the future. However, others may
+find it useful also.
+
+I love Postgres but more often than not I get frustrated and confused
+trying to get authentication working with a new database. By looking
+through the Deprec source code, I pulled out these two lines of code and
+so far they haven’t failed me:
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su - postgres <span class="nt">-c</span> <span class="s2">"createuser -P -D -A -E </span><span class="nv">$DBUSER</span><span class="s2">"</span>
+su - postgres <span class="nt">-c</span> <span class="s2">"createdb -O </span><span class="nv">$DBUSER</span><span class="s2"> </span><span class="nv">$DBNAME</span><span class="s2">"</span>
+</code></pre></div></div>
+
+Of course, replace <code class="highlighter-rouge">$DBUSER</code> and
+<code class="highlighter-rouge">$DBNAME</code> with your desired username and database
+name, or define them as shell variables. The
+<code class="highlighter-rouge">$DBUSER</code> creates that user as the owner of the
+database (so it has permission to read/write etc).
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>21 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  Less than 1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/fix-for-dynamic-pager-cannot-open-swap-directory-private-var-vm-in-os-x-possibly-just-snow-leopard/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Fix for &quot;dynamic_pager: cannot open swap directory /private/var/vm&quot; in OS X (possibly just Snow Leopard)</h3>
+        <p class="f5 fw3 lh-copy mv2">Today my Snow Leopard install was going so slow it felt like I was
+trying to swim through molasses. The system was literally so slow that
+typing text into some text fields (especially TextMate) lagged at about
+a rate of 1 character per second, and opening files (or even running
+<code class="highlighter-rouge">touch</code> on them) took a couple of seconds.
+
+After a few fruitless restarts and a keen eye on my logs I started
+noticing these errors in Console.app:
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>9/07/09 3:01:37 PM com.apple.launchd[1] (com.apple.dynamic*pager) Exited
+with exit code: 1\
+9/07/09 3:01:37 PM com.apple.launchd Throttling respawn: Will start in
+10 seconds\
+9/07/09 3:01:47 PM com.apple.dynamic*pager[2481] dynamic*pager: cannot
+open swap directory /private/var/vm\
+9/07/09 3:01:47 PM com.apple.launchd Exited with exit code: 1\
+9/07/09 3:01:47 PM com.apple.launchd Throttling respawn: Will start in
+10 seconds\
+9/07/09 3:01:57 PM com.apple.dynamic*pager[2546] dynamic*pager: cannot
+open swap directory /private/var/vm\
+9/07/09 3:01:57 PM com.apple.launchd Exited with exit code: 1\
+9/07/09 3:01:57 PM com.apple.launchd Throttling respawn: Will start in
+10 seconds\
+9/07/09 3:02:07 PM com.apple.dynamic*pager[2547] dynamic\_pager: cannot
+open swap directory /private/var/vm\
+9/07/09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic\_pager[2547])
+Exited with exit code: 1\
+9/07/09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic\_pager)
+Throttling respawn: Will start in 10 seconds\
+</code></pre></div></div>
+
+I don’t know how or why they started but I was able to fix it by simply
+running <code class="highlighter-rouge">sudo mkdir /private/var/vm</code> in Terminal. Within a few seconds
+of creating the directory, the errors ceased and I could see a swapfile
+created inside the directory.
+
+I have no idea what caused the directory to be deleted in the first
+place or why OS X isn’t smart enough to try creating it, but the fix is
+simple and instantly effective.
+
+Note: I am not sure if this is a Snow Leopard specific issue or not, but
+it very well might be. Also, these started right after installing Adobe
+CS4, so I feel pretty confident blaming that for now.
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>9 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/using-accepts-nested-attributes-for-when-the-child-object-validates-presence-of-parent/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Using accepts_nested_attributes_for When the Child Object validates_presence_of Parent</h3>
+        <p class="f5 fw3 lh-copy mv2">I came across an interesting dilemma today in Rails 2.3 whilst trying to
+use <code class="highlighter-rouge">accepts_nested_attributes_for</code>.
+
+The models I have were:
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Organization</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:users</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:users</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:organization</span>
+  <span class="n">validates_presence_of</span> <span class="ss">:organization</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+I had an “Organization” creation form which allowed an administrator to
+create an Organization and an initial user for it. However, even though
+I had filled in all the required fields to pass the validations I was
+constantly getting the following error: <code class="highlighter-rouge">Organization can not be blank</code>.
+
+Digging deeper I found that when an object is added to an association
+via the <code class="highlighter-rouge">association.build</code> method, the parent object
+isn’t actually set:
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">&gt;&gt; o = Organization.new(:name =&gt; "Test")
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">Organization</span> <span class="ss">id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Test"</span><span class="kt">&gt;</span>
+<span class="o">&gt;&gt;</span> <span class="n">u</span> <span class="o">=</span> <span class="n">o</span><span class="p">.</span><span class="nf">users</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Test User"</span><span class="p">)</span>  
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">organization_id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Test User"</span><span class="kt">&gt;</span>
+<span class="o">&gt;&gt;</span> <span class="n">u</span><span class="p">.</span><span class="nf">organization</span>
+<span class="o">=&gt;</span> <span class="kp">nil</span>
+</code></pre></div></div>
+
+Apparently this flaw also applies to
+<code class="highlighter-rouge">accepts_nested_attributes_for</code>. When I send through the
+User <code class="highlighter-rouge">params</code> through from my form normally with the
+<code class="highlighter-rouge">Organization</code> params, it creates the
+<code class="highlighter-rouge">User</code> object in the <code class="highlighter-rouge">users</code> association
+as you’d expect, but raises a validation error because the
+<code class="highlighter-rouge">User</code> instance doesn’t recognise that it is has a parent
+<code class="highlighter-rouge">Organization</code>
+
+My quick 5 minute fix was to modify the <code class="highlighter-rouge">Organization</code>
+model thusly:
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Organization</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:users</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:users</span>
+
+  <span class="k">def</span> <span class="nf">users_attributes_with_self_assignment</span><span class="o">=</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">users_attributes_without_self_assignment</span> <span class="o">=</span> <span class="n">attributes</span>
+    <span class="n">users</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">u</span><span class="o">|</span> <span class="n">u</span><span class="p">.</span><span class="nf">organization</span> <span class="o">=</span> <span class="nb">self</span> <span class="p">}</span>
+  <span class="k">end</span>
+  <span class="n">alias_method_chain</span> <span class="ss">:users_attributes</span><span class="o">=</span><span class="p">,</span> <span class="ss">:self_assignment</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+Related Rails bugs seem to be
+<a href="https://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/1943">here</a>
+and
+<a href="https://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/2815">here</a>.
+<a href="https://rails.lighthouseapp.com/projects/8994/tickets/1619-patch-support-for-inverse-option-in-associations">This
+patch</a>
+will also solve the problem and is currently <a href="http://github.com/rails/rails/commit/ccea98389abbf150b886c9f964b1def47f00f237">in
+edge</a>,
+but didn’t make it in time for Rails 2.3.
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>6 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/fish-shell-version-of-git-ps1-function-that-is-bundled-with-git/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Fish Shell version of __git_ps1 Function That is Bundled with Git</h3>
+        <p class="f5 fw3 lh-copy mv2">Today at ActionHack, I was showing off Fish Shell to
+“`geoffreyd”:http://twitter.com/geoffreyd. I was showing off all the cool fish prompt features I had, but pointed out that my git branch portion needed some beefing up, as it didn’t show the current mode nor commit shas when not in a branch.
+
+Knowing that git came with a `_<em>git</em>ps1 ()@ function for Bash
+that achieves this, I decided to port it to Fish tonight. My shell
+scripting fu is pretty weak but as far as I can tell it works great and
+I am now using it in my shell.
+
+Here is the Fish function (I’ve kept the function name the same as the
+bash one):
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span>__git_ps1
+  <span class="nb">set</span> <span class="nt">-l</span> g <span class="o">(</span>git rev-parse <span class="nt">--git-dir</span> ^/dev/null<span class="o">)</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">"</span> <span class="o">]</span>
+    <span class="nb">set</span> <span class="nt">-l</span> r <span class="s2">""</span>
+    <span class="nb">set</span> <span class="nt">-l</span> b <span class="s2">""</span>
+
+    <span class="k">if</span> <span class="o">[</span> <span class="nt">-d</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/../.dotest"</span> <span class="o">]</span>
+      <span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/../.dotest/rebasing"</span> <span class="o">]</span>
+        <span class="nb">set </span>r <span class="s2">"|REBASE"</span>
+      elseif <span class="o">[</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/../.dotest/applying"</span> <span class="o">]</span>
+        <span class="nb">set </span>r <span class="s2">"|AM"</span>
+      <span class="k">else
+        </span><span class="nb">set </span>r <span class="s2">"|AM/REBASE"</span>
+      end
+
+      <span class="nb">set </span>b <span class="o">(</span>git symbolic-ref HEAD ^/dev/null<span class="o">)</span>
+    elseif <span class="o">[</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/.dotest-merge/interactive"</span> <span class="o">]</span>
+      <span class="nb">set </span>r <span class="s2">"|REBASE-i"</span>
+      <span class="nb">set </span>b <span class="o">(</span><span class="nb">cat</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/.dotest-merge/head-name"</span><span class="o">)</span>
+    elseif <span class="o">[</span> <span class="nt">-d</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/.dotest-merge"</span> <span class="o">]</span>
+      <span class="nb">set </span>r <span class="s2">"|REBASE-m"</span>
+      <span class="nb">set </span>b <span class="o">(</span><span class="nb">cat</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/.dotest-merge/head-name"</span><span class="o">)</span>
+    elseif <span class="o">[</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/MERGE_HEAD"</span> <span class="o">]</span>
+      <span class="nb">set </span>r <span class="s2">"|MERGING"</span>
+      <span class="nb">set </span>b <span class="o">(</span>git symbolic-ref HEAD ^/dev/null<span class="o">)</span>
+    <span class="k">else
+      if</span> <span class="o">[</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/BISECT_LOG"</span> <span class="o">]</span>
+        <span class="nb">set </span>r <span class="s2">"|BISECTING"</span>
+      end
+
+      <span class="nb">set </span>b <span class="o">(</span>git symbolic-ref HEAD ^/dev/null<span class="o">)</span>
+      <span class="k">if</span> <span class="o">[</span> <span class="nt">-z</span> <span class="nv">$b</span> <span class="o">]</span>
+        <span class="nb">set </span>b <span class="o">(</span>git describe <span class="nt">--exact-match</span> HEAD ^/dev/null<span class="o">)</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="nt">-z</span> <span class="nv">$b</span> <span class="o">]</span>
+          <span class="nb">set </span>b <span class="o">(</span>cut <span class="nt">-c1-7</span> <span class="s2">"</span><span class="nv">$g</span><span class="s2">/HEAD"</span><span class="o">)</span>
+          <span class="nb">set </span>b <span class="s2">"</span><span class="nv">$b</span><span class="s2">..."</span>
+        end
+      end
+    end
+
+    <span class="k">if </span>not <span class="nb">test</span> <span class="nv">$argv</span>
+  		<span class="nb">set </span>argv <span class="s2">" (%s)"</span>
+  	end
+
+  	<span class="nb">set </span>b <span class="o">(</span><span class="nb">echo</span> <span class="nv">$b</span> | sed <span class="nt">-e</span> <span class="s1">'s|^refs/heads/||'</span><span class="o">)</span>
+
+    <span class="nb">printf</span> <span class="nv">$argv</span> <span class="s2">"</span><span class="nv">$b$r</span><span class="s2">"</span> ^/dev/null
+  end
+end
+</code></pre></div></div>
+I have also pushed it to my <code class="highlighter-rouge">dot-files</code> repository
+<a href="http://github.com/bjeanes/dot-files/blob/master/fish/functions/__git_ps1.fish">here</a>.
+
+Enjoy :)
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>4 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/using-fields-for-with-nested-attributes-calling-it-multiple-times/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Using fields_for with Nested Attributes, Calling it Multiple Times</h3>
+        <p class="f5 fw3 lh-copy mv2">There has been quite an annoying problem that has been bugging
+<a href="http://twitter.com/chendo">@chendo</a> and I today.
+
+In short, <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#M001895"><code class="highlighter-rouge">fields_for</code></a> when used with <code class="highlighter-rouge">accepts_nested_attributes_for</code>does not reset it’s index when it’s called multiple times for the same attribute.
+
+Our scenario was the following:
+
+We had a 3 levels of hierarchical data that we had to display in a
+<code class="highlighter-rouge">&lt;table&gt;</code>. Because of the nature of the data we were
+displaying one level as columns and the other level as rows.
+Unfortunately, HTML mandates that we group everything by rows — each
+column is really just a single cell. This means that we have to iterate
+over the “column” values not just once, but once for every row.
+
+Now, <code class="highlighter-rouge">fields_for</code> takes care of naming your
+<code class="highlighter-rouge">&lt;input&gt;</code> tags magically with the correct indexes so that
+your models can accept the params directly and magic happens. However,
+evidently calling <code class="highlighter-rouge">fields_for</code> multiple times was not
+part of the original intention, and it seems resetting the index after
+each call was neglected.
+
+`chendo couldn’t see a cleaner way of doing this so we added our own option to reset the index. We didn’t just override the behaviour in case there is a good reason to leave it, but here is our code:
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ActionView</span><span class="o">::</span><span class="no">Helpers</span><span class="o">::</span><span class="no">FormBuilder</span>
+  <span class="k">def</span> <span class="nf">fields_for_with_nested_attributes_with_index_reset</span><span class="p">(</span><span class="n">association_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="nf">last</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Hash</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">args</span><span class="p">.</span><span class="nf">last</span><span class="p">[</span><span class="ss">:reset_index</span><span class="p">]</span>
+      <span class="vi">@nested_child_index</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="k">end</span>
+
+    <span class="n">fields_for_without_nested_attributes_without_index_reset</span><span class="p">(</span><span class="n">association_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">alias_method_change</span> <span class="ss">:fields_for_with_nested_attributes</span><span class="p">,</span> <span class="ss">:index_reset</span>
+<span class="k">end</span>
+</code></pre></div></div>
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>3 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/using-alterego-with-activerecord/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">Using AlterEgo with ActiveRecord</h3>
+        <p class="f5 fw3 lh-copy mv2">Today after finding the gem AlterEgo and falling in love with the API,
+<a href="http://twitter.com/chendo">@chendo</a> and I came to a sad realisation that its beauty was skin-deep. It seems it is not ActiveRecord-aware and overrides <code class="highlighter-rouge">#state</code> and <code class="highlighter-rouge">#state=</code> on your models. This means that your <code class="highlighter-rouge">state</code> column goes
+untouched and your models are always in the default state.
+
+To get around this, @chendo and I hacked together this little monkey patch which does two things:
+
+<ol>
+  <li>It adds question methods for each of your defined states. So if you have states: <code class="highlighter-rouge">active</code>, <code class="highlighter-rouge">inactive</code>, and <code class="highlighter-rouge">banned</code>
+on your <code class="highlighter-rouge">User</code> model, your instances will have <code class="highlighter-rouge">#active?</code>, <code class="highlighter-rouge">#inactive?</code>, and <code class="highlighter-rouge">#banned?</code></li>
+  <li>It properly sets and gets the state of the row and loads it into AlterEgo.</li>
+</ol>
+
+Here is the code:
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">AlterEgo</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">base</span><span class="p">.</span><span class="nf">instance_eval</span> <span class="k">do</span>
+      
+      <span class="c1"># This will allow us to define a question method for each state in a class</span>
+      <span class="c1"># For instance if user has states :active and :inactive, methods active? and inactive?</span>
+      <span class="c1"># will be defined when first called</span>
+      <span class="k">def</span> <span class="nf">method_missing_with_states</span><span class="p">(</span><span class="nb">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">begin</span>
+          <span class="n">method_missing_without_states</span><span class="p">(</span><span class="nb">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">rescue</span> <span class="no">NoMethodError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+          <span class="n">state_found</span> <span class="o">=</span> <span class="kp">false</span>
+          <span class="n">result</span> <span class="o">=</span> <span class="kp">nil</span>
+          
+          <span class="n">base</span><span class="p">.</span><span class="nf">states</span><span class="p">.</span><span class="nf">keys</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">state</span><span class="o">|</span>
+            <span class="k">if</span> <span class="nb">method</span><span class="p">.</span><span class="nf">to_s</span> <span class="o">==</span> <span class="s2">"</span><span class="si">#{</span><span class="n">state</span><span class="si">}</span><span class="s2">?"</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">state_found</span>
+              <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">send</span> <span class="ss">:define_method</span><span class="p">,</span> <span class="s2">"</span><span class="si">#{</span><span class="n">state</span><span class="si">}</span><span class="s2">?"</span> <span class="k">do</span>
+                <span class="nb">self</span><span class="p">.</span><span class="nf">state</span> <span class="o">==</span> <span class="n">state</span>
+              <span class="k">end</span>
+              <span class="n">state_found</span> <span class="o">=</span> <span class="kp">true</span>
+              <span class="n">result</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">__send__</span><span class="p">(</span><span class="nb">method</span><span class="p">)</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          <span class="k">raise</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">unless</span> <span class="n">state_found</span>
+          <span class="n">result</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+      <span class="n">alias_method_chain</span> <span class="ss">:method_missing</span><span class="p">,</span> <span class="ss">:states</span>
+      
+      <span class="c1"># state setter to write to database</span>
+      <span class="n">define_method</span> <span class="ss">:state</span><span class="o">=</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
+        <span class="n">write_attribute</span><span class="p">(</span><span class="ss">:state</span><span class="p">,</span> <span class="n">value</span><span class="p">.</span><span class="nf">to_s</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># state getter to read from database</span>
+      <span class="n">define_method</span> <span class="ss">:state_with_active_record</span> <span class="k">do</span>
+        <span class="p">(</span><span class="n">read_attribute</span><span class="p">(</span><span class="ss">:state</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="nf">state</span> <span class="o">=</span> <span class="n">state_without_active_record</span><span class="p">)).</span><span class="nf">to_sym</span>
+      <span class="k">end</span>
+      <span class="n">alias_method_chain</span> <span class="ss">:state</span><span class="p">,</span> <span class="ss">:active_record</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>3 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+    <a class="link black-80 hover-silver" href="/2009/07/how-to-prepare-your-mac-for-resale/">
+      <article class="f5 lh-copy fw3 pb4 bb b--light-gray">
+        <div class="f6 fw6 lh-title ttu tracked mv4"><time>Jul 2009</time></div>
+        <h3 class="f3 fw6 lh-title mb0">How to Prepare Your Mac for Resale</h3>
+        <p class="f5 fw3 lh-copy mv2">First thing is first: you want to re-install Mac OS X (this guide
+requires Leopard). Insert your OS X disk and boot off it. Make sure you
+do a “Clean Install” so as not to leave any of your files on the system.
+
+When the install is finished, your computer will restart and you’ll see
+the traditional OS X welcome screen and the setup assistant. Go through
+all the settings, choosing anything just to get the system booted up.
+However, make sure you take note of the user account login you use. For
+this guide, I will assume login of <code class="highlighter-rouge">temp</code>, and if you don’t have a good
+reason not to, you should do the same.
+
+At this point you want to download any Apple updates and install them,
+as well as install any bundled software you plan to advertise the
+machine coming with. When all your installs are finished and the machine
+is as you want it for the customer/recipient, shut down the machine.
+
+Next, turn the machine back on but as soon as you hear the Mac chime
+noise, press and hold ⌘S until you are taken to a console (white text on
+black screen — looks real nerdy and sci-fi).
+
+The next step is to run all the commands in the code block below
+
+NOTE: If you didn’t use <code class="highlighter-rouge">temp</code> as your username you created in the setup
+assistant, make sure you replace <strong>all</strong> instances of <code class="highlighter-rouge">temp</code> with your
+actual username.
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Mount the file system so we can modify it</span>
+/sbin/fsck <span class="nt">-fy</span>
+/sbin/mount <span class="nt">-uw</span> /
+
+<span class="c"># Activate directory services</span>
+/bin/launchctl load /System/Library/LaunchDaemons/com.apple.DirectoryServices.plist &amp;
+
+<span class="c"># Delete all traces of the temporary account</span>
+/usr/bin/dscl <span class="nb">.</span> <span class="nt">-delete</span> /Users/temp
+/usr/bin/dscl <span class="nb">.</span> <span class="nt">-delete</span> /Groups/admin GroupMembership temp
+/bin/rm <span class="nt">-rf</span> /Users/temp
+
+<span class="c"># Get rid of a few other files</span>
+/bin/rm <span class="nt">-R</span> /Library/Preferences
+/bin/rm <span class="nt">-f</span> /root/.bash_history
+
+<span class="c"># Now we make it appear as though the initial setup assistant</span>
+<span class="c"># still needs to run</span>
+/bin/rm /var/db/.AppleSetupDone
+
+<span class="c"># Reboot and check that it seems like</span>
+<span class="c"># it is a new mac, then turn off your computer</span>
+<span class="c"># and sell it!</span>
+/sbin/reboot
+</code></pre></div></div>
+</p>
+  
+        <div class="f6 fw3 silver mt0">
+          
+          <time>1 Jul 2009</time>
+          
+          <span class="ttl">&middot; 
+
+
+
+  
+	  1 min read
+	
+
+</span>
+        </div>
+      </article>
+    </a>
+    
+
+  </div>
+</div>
+
+<footer class="flex justify-start items-baseline mw7 center w-100 ph3 ph4-ns mt4 mb2 lh-copy">
+  <nav class="flex flex-row flex-wrap">
+    <span class="f7 fw3 silver mr3 ttc"><a href="https://bjeanes.com/" class="f7 fw5 silver hover-silver link underline-hover" title="Bo Jeanes">Bo jeanes</a> &copy; 2020</span>
+    
+
+    
+    <span class="f7 fw3 silver mr3">Designed with <a href="https://desiredpersona.com/themes/" class="f7 fw3 silver hover-silver link underline-hover mr3" target="_blank">Minimal Theme</a></span>
+    
+  </nav>
+</footer>
+
+</body>
+</html>

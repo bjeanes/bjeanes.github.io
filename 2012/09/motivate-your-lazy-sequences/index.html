@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Meta Robots Tag -->
+  <meta name="robots" content="all">
+
+  <!-- Site Author -->
+  <meta name="author" content="bo">
+
+  <!-- Atom Feed -->
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Bo Jeanes Feed">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/minimal.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <!-- Analytics -->
+  
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Motivate your lazy sequences | Bo Jeanes</title>
+<meta property="og:title" content="Motivate your lazy sequences" />
+<meta name="author" content="Bo Jeanes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I love Clojure’s laziness. Recently, I’ve been using lazy-seq to consume remote collections via APIs, fetching pages of data transparently and only as needed. Gary Fredericks, Mike Busch, and I applied this to a project of ours that had to crunch tens of thousands of records from Salesforce. I’m also doing something similar with a personal project that has to fetch a lot of Pivotal Tracker stories to reduce them. In cases like these, consuming (potentially unbounded) resources in a lazy manner allows one to start processing data earlier and to make as few requests as possible to get only the data you need. Mostly Lazy I want to talk about a neat little thing I did in my project to get a nice little performance boost on top of this laziness, without having to think about any low-level concurrency concerns. Laziness Here’s a piece of code that provides an “infinite” lazy sequence. In this case, it is of tweets: (require &#39;[clj-http.client :as http]) (defn tweets-for ([user] (tweets-for user nil)) ([user last-tweet-id] (lazy-seq (let [url &quot;http://api.twitter.com/1/statuses/user_timeline.json&quot; params {:limit 10 :screen_name user} params (if last-tweet-id (assoc params :max_id last-tweet-id) params) response (http/get url {:query-params params :as :json}) tweets (:body response)] (when (not-empty tweets) (concat tweets (tweets-for user (:id (last tweets))))))))) So that’s cool. Now, note the following performance characteristics when contemplating the next section: (def my-tweets (tweets-for &quot;bjeanes&quot;)) ;; The following returns after a delay while we fetch the first page: (first my-tweets) ;=&gt; {:text &quot;Tweet 0&quot; ...} ;; This returns instantly because our `tweets-for` function fetches 10 tweets per page: (nth my-tweets 9) ;=&gt; {:text &quot;Tweet 9&quot; ...} ;; This returns after a delay because this tweet is on the next (still lazily unfetched) page: (nth my-tweets 10) ;=&gt; {:text &quot;Tweet 10&quot; ...} Motivation So laziness is pretty cool. But, sometimes, things can improve if you are ever so slightly less lazy. What if we could remove that little pause between the 9th and the 10th items in the list where we are just waiting around for the network request to Twitter to complete? We could be using our time to do more CPU-melting tweet crunching! Well, it turns out we can easily do it. Assume for a moment that we have some calculation (process) that takes a considerable amount of CPU time to process: (defn process &quot;Do some really hard work with our tweets&quot; [tweets] (map #(Thread/sleep 100) tweets)) If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence. This would mean that instead of processing 10 tweets, waiting, processing 10 tweets, waiting, etc.: Lazy sequences … we would be able to process tweets continuously back-to-back: Motivated sequences Wouldn’t also be great if we didn’t have to think about the parallelism at all? To this end, I present motivate: (defn motivate &quot;Motivate a lazy sequence to seek slightly ahead of the sequence consumer&#39;s position.&quot; ([coll] (motivate coll 1)) ([coll motivation] (lazy-seq (future (nth coll motivation)) (cons (first coll) (motivate (rest coll) motivation))))) Let’s compare: (time (process (take 100 (tweets-for &quot;riblah&quot;)))) ;=&gt; “Elapsed time: 11545.011 msecs&quot; (time (process (take 100 (motivate (tweets-for &quot;riblah&quot;) 5)))) ;=&gt; &quot;Elapsed time: 10394.769 msecs&quot; The speed difference is noticeable even when processing only a 100 tweets. If we were doing more than 100 milliseconds/tweet of processing, fetching a lot more data, or dealing with a slow upstream dependency, the speed improvements would be even clearer. The last (optional) parameter to motivate is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk. Essentially, the motivation you give to the lazy sequence is a trade-off between waiting for IO and wasting IO; that is, the lower the number, the more likely you are to wait on IO but the higher the number, the more IO you’ll perform unnecessarily (at least, if you aren’t guaranteed to consume the whole sequence. Hopefully this is handy to someone else out there. I wouldn’t at all be surprised if something like this already existed (UPDATE Yup: seque) or if this completely obvious to seasoned Clojurian, but it was a pleasant moment discovering this possibility on my own." />
+<meta property="og:description" content="I love Clojure’s laziness. Recently, I’ve been using lazy-seq to consume remote collections via APIs, fetching pages of data transparently and only as needed. Gary Fredericks, Mike Busch, and I applied this to a project of ours that had to crunch tens of thousands of records from Salesforce. I’m also doing something similar with a personal project that has to fetch a lot of Pivotal Tracker stories to reduce them. In cases like these, consuming (potentially unbounded) resources in a lazy manner allows one to start processing data earlier and to make as few requests as possible to get only the data you need. Mostly Lazy I want to talk about a neat little thing I did in my project to get a nice little performance boost on top of this laziness, without having to think about any low-level concurrency concerns. Laziness Here’s a piece of code that provides an “infinite” lazy sequence. In this case, it is of tweets: (require &#39;[clj-http.client :as http]) (defn tweets-for ([user] (tweets-for user nil)) ([user last-tweet-id] (lazy-seq (let [url &quot;http://api.twitter.com/1/statuses/user_timeline.json&quot; params {:limit 10 :screen_name user} params (if last-tweet-id (assoc params :max_id last-tweet-id) params) response (http/get url {:query-params params :as :json}) tweets (:body response)] (when (not-empty tweets) (concat tweets (tweets-for user (:id (last tweets))))))))) So that’s cool. Now, note the following performance characteristics when contemplating the next section: (def my-tweets (tweets-for &quot;bjeanes&quot;)) ;; The following returns after a delay while we fetch the first page: (first my-tweets) ;=&gt; {:text &quot;Tweet 0&quot; ...} ;; This returns instantly because our `tweets-for` function fetches 10 tweets per page: (nth my-tweets 9) ;=&gt; {:text &quot;Tweet 9&quot; ...} ;; This returns after a delay because this tweet is on the next (still lazily unfetched) page: (nth my-tweets 10) ;=&gt; {:text &quot;Tweet 10&quot; ...} Motivation So laziness is pretty cool. But, sometimes, things can improve if you are ever so slightly less lazy. What if we could remove that little pause between the 9th and the 10th items in the list where we are just waiting around for the network request to Twitter to complete? We could be using our time to do more CPU-melting tweet crunching! Well, it turns out we can easily do it. Assume for a moment that we have some calculation (process) that takes a considerable amount of CPU time to process: (defn process &quot;Do some really hard work with our tweets&quot; [tweets] (map #(Thread/sleep 100) tweets)) If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence. This would mean that instead of processing 10 tweets, waiting, processing 10 tweets, waiting, etc.: Lazy sequences … we would be able to process tweets continuously back-to-back: Motivated sequences Wouldn’t also be great if we didn’t have to think about the parallelism at all? To this end, I present motivate: (defn motivate &quot;Motivate a lazy sequence to seek slightly ahead of the sequence consumer&#39;s position.&quot; ([coll] (motivate coll 1)) ([coll motivation] (lazy-seq (future (nth coll motivation)) (cons (first coll) (motivate (rest coll) motivation))))) Let’s compare: (time (process (take 100 (tweets-for &quot;riblah&quot;)))) ;=&gt; “Elapsed time: 11545.011 msecs&quot; (time (process (take 100 (motivate (tweets-for &quot;riblah&quot;) 5)))) ;=&gt; &quot;Elapsed time: 10394.769 msecs&quot; The speed difference is noticeable even when processing only a 100 tweets. If we were doing more than 100 milliseconds/tweet of processing, fetching a lot more data, or dealing with a slow upstream dependency, the speed improvements would be even clearer. The last (optional) parameter to motivate is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk. Essentially, the motivation you give to the lazy sequence is a trade-off between waiting for IO and wasting IO; that is, the lower the number, the more likely you are to wait on IO but the higher the number, the more IO you’ll perform unnecessarily (at least, if you aren’t guaranteed to consume the whole sequence. Hopefully this is handy to someone else out there. I wouldn’t at all be surprised if something like this already existed (UPDATE Yup: seque) or if this completely obvious to seasoned Clojurian, but it was a pleasant moment discovering this possibility on my own." />
+<link rel="canonical" href="https://bjeanes.com/2012/09/motivate-your-lazy-sequences/" />
+<meta property="og:url" content="https://bjeanes.com/2012/09/motivate-your-lazy-sequences/" />
+<meta property="og:site_name" content="Bo Jeanes" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2012-09-03T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@bjeanes" />
+<meta name="twitter:creator" content="@bjeanes" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://bjeanes.com/2012/09/motivate-your-lazy-sequences/"},"description":"I love Clojure’s laziness. Recently, I’ve been using lazy-seq to consume remote collections via APIs, fetching pages of data transparently and only as needed. Gary Fredericks, Mike Busch, and I applied this to a project of ours that had to crunch tens of thousands of records from Salesforce. I’m also doing something similar with a personal project that has to fetch a lot of Pivotal Tracker stories to reduce them. In cases like these, consuming (potentially unbounded) resources in a lazy manner allows one to start processing data earlier and to make as few requests as possible to get only the data you need. Mostly Lazy I want to talk about a neat little thing I did in my project to get a nice little performance boost on top of this laziness, without having to think about any low-level concurrency concerns. Laziness Here’s a piece of code that provides an “infinite” lazy sequence. In this case, it is of tweets: (require &#39;[clj-http.client :as http]) (defn tweets-for ([user] (tweets-for user nil)) ([user last-tweet-id] (lazy-seq (let [url &quot;http://api.twitter.com/1/statuses/user_timeline.json&quot; params {:limit 10 :screen_name user} params (if last-tweet-id (assoc params :max_id last-tweet-id) params) response (http/get url {:query-params params :as :json}) tweets (:body response)] (when (not-empty tweets) (concat tweets (tweets-for user (:id (last tweets))))))))) So that’s cool. Now, note the following performance characteristics when contemplating the next section: (def my-tweets (tweets-for &quot;bjeanes&quot;)) ;; The following returns after a delay while we fetch the first page: (first my-tweets) ;=&gt; {:text &quot;Tweet 0&quot; ...} ;; This returns instantly because our `tweets-for` function fetches 10 tweets per page: (nth my-tweets 9) ;=&gt; {:text &quot;Tweet 9&quot; ...} ;; This returns after a delay because this tweet is on the next (still lazily unfetched) page: (nth my-tweets 10) ;=&gt; {:text &quot;Tweet 10&quot; ...} Motivation So laziness is pretty cool. But, sometimes, things can improve if you are ever so slightly less lazy. What if we could remove that little pause between the 9th and the 10th items in the list where we are just waiting around for the network request to Twitter to complete? We could be using our time to do more CPU-melting tweet crunching! Well, it turns out we can easily do it. Assume for a moment that we have some calculation (process) that takes a considerable amount of CPU time to process: (defn process &quot;Do some really hard work with our tweets&quot; [tweets] (map #(Thread/sleep 100) tweets)) If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence. This would mean that instead of processing 10 tweets, waiting, processing 10 tweets, waiting, etc.: Lazy sequences … we would be able to process tweets continuously back-to-back: Motivated sequences Wouldn’t also be great if we didn’t have to think about the parallelism at all? To this end, I present motivate: (defn motivate &quot;Motivate a lazy sequence to seek slightly ahead of the sequence consumer&#39;s position.&quot; ([coll] (motivate coll 1)) ([coll motivation] (lazy-seq (future (nth coll motivation)) (cons (first coll) (motivate (rest coll) motivation))))) Let’s compare: (time (process (take 100 (tweets-for &quot;riblah&quot;)))) ;=&gt; “Elapsed time: 11545.011 msecs&quot; (time (process (take 100 (motivate (tweets-for &quot;riblah&quot;) 5)))) ;=&gt; &quot;Elapsed time: 10394.769 msecs&quot; The speed difference is noticeable even when processing only a 100 tweets. If we were doing more than 100 milliseconds/tweet of processing, fetching a lot more data, or dealing with a slow upstream dependency, the speed improvements would be even clearer. The last (optional) parameter to motivate is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk. Essentially, the motivation you give to the lazy sequence is a trade-off between waiting for IO and wasting IO; that is, the lower the number, the more likely you are to wait on IO but the higher the number, the more IO you’ll perform unnecessarily (at least, if you aren’t guaranteed to consume the whole sequence. Hopefully this is handy to someone else out there. I wouldn’t at all be surprised if something like this already existed (UPDATE Yup: seque) or if this completely obvious to seasoned Clojurian, but it was a pleasant moment discovering this possibility on my own.","@type":"BlogPosting","url":"https://bjeanes.com/2012/09/motivate-your-lazy-sequences/","name":null,"headline":"Motivate your lazy sequences","dateModified":"2012-09-03T00:00:00+00:00","datePublished":"2012-09-03T00:00:00+00:00","sameAs":null,"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://avatars2.githubusercontent.com/u/2560?s=200&v=4"},"name":"Bo Jeanes"},"image":null,"author":{"@type":"Person","name":"Bo Jeanes"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body class="black-80 ">
+
+
+
+<div class="flex-l justify-between items-center mw7 mw8-l w-100 center pt3 pb3 pl3 pr3-ns ph4-m">
+
+<a class="black-80 hover-black-80 link f2 f3-l fw4 mr3" href="https://bjeanes.com/" title="Home">Bo Jeanes</a>
+
+
+  <div class="flex-l items-center mt3 mt0-l">
+    <nav class="nowrap overflow-x-auto">
+    
+      
+      <a href="https://bjeanes.com/archive/" class="black-80 hover-black-80 link f4 f5-l fw3 mr3 mt2" >Blog</a>
+    
+      
+      <a href="mailto:blog@bjeanes.com" class="black-80 hover-black-80 link f4 f5-l fw3 mr3 mt2" >Contact</a>
+    
+    </nav>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<main class="flex flex-column items-center">
+  <article class="mw7 w-100 ph3 ph4-ns">
+
+    <header class="">
+    
+    
+
+
+
+
+<div class="flex w-100 mt4 lh-copy">
+  <div class="pt1 pt0-ns">
+    
+      <a href="http://bjeanes.com" target="_blank"><img src="/assets/images/bo.jpg" alt="Bo Jeanes" class="w2 h2 w3-ns h3-ns br-100"></a>
+    
+  </div>
+
+  <div class="flex flex-column w-90 w-80-ns pl2 pl3-ns">
+    <div class="flex items-center">
+      
+      <a class="f5 fw4 lh-title black-80 hover-black-80 link mr2" href="http://bjeanes.com" target="_blank">Bo Jeanes</a>
+      
+
+      
+      <a class="f6 fw4 lh-copy link nested-author-cta ba br-pill ph2" href="https://twitter.com/bjeanes" target="_blank">Follow</a>
+      
+    </div>
+
+    <div class="f6 fw3 lh-copy silver"></div>
+
+    <div class="f6 fw3 lh-copy silver">
+      
+      <span><time>3 Sep 2012</time></span>
+      
+
+      <span class="ttl"> &middot;
+        
+
+
+
+  
+	  3 min read
+	
+
+
+      </span>
+    </div>
+  </div>
+</div>
+
+
+    
+
+    
+    <h1 class="f2 fw6 lh-title mb1">Motivate your lazy sequences</h1>
+    
+    
+    </header>
+
+
+    <div class="mw7 w-100 f5 f4-ns fw3 lh-copy mb0">
+    <p>I <em>love</em> Clojure’s laziness.</p>
+
+<p>Recently, I’ve been using <code class="highlighter-rouge">lazy-seq</code>  to consume remote collections via APIs, fetching pages of data transparently and only as needed. <a href="http://gfredericks.com/">Gary Fredericks</a>, <a href="http://mikelikesbikes.com/">Mike Busch</a>, and I applied this to a project of ours that had to crunch tens of thousands of records from Salesforce. I’m also doing something similar with a personal project that has to fetch a lot of Pivotal Tracker stories to <code class="highlighter-rouge">reduce</code> them.</p>
+
+<p>In cases like these, consuming (potentially unbounded) resources in a lazy manner allows one to start processing data earlier and to make as few requests as possible to get only the data you need.</p>
+
+<h2 id="mostly-lazy"><em>Mostly</em> Lazy</h2>
+
+<p>I want to talk about a neat little thing I did in my project to get a nice little performance boost on top of this laziness, without having to think about any low-level concurrency concerns.</p>
+
+<h3 id="laziness">Laziness</h3>
+
+<p>Here’s a piece of code that provides an “infinite” lazy sequence. In this case, it is of tweets:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">require</span><span class="w"> </span><span class="o">'</span><span class="p">[</span><span class="n">clj-http.client</span><span class="w"> </span><span class="no">:as</span><span class="w"> </span><span class="n">http</span><span class="p">])</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">tweets-for</span><span class="w">
+  </span><span class="p">([</span><span class="n">user</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nf">tweets-for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">nil</span><span class="p">))</span><span class="w">
+  </span><span class="p">([</span><span class="n">user</span><span class="w"> </span><span class="n">last-tweet-id</span><span class="p">]</span><span class="w">
+     </span><span class="p">(</span><span class="nf">lazy-seq</span><span class="w">
+      </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">url</span><span class="w"> </span><span class="s">"http://api.twitter.com/1/statuses/user_timeline.json"</span><span class="w">
+            </span><span class="n">params</span><span class="w"> </span><span class="p">{</span><span class="no">:limit</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="no">:screen_name</span><span class="w"> </span><span class="n">user</span><span class="p">}</span><span class="w">
+            </span><span class="n">params</span><span class="w"> </span><span class="p">(</span><span class="k">if</span><span class="w"> </span><span class="n">last-tweet-id</span><span class="w"> </span><span class="p">(</span><span class="nb">assoc</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="no">:max_id</span><span class="w"> </span><span class="n">last-tweet-id</span><span class="p">)</span><span class="w"> </span><span class="n">params</span><span class="p">)</span><span class="w">
+            </span><span class="n">response</span><span class="w"> </span><span class="p">(</span><span class="nf">http/get</span><span class="w"> </span><span class="n">url</span><span class="w"> </span><span class="p">{</span><span class="no">:query-params</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="no">:as</span><span class="w"> </span><span class="no">:json</span><span class="p">})</span><span class="w">
+            </span><span class="n">tweets</span><span class="w"> </span><span class="p">(</span><span class="no">:body</span><span class="w"> </span><span class="n">response</span><span class="p">)]</span><span class="w">
+
+        </span><span class="p">(</span><span class="nb">when</span><span class="w"> </span><span class="p">(</span><span class="nf">not-empty</span><span class="w"> </span><span class="n">tweets</span><span class="p">)</span><span class="w">
+          </span><span class="p">(</span><span class="nb">concat</span><span class="w"> </span><span class="n">tweets</span><span class="w">
+                  </span><span class="p">(</span><span class="nf">tweets-for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="p">(</span><span class="no">:id</span><span class="w"> </span><span class="p">(</span><span class="nb">last</span><span class="w"> </span><span class="n">tweets</span><span class="p">)))))))))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So that’s cool. Now, note the following performance characteristics when contemplating the next section:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">my-tweets</span><span class="w"> </span><span class="p">(</span><span class="nf">tweets-for</span><span class="w"> </span><span class="s">"bjeanes"</span><span class="p">))</span><span class="w">
+
+</span><span class="c1">;; The following returns after a delay while we fetch the first page:</span><span class="w">
+</span><span class="p">(</span><span class="nb">first</span><span class="w"> </span><span class="n">my-tweets</span><span class="p">)</span><span class="w"> </span><span class="c1">;=&gt; {:text "Tweet 0" ...}</span><span class="w">
+
+</span><span class="c1">;; This returns instantly because our `tweets-for` function fetches 10 tweets per page:</span><span class="w">
+</span><span class="p">(</span><span class="nb">nth</span><span class="w"> </span><span class="n">my-tweets</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="c1">;=&gt; {:text "Tweet 9" ...}</span><span class="w">
+
+</span><span class="c1">;; This returns after a delay because this tweet is on the next (still lazily unfetched) page:</span><span class="w">
+</span><span class="p">(</span><span class="nb">nth</span><span class="w"> </span><span class="n">my-tweets</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="c1">;=&gt; {:text "Tweet 10" ...}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="motivation">Motivation</h3>
+
+<p>So laziness is pretty cool. But, sometimes, things can improve if you are ever so slightly less lazy. What if we could remove that little pause between the 9th and the 10th items in the list where we are just waiting around for the network request to Twitter to complete? We could be using our time to do more CPU-melting tweet crunching! Well, it turns out we can easily do it.</p>
+
+<p>Assume for a moment that we have some calculation (<code class="highlighter-rouge">process</code>) that takes a considerable amount of CPU time to process:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">process</span><span class="w">
+  </span><span class="s">"Do some really hard work with our tweets"</span><span class="w">
+  </span><span class="p">[</span><span class="n">tweets</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="nb">map</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nf">Thread/sleep</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="n">tweets</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence.</p>
+
+<p>This would mean that instead of processing 10 tweets, waiting, processing 10 tweets, waiting, etc.:</p>
+
+<figure class="full tc">
+  <img src="https://bjeanes.com/assets/images/lazy.png" alt="Lazy sequences, visualised" />
+  
+    <figcaption>Lazy sequences
+</figcaption>
+  
+</figure>
+
+<p>… we would be able to process tweets continuously back-to-back:</p>
+
+<figure class="full tc">
+  <img src="https://bjeanes.com/assets/images/motivated.png" alt="Motivated sequences, visualised" />
+  
+    <figcaption>Motivated sequences
+</figcaption>
+  
+</figure>
+
+<p>Wouldn’t also be great if we didn’t have to think about the parallelism at all? To this end, I present <code class="highlighter-rouge">motivate</code>:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">motivate</span><span class="w">
+  </span><span class="s">"Motivate a lazy sequence to seek slightly ahead of the sequence consumer's position."</span><span class="w">
+  </span><span class="p">([</span><span class="n">coll</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nf">motivate</span><span class="w"> </span><span class="n">coll</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w">
+  </span><span class="p">([</span><span class="n">coll</span><span class="w"> </span><span class="n">motivation</span><span class="p">]</span><span class="w">
+     </span><span class="p">(</span><span class="nf">lazy-seq</span><span class="w">
+      </span><span class="p">(</span><span class="nf">future</span><span class="w"> </span><span class="p">(</span><span class="nb">nth</span><span class="w"> </span><span class="n">coll</span><span class="w"> </span><span class="n">motivation</span><span class="p">))</span><span class="w">
+      </span><span class="p">(</span><span class="nb">cons</span><span class="w"> </span><span class="p">(</span><span class="nb">first</span><span class="w"> </span><span class="n">coll</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">motivate</span><span class="w"> </span><span class="p">(</span><span class="nb">rest</span><span class="w"> </span><span class="n">coll</span><span class="p">)</span><span class="w"> </span><span class="n">motivation</span><span class="p">)))))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Let’s compare:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">time</span><span class="w"> </span><span class="p">(</span><span class="nf">process</span><span class="w"> </span><span class="p">(</span><span class="nb">take</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="p">(</span><span class="nf">tweets-for</span><span class="w"> </span><span class="s">"riblah"</span><span class="p">))))</span><span class="w">
+</span><span class="c1">;=&gt; “Elapsed time: 11545.011 msecs"</span><span class="w">
+</span><span class="p">(</span><span class="nb">time</span><span class="w"> </span><span class="p">(</span><span class="nf">process</span><span class="w"> </span><span class="p">(</span><span class="nb">take</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="p">(</span><span class="nf">motivate</span><span class="w"> </span><span class="p">(</span><span class="nf">tweets-for</span><span class="w"> </span><span class="s">"riblah"</span><span class="p">)</span><span class="w"> </span><span class="mi">5</span><span class="p">))))</span><span class="w">
+</span><span class="c1">;=&gt; "Elapsed time: 10394.769 msecs"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The speed difference is noticeable even when processing only a 100 tweets. If we were doing more than 100 milliseconds/tweet of processing, fetching a lot more data, or dealing with a slow upstream dependency, the speed improvements would be even clearer.</p>
+
+<p>The last (optional) parameter to <code class="highlighter-rouge">motivate</code> is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk.</p>
+
+<p>Essentially, the motivation you give to the lazy sequence is a trade-off between waiting for IO and wasting IO; that is, the lower the number, the more likely you are to wait on IO but the higher the number, the more IO you’ll perform unnecessarily (at least, if you aren’t guaranteed to consume the whole sequence.</p>
+
+<p>Hopefully this is handy to someone else out there. I wouldn’t at all be surprised if something like this already existed (<strong>UPDATE</strong> Yup: <a href="http://clojuredocs.org/clojure_core/clojure.core/seque"><code class="highlighter-rouge">seque</code></a>) or if this completely obvious to seasoned Clojurian, but it was a pleasant moment discovering this possibility on my own.</p>
+
+    </div>
+
+    <div class="mw7 w-100 lh-copy">
+    
+    
+<div class="flex flex-row justify-start flex-wrap list mb2">
+  
+
+  
+
+  
+
+</div>
+
+    
+
+    
+    
+<div class="flex flex-row justify-end">
+
+
+  <a class="link black-60 hover-dark-gray w2 ml3" href="https://twitter.com/intent/tweet?text=Motivate your lazy sequences https://bjeanes.com/2012/09/motivate-your-lazy-sequences/" title="Share on Twitter" aria-hidden="true">
+    <svg viewBox="0 0 20 20" data-icon="twitter" style="fill:currentcolor">
+      <path xmlns="http://www.w3.org/2000/svg" d="M14.467,6.707c-0.34,0.198-0.715,0.342-1.115,0.419c-0.318-0.335-0.775-0.545-1.279-0.545c-0.969,0-1.754,0.773-1.754,1.727c0,0.135,0.015,0.267,0.045,0.394C8.905,8.628,7.612,7.94,6.747,6.896C6.596,7.151,6.509,7.448,6.509,7.764c0,0.599,0.31,1.128,0.78,1.438C7.002,9.192,6.732,9.115,6.495,8.985c0,0.007,0,0.014,0,0.021c0,0.837,0.605,1.535,1.408,1.694c-0.147,0.04-0.302,0.06-0.462,0.06c-0.113,0-0.223-0.011-0.33-0.031c0.223,0.687,0.871,1.186,1.638,1.199c-0.6,0.464-1.356,0.739-2.179,0.739c-0.142,0-0.281-0.007-0.418-0.023c0.777,0.489,1.699,0.775,2.689,0.775c3.228,0,4.991-2.63,4.991-4.913c0-0.075-0.002-0.149-0.004-0.223c0.342-0.244,0.639-0.547,0.875-0.894c-0.316,0.137-0.652,0.23-1.008,0.272C14.057,7.448,14.336,7.11,14.467,6.707 M10,0.594c-5.195,0-9.406,4.211-9.406,9.406c0,5.195,4.211,9.406,9.406,9.406c5.196,0,9.407-4.211,9.407-9.406C19.406,4.805,15.195,0.594,10,0.594 M10,18.552c-4.723,0-8.551-3.829-8.551-8.552S5.277,1.449,10,1.449c4.723,0,8.551,3.829,8.551,8.551S14.723,18.552,10,18.552"></path>
+    </svg>
+  </a>
+
+
+
+  <a class="link black-60 hover-dark-gray w2 ml3" href="https://www.facebook.com/sharer/sharer.php?u=https://bjeanes.com/2012/09/motivate-your-lazy-sequences/" title="Share on Facebook" aria-hidden="true">
+    <svg viewBox="0 0 20 20" data-icon="facebook" style="fill:currentcolor">
+      <path xmlns="http://www.w3.org/2000/svg" d="M10,0.5c-5.247,0-9.5,4.253-9.5,9.5c0,5.247,4.253,9.5,9.5,9.5c5.247,0,9.5-4.253,9.5-9.5C19.5,4.753,15.247,0.5,10,0.5 M10,18.637c-4.77,0-8.636-3.867-8.636-8.637S5.23,1.364,10,1.364S18.637,5.23,18.637,10S14.77,18.637,10,18.637 M10.858,7.949c0-0.349,0.036-0.536,0.573-0.536h0.719v-1.3H11c-1.38,0-1.866,0.65-1.866,1.743v0.845h-0.86V10h0.86v3.887h1.723V10h1.149l0.152-1.299h-1.302L10.858,7.949z"></path>
+    </svg>
+  </a>
+
+
+
+
+  <a class="link black-60 hover-dark-gray w2 ml3" href="https://plus.google.com/share?url=https://bjeanes.com/2012/09/motivate-your-lazy-sequences/" title="Share on Google+" aria-hidden="true">
+    <svg viewBox="0 0 20 20" data-icon="google plus" style="fill:currentcolor">
+      <path xmlns="http://www.w3.org/2000/svg" d="M10,0.562c-5.212,0-9.438,4.226-9.438,9.438c0,5.213,4.226,9.438,9.438,9.438c5.212,0,9.438-4.225,9.438-9.438C19.438,4.788,15.212,0.562,10,0.562 M10,18.58c-4.738,0-8.58-3.841-8.58-8.58c0-4.738,3.842-8.58,8.58-8.58c4.737,0,8.579,3.841,8.579,8.58C18.579,14.739,14.737,18.58,10,18.58 M10.033,10.346C9.813,10.183,9.608,9.94,9.6,9.865c0-0.128,0-0.188,0.303-0.435c0.393-0.322,0.609-0.745,0.609-1.192c0-0.387-0.108-0.731-0.293-0.982h0.164l0.908-0.688H8.832c-0.986,0-1.851,0.774-1.851,1.657c0,0.912,0.667,1.604,1.565,1.642C8.533,9.933,8.525,9.996,8.525,10.06c0,0.131,0.03,0.257,0.09,0.378c-1.113,0.007-2.05,0.752-2.05,1.632c0,0.789,0.902,1.362,2.145,1.362c1.343,0,2.067-0.84,2.067-1.631C10.778,11.143,10.576,10.748,10.033,10.346 M8.026,8.198C7.985,7.869,8.054,7.565,8.212,7.384c0.096-0.11,0.22-0.169,0.358-0.169V7.036l0.016,0.179c0.412,0.014,0.807,0.501,0.88,1.086c0.042,0.335-0.03,0.647-0.191,0.833c-0.096,0.11-0.217,0.169-0.367,0.168h0C8.503,9.29,8.1,8.784,8.026,8.198 M8.707,12.749c-0.612,0-1.093-0.394-1.093-0.897c0-0.461,0.562-0.865,1.202-0.865v-0.18h0l0.017,0.18c0.138,0.002,0.272,0.022,0.399,0.062l0.126,0.092c0.326,0.231,0.498,0.363,0.549,0.575c0.013,0.056,0.019,0.111,0.019,0.167C9.927,12.458,9.517,12.749,8.707,12.749M13.43,6.993h-0.858v1.288H11.28V9.14h1.291v1.283h0.858V9.14h1.293V8.281H13.43V6.993z"></path>
+    </svg>
+  </a>
+
+
+</div>
+
+
+    
+
+    
+    
+
+
+
+<div class="flex w-100 mt2 lh-copy bt b--light-gray pv3">
+  <div>
+    
+      <a href="http://bjeanes.com" target="_blank"><img src="/assets/images/bo.jpg" alt="Bo Jeanes" class="w2 h2 w3-ns h3-ns br-100"></a>
+    
+  </div>
+
+  <div class="flex flex-column w-90 w-80-ns pl2 pl3-ns">
+    <div class="flex items-center-ns">
+      
+      <a class="f5 f4-ns fw4 lh-title black-80 hover-black-80 link mr2" href="http://bjeanes.com" target="_blank">Bo Jeanes</a>
+      
+
+      
+      <a class="f6 fw4 link nested-author-cta ba br-pill ph2" href="https://twitter.com/bjeanes" target="_blank">Follow</a>
+      
+    </div>
+
+
+    <div class="f6 f5-ns fw3 lh-copy silver">Bo is a software engineer who cares deeply about simplicity in design and
+building complex behaviours out of simple primitives. Bo primarily works in
+Ruby day-to-day, though is a functional programmer at heart and a fan of
+programming languages generally, with particular soft spots for Clojure,
+Elixir, and Rust.
+</div>
+  </div>
+
+</div>
+
+
+
+    
+
+    
+
+    
+    <script
+  src="https://utteranc.es/client.js"
+  repo="bjeanes/bjeanes.github.io"
+  issue-term="og:title"
+  label="blog-comments"
+  theme="github-light"
+  crossorigin="anonymous"
+  async
+></script>
+<noscript
+  >Go to
+  <a href="https://github.com/bjeanes/bjeanes.github.io/issues">GH issues</a> to
+  view/leave comments</noscript
+>
+
+    
+    </div>
+
+  </article>
+</main>
+
+
+
+
+<footer class="flex justify-start items-baseline mw7 center w-100 ph3 ph4-ns mt4 mb2 lh-copy">
+  <nav class="flex flex-row flex-wrap">
+    <span class="f7 fw3 silver mr3 ttc"><a href="https://bjeanes.com/" class="f7 fw5 silver hover-silver link underline-hover" title="Bo Jeanes">Bo jeanes</a> &copy; 2020</span>
+    
+
+    
+    <span class="f7 fw3 silver mr3">Designed with <a href="https://desiredpersona.com/themes/" class="f7 fw3 silver hover-silver link underline-hover mr3" target="_blank">Minimal Theme</a></span>
+    
+  </nav>
+</footer>
+
+
+
+</body>
+</html>

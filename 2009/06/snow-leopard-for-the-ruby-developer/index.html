@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Meta Robots Tag -->
+  <meta name="robots" content="all">
+
+  <!-- Site Author -->
+  <meta name="author" content="bo">
+
+  <!-- Atom Feed -->
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Bo Jeanes Feed">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/minimal.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <!-- Analytics -->
+  
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Snow Leopard for the Ruby Developer | Bo Jeanes</title>
+<meta property="og:title" content="Snow Leopard for the Ruby Developer" />
+<meta name="author" content="Bo Jeanes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="After the 2009 WWDC release, I decided to give Snow Leopard a try on my production machine. Crossing my fingers, expecting a plethora of broken gems and databases, I wiped my hard drive clean and installed the latest build. Much to my surprise, most things worked flawlessly and exactly as it did on Leopard. What Ships with Snow Leopard $ gem --version 1.3.1 $ ruby --version ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0] $ gem list *** LOCAL GEMS *** actionmailer (2.2.2, 1.3.6) actionpack (2.2.2, 1.13.6) actionwebservice (1.2.6) activerecord (2.2.2, 1.15.6) activeresource (2.2.2) activesupport (2.2.2, 1.4.4) acts_as_ferret (0.4.3) capistrano (2.5.2) cgi_multipart_eof_fix (2.5.0) daemons (1.0.10) dnssd (0.6.0) fastthread (1.0.1) fcgi (0.8.7) ferret (0.11.6) gem_plugin (0.2.3) highline (1.5.0) hpricot (0.6.164) libxml-ruby (1.1.2) mongrel (1.1.5) needle (1.3.0) net-scp (1.0.1) net-sftp (2.0.1, 1.1.1) net-ssh (2.0.4, 1.1.4) net-ssh-gateway (1.0.0) rails (2.2.2, 1.2.6) rake (0.8.3) RedCloth (4.1.1) ruby-openid (2.1.2) ruby-yadis (0.3.4) rubynode (0.1.5) sqlite3-ruby (1.2.4) termios (0.9.4) xmpp4r (0.4) Quite possibly these default gems and versions will change between now and the final release of Snow Leopard. For instance, this seed comes with Rails 2.2.2, even though we are already at 2.3.2. Snow Leopard doesn’t come out till September and by then we could have an even newer version of Rails that might be bundled. What doesn’t work, and how to fix it. Textmate - Everything works fine except for the following shortcuts: ⌘←, ⌘→, ⌘⇧←, and ⌘⇧→. These shortcuts are for moving the text insertion point to beginning and end of line, and selecting to beginning and end of line, respectively. The fix is easy, simply download and double click the TextMate macros attached to this ticket Nokogiri - Nokogiri installs fine but gives error “native.bundle: mach-o, but wrong architecture” when used. Getting around this is as easy as running sudo gem install nokogiri -s http://tenderlovemaking.com/ to get the latest development release which includes a fix for this. do_sqlite3 - I haven’t personally used this or tried to fix it but I saw report of it not working by @benlovell Passenger PrefPane - Preference pane does not load. No known fix (it’s probably an easy fix but I haven’t looked enough into it to try)." />
+<meta property="og:description" content="After the 2009 WWDC release, I decided to give Snow Leopard a try on my production machine. Crossing my fingers, expecting a plethora of broken gems and databases, I wiped my hard drive clean and installed the latest build. Much to my surprise, most things worked flawlessly and exactly as it did on Leopard. What Ships with Snow Leopard $ gem --version 1.3.1 $ ruby --version ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0] $ gem list *** LOCAL GEMS *** actionmailer (2.2.2, 1.3.6) actionpack (2.2.2, 1.13.6) actionwebservice (1.2.6) activerecord (2.2.2, 1.15.6) activeresource (2.2.2) activesupport (2.2.2, 1.4.4) acts_as_ferret (0.4.3) capistrano (2.5.2) cgi_multipart_eof_fix (2.5.0) daemons (1.0.10) dnssd (0.6.0) fastthread (1.0.1) fcgi (0.8.7) ferret (0.11.6) gem_plugin (0.2.3) highline (1.5.0) hpricot (0.6.164) libxml-ruby (1.1.2) mongrel (1.1.5) needle (1.3.0) net-scp (1.0.1) net-sftp (2.0.1, 1.1.1) net-ssh (2.0.4, 1.1.4) net-ssh-gateway (1.0.0) rails (2.2.2, 1.2.6) rake (0.8.3) RedCloth (4.1.1) ruby-openid (2.1.2) ruby-yadis (0.3.4) rubynode (0.1.5) sqlite3-ruby (1.2.4) termios (0.9.4) xmpp4r (0.4) Quite possibly these default gems and versions will change between now and the final release of Snow Leopard. For instance, this seed comes with Rails 2.2.2, even though we are already at 2.3.2. Snow Leopard doesn’t come out till September and by then we could have an even newer version of Rails that might be bundled. What doesn’t work, and how to fix it. Textmate - Everything works fine except for the following shortcuts: ⌘←, ⌘→, ⌘⇧←, and ⌘⇧→. These shortcuts are for moving the text insertion point to beginning and end of line, and selecting to beginning and end of line, respectively. The fix is easy, simply download and double click the TextMate macros attached to this ticket Nokogiri - Nokogiri installs fine but gives error “native.bundle: mach-o, but wrong architecture” when used. Getting around this is as easy as running sudo gem install nokogiri -s http://tenderlovemaking.com/ to get the latest development release which includes a fix for this. do_sqlite3 - I haven’t personally used this or tried to fix it but I saw report of it not working by @benlovell Passenger PrefPane - Preference pane does not load. No known fix (it’s probably an easy fix but I haven’t looked enough into it to try)." />
+<link rel="canonical" href="https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/" />
+<meta property="og:url" content="https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/" />
+<meta property="og:site_name" content="Bo Jeanes" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2009-06-28T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@bjeanes" />
+<meta name="twitter:creator" content="@bjeanes" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/"},"description":"After the 2009 WWDC release, I decided to give Snow Leopard a try on my production machine. Crossing my fingers, expecting a plethora of broken gems and databases, I wiped my hard drive clean and installed the latest build. Much to my surprise, most things worked flawlessly and exactly as it did on Leopard. What Ships with Snow Leopard $ gem --version 1.3.1 $ ruby --version ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0] $ gem list *** LOCAL GEMS *** actionmailer (2.2.2, 1.3.6) actionpack (2.2.2, 1.13.6) actionwebservice (1.2.6) activerecord (2.2.2, 1.15.6) activeresource (2.2.2) activesupport (2.2.2, 1.4.4) acts_as_ferret (0.4.3) capistrano (2.5.2) cgi_multipart_eof_fix (2.5.0) daemons (1.0.10) dnssd (0.6.0) fastthread (1.0.1) fcgi (0.8.7) ferret (0.11.6) gem_plugin (0.2.3) highline (1.5.0) hpricot (0.6.164) libxml-ruby (1.1.2) mongrel (1.1.5) needle (1.3.0) net-scp (1.0.1) net-sftp (2.0.1, 1.1.1) net-ssh (2.0.4, 1.1.4) net-ssh-gateway (1.0.0) rails (2.2.2, 1.2.6) rake (0.8.3) RedCloth (4.1.1) ruby-openid (2.1.2) ruby-yadis (0.3.4) rubynode (0.1.5) sqlite3-ruby (1.2.4) termios (0.9.4) xmpp4r (0.4) Quite possibly these default gems and versions will change between now and the final release of Snow Leopard. For instance, this seed comes with Rails 2.2.2, even though we are already at 2.3.2. Snow Leopard doesn’t come out till September and by then we could have an even newer version of Rails that might be bundled. What doesn’t work, and how to fix it. Textmate - Everything works fine except for the following shortcuts: ⌘←, ⌘→, ⌘⇧←, and ⌘⇧→. These shortcuts are for moving the text insertion point to beginning and end of line, and selecting to beginning and end of line, respectively. The fix is easy, simply download and double click the TextMate macros attached to this ticket Nokogiri - Nokogiri installs fine but gives error “native.bundle: mach-o, but wrong architecture” when used. Getting around this is as easy as running sudo gem install nokogiri -s http://tenderlovemaking.com/ to get the latest development release which includes a fix for this. do_sqlite3 - I haven’t personally used this or tried to fix it but I saw report of it not working by @benlovell Passenger PrefPane - Preference pane does not load. No known fix (it’s probably an easy fix but I haven’t looked enough into it to try).","@type":"BlogPosting","url":"https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/","name":null,"headline":"Snow Leopard for the Ruby Developer","dateModified":"2009-06-28T00:00:00+00:00","datePublished":"2009-06-28T00:00:00+00:00","sameAs":null,"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://avatars2.githubusercontent.com/u/2560?s=200&v=4"},"name":"Bo Jeanes"},"image":null,"author":{"@type":"Person","name":"Bo Jeanes"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body class="black-80 ">
+
+
+
+<div class="flex-l justify-between items-center mw7 mw8-l w-100 center pt3 pb3 pl3 pr3-ns ph4-m">
+
+<a class="black-80 hover-black-80 link f2 f3-l fw4 mr3" href="https://bjeanes.com/" title="Home">Bo Jeanes</a>
+
+
+  <div class="flex-l items-center mt3 mt0-l">
+    <nav class="nowrap overflow-x-auto">
+    
+      
+      <a href="https://bjeanes.com/archive/" class="black-80 hover-black-80 link f4 f5-l fw3 mr3 mt2" >Blog</a>
+    
+      
+      <a href="mailto:blog@bjeanes.com" class="black-80 hover-black-80 link f4 f5-l fw3 mr3 mt2" >Contact</a>
+    
+    </nav>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<main class="flex flex-column items-center">
+  <article class="mw7 w-100 ph3 ph4-ns">
+
+    <header class="">
+    
+    
+
+
+
+
+<div class="flex w-100 mt4 lh-copy">
+  <div class="pt1 pt0-ns">
+    
+      <a href="http://bjeanes.com" target="_blank"><img src="/assets/images/bo.jpg" alt="Bo Jeanes" class="w2 h2 w3-ns h3-ns br-100"></a>
+    
+  </div>
+
+  <div class="flex flex-column w-90 w-80-ns pl2 pl3-ns">
+    <div class="flex items-center">
+      
+      <a class="f5 fw4 lh-title black-80 hover-black-80 link mr2" href="http://bjeanes.com" target="_blank">Bo Jeanes</a>
+      
+
+      
+      <a class="f6 fw4 lh-copy link nested-author-cta ba br-pill ph2" href="https://twitter.com/bjeanes" target="_blank">Follow</a>
+      
+    </div>
+
+    <div class="f6 fw3 lh-copy silver"></div>
+
+    <div class="f6 fw3 lh-copy silver">
+      
+      <span><time>28 Jun 2009</time></span>
+      
+
+      <span class="ttl"> &middot;
+        
+
+
+
+  
+	  1 min read
+	
+
+
+      </span>
+    </div>
+  </div>
+</div>
+
+
+    
+
+    
+    <h1 class="f2 fw6 lh-title mb1">Snow Leopard for the Ruby Developer</h1>
+    
+    
+    </header>
+
+
+    <div class="mw7 w-100 f5 f4-ns fw3 lh-copy mb0">
+    <p>After the 2009 WWDC release, I decided to give Snow Leopard a try on my
+production machine. Crossing my fingers, expecting a plethora of broken
+gems and databases, I wiped my hard drive clean and installed the latest
+build.</p>
+
+<p>Much to my surprise, most things worked flawlessly and exactly as it did
+on Leopard.</p>
+
+<h3 id="what-ships-with-snow-leopard">What Ships with Snow Leopard</h3>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> gem <span class="nt">--version</span>
+<span class="go">1.3.1
+
+</span><span class="gp">$</span> ruby <span class="nt">--version</span>
+<span class="go">ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0]
+
+</span><span class="gp">$</span> gem list
+<span class="go">
+*** LOCAL GEMS ***
+ 
+actionmailer (2.2.2, 1.3.6)
+actionpack (2.2.2, 1.13.6)
+actionwebservice (1.2.6)
+activerecord (2.2.2, 1.15.6)
+activeresource (2.2.2)
+activesupport (2.2.2, 1.4.4)
+acts_as_ferret (0.4.3)
+capistrano (2.5.2)
+cgi_multipart_eof_fix (2.5.0)
+daemons (1.0.10)
+dnssd (0.6.0)
+fastthread (1.0.1)
+fcgi (0.8.7)
+ferret (0.11.6)
+gem_plugin (0.2.3)
+highline (1.5.0)
+hpricot (0.6.164)
+libxml-ruby (1.1.2)
+mongrel (1.1.5)
+needle (1.3.0)
+net-scp (1.0.1)
+net-sftp (2.0.1, 1.1.1)
+net-ssh (2.0.4, 1.1.4)
+net-ssh-gateway (1.0.0)
+rails (2.2.2, 1.2.6)
+rake (0.8.3)
+RedCloth (4.1.1)
+ruby-openid (2.1.2)
+ruby-yadis (0.3.4)
+rubynode (0.1.5)
+sqlite3-ruby (1.2.4)
+termios (0.9.4)
+xmpp4r (0.4)
+</span></code></pre></div></div>
+
+<p>Quite possibly these default gems and versions will change between now
+and the final release of Snow Leopard. For instance, this seed comes
+with Rails 2.2.2, even though we are already at 2.3.2. Snow Leopard
+doesn’t come out till September and by then we could have an even newer
+version of Rails that might be bundled.</p>
+
+<h3 id="what-doesnt-work-and-how-to-fix-it">What doesn’t work, and how to fix it.</h3>
+
+<p><strong>Textmate</strong> - Everything works fine except for the following shortcuts:
+⌘←, ⌘→, ⌘⇧←, and ⌘⇧→. These shortcuts are for moving the text insertion
+point to beginning and end of line, and selecting to beginning and end
+of line, respectively. The fix is easy, simply download and double click
+the TextMate macros attached to <a href="http://ticket.macromates.com/show?ticket_id=0FDE7076">this
+ticket</a></p>
+
+<p><strong>Nokogiri</strong> - Nokogiri installs fine but gives error “native.bundle:
+mach-o, but wrong architecture” when used. Getting around this is as
+easy as running
+<code class="highlighter-rouge">sudo gem install nokogiri -s http://tenderlovemaking.com/</code> to get the
+latest development release which includes a fix for this.</p>
+
+<p><strong>do_sqlite3</strong> - I haven’t personally used this or tried to fix it but
+I saw report of it not working <a href="http://twitter.com/benlovell/status/2182275909">by
+@benlovell</a></p>
+
+<p><strong>Passenger PrefPane</strong> - Preference pane does not load. No known fix
+(it’s probably an easy fix but I haven’t looked enough into it to try).</p>
+
+
+    </div>
+
+    <div class="mw7 w-100 lh-copy">
+    
+    
+<div class="flex flex-row justify-start flex-wrap list mb2">
+  
+
+  
+
+  
+
+</div>
+
+    
+
+    
+    
+<div class="flex flex-row justify-end">
+
+
+  <a class="link black-60 hover-dark-gray w2 ml3" href="https://twitter.com/intent/tweet?text=Snow Leopard for the Ruby Developer https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/" title="Share on Twitter" aria-hidden="true">
+    <svg viewBox="0 0 20 20" data-icon="twitter" style="fill:currentcolor">
+      <path xmlns="http://www.w3.org/2000/svg" d="M14.467,6.707c-0.34,0.198-0.715,0.342-1.115,0.419c-0.318-0.335-0.775-0.545-1.279-0.545c-0.969,0-1.754,0.773-1.754,1.727c0,0.135,0.015,0.267,0.045,0.394C8.905,8.628,7.612,7.94,6.747,6.896C6.596,7.151,6.509,7.448,6.509,7.764c0,0.599,0.31,1.128,0.78,1.438C7.002,9.192,6.732,9.115,6.495,8.985c0,0.007,0,0.014,0,0.021c0,0.837,0.605,1.535,1.408,1.694c-0.147,0.04-0.302,0.06-0.462,0.06c-0.113,0-0.223-0.011-0.33-0.031c0.223,0.687,0.871,1.186,1.638,1.199c-0.6,0.464-1.356,0.739-2.179,0.739c-0.142,0-0.281-0.007-0.418-0.023c0.777,0.489,1.699,0.775,2.689,0.775c3.228,0,4.991-2.63,4.991-4.913c0-0.075-0.002-0.149-0.004-0.223c0.342-0.244,0.639-0.547,0.875-0.894c-0.316,0.137-0.652,0.23-1.008,0.272C14.057,7.448,14.336,7.11,14.467,6.707 M10,0.594c-5.195,0-9.406,4.211-9.406,9.406c0,5.195,4.211,9.406,9.406,9.406c5.196,0,9.407-4.211,9.407-9.406C19.406,4.805,15.195,0.594,10,0.594 M10,18.552c-4.723,0-8.551-3.829-8.551-8.552S5.277,1.449,10,1.449c4.723,0,8.551,3.829,8.551,8.551S14.723,18.552,10,18.552"></path>
+    </svg>
+  </a>
+
+
+
+  <a class="link black-60 hover-dark-gray w2 ml3" href="https://www.facebook.com/sharer/sharer.php?u=https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/" title="Share on Facebook" aria-hidden="true">
+    <svg viewBox="0 0 20 20" data-icon="facebook" style="fill:currentcolor">
+      <path xmlns="http://www.w3.org/2000/svg" d="M10,0.5c-5.247,0-9.5,4.253-9.5,9.5c0,5.247,4.253,9.5,9.5,9.5c5.247,0,9.5-4.253,9.5-9.5C19.5,4.753,15.247,0.5,10,0.5 M10,18.637c-4.77,0-8.636-3.867-8.636-8.637S5.23,1.364,10,1.364S18.637,5.23,18.637,10S14.77,18.637,10,18.637 M10.858,7.949c0-0.349,0.036-0.536,0.573-0.536h0.719v-1.3H11c-1.38,0-1.866,0.65-1.866,1.743v0.845h-0.86V10h0.86v3.887h1.723V10h1.149l0.152-1.299h-1.302L10.858,7.949z"></path>
+    </svg>
+  </a>
+
+
+
+
+  <a class="link black-60 hover-dark-gray w2 ml3" href="https://plus.google.com/share?url=https://bjeanes.com/2009/06/snow-leopard-for-the-ruby-developer/" title="Share on Google+" aria-hidden="true">
+    <svg viewBox="0 0 20 20" data-icon="google plus" style="fill:currentcolor">
+      <path xmlns="http://www.w3.org/2000/svg" d="M10,0.562c-5.212,0-9.438,4.226-9.438,9.438c0,5.213,4.226,9.438,9.438,9.438c5.212,0,9.438-4.225,9.438-9.438C19.438,4.788,15.212,0.562,10,0.562 M10,18.58c-4.738,0-8.58-3.841-8.58-8.58c0-4.738,3.842-8.58,8.58-8.58c4.737,0,8.579,3.841,8.579,8.58C18.579,14.739,14.737,18.58,10,18.58 M10.033,10.346C9.813,10.183,9.608,9.94,9.6,9.865c0-0.128,0-0.188,0.303-0.435c0.393-0.322,0.609-0.745,0.609-1.192c0-0.387-0.108-0.731-0.293-0.982h0.164l0.908-0.688H8.832c-0.986,0-1.851,0.774-1.851,1.657c0,0.912,0.667,1.604,1.565,1.642C8.533,9.933,8.525,9.996,8.525,10.06c0,0.131,0.03,0.257,0.09,0.378c-1.113,0.007-2.05,0.752-2.05,1.632c0,0.789,0.902,1.362,2.145,1.362c1.343,0,2.067-0.84,2.067-1.631C10.778,11.143,10.576,10.748,10.033,10.346 M8.026,8.198C7.985,7.869,8.054,7.565,8.212,7.384c0.096-0.11,0.22-0.169,0.358-0.169V7.036l0.016,0.179c0.412,0.014,0.807,0.501,0.88,1.086c0.042,0.335-0.03,0.647-0.191,0.833c-0.096,0.11-0.217,0.169-0.367,0.168h0C8.503,9.29,8.1,8.784,8.026,8.198 M8.707,12.749c-0.612,0-1.093-0.394-1.093-0.897c0-0.461,0.562-0.865,1.202-0.865v-0.18h0l0.017,0.18c0.138,0.002,0.272,0.022,0.399,0.062l0.126,0.092c0.326,0.231,0.498,0.363,0.549,0.575c0.013,0.056,0.019,0.111,0.019,0.167C9.927,12.458,9.517,12.749,8.707,12.749M13.43,6.993h-0.858v1.288H11.28V9.14h1.291v1.283h0.858V9.14h1.293V8.281H13.43V6.993z"></path>
+    </svg>
+  </a>
+
+
+</div>
+
+
+    
+
+    
+    
+
+
+
+<div class="flex w-100 mt2 lh-copy bt b--light-gray pv3">
+  <div>
+    
+      <a href="http://bjeanes.com" target="_blank"><img src="/assets/images/bo.jpg" alt="Bo Jeanes" class="w2 h2 w3-ns h3-ns br-100"></a>
+    
+  </div>
+
+  <div class="flex flex-column w-90 w-80-ns pl2 pl3-ns">
+    <div class="flex items-center-ns">
+      
+      <a class="f5 f4-ns fw4 lh-title black-80 hover-black-80 link mr2" href="http://bjeanes.com" target="_blank">Bo Jeanes</a>
+      
+
+      
+      <a class="f6 fw4 link nested-author-cta ba br-pill ph2" href="https://twitter.com/bjeanes" target="_blank">Follow</a>
+      
+    </div>
+
+
+    <div class="f6 f5-ns fw3 lh-copy silver">Bo is a software engineer who cares deeply about simplicity in design and
+building complex behaviours out of simple primitives. Bo primarily works in
+Ruby day-to-day, though is a functional programmer at heart and a fan of
+programming languages generally, with particular soft spots for Clojure,
+Elixir, and Rust.
+</div>
+  </div>
+
+</div>
+
+
+
+    
+
+    
+
+    
+    <script
+  src="https://utteranc.es/client.js"
+  repo="bjeanes/bjeanes.github.io"
+  issue-term="og:title"
+  label="blog-comments"
+  theme="github-light"
+  crossorigin="anonymous"
+  async
+></script>
+<noscript
+  >Go to
+  <a href="https://github.com/bjeanes/bjeanes.github.io/issues">GH issues</a> to
+  view/leave comments</noscript
+>
+
+    
+    </div>
+
+  </article>
+</main>
+
+
+
+
+<footer class="flex justify-start items-baseline mw7 center w-100 ph3 ph4-ns mt4 mb2 lh-copy">
+  <nav class="flex flex-row flex-wrap">
+    <span class="f7 fw3 silver mr3 ttc"><a href="https://bjeanes.com/" class="f7 fw5 silver hover-silver link underline-hover" title="Bo Jeanes">Bo jeanes</a> &copy; 2020</span>
+    
+
+    
+    <span class="f7 fw3 silver mr3">Designed with <a href="https://desiredpersona.com/themes/" class="f7 fw3 silver hover-silver link underline-hover mr3" target="_blank">Minimal Theme</a></span>
+    
+  </nav>
+</footer>
+
+
+
+</body>
+</html>
