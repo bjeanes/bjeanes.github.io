@@ -1,0 +1,38 @@
+title = "Bo Jeanes"
+base_url = "https://bjeanes.com"
+generate_feed = true
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = true
+build_search_index = true
+
+
+theme = "hermit_zola"
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = true
+
+[extra]
+home_subtitle = "Simplicity is hard"
+footer_copyright = ''
+hermit_menu = [
+    { link = "/posts", name = "Posts" },
+    { link = "/about", name = "About" }
+]
+hermit_social = [
+    { name = "github", link = "https://github.com/bjeanes" },
+    { name = "gitlab", link = "https://gitlab.com/bjeanes" },
+    { name = "twitter", link = "https://twitter.com/bjeanes" },
+    { name = "instagram", link = "https://instagram.com/bjeanes" },
+    { name = "linkedin", link = "https://www.linkedin.com/in/bjeanes/" },
+    { name = "email", link = "mailto:me@bjeanes.com" },
+]
+
+[extra.highlightjs]
+enable = false
+
+[extra.author]
+name = "Bo Jeanes"
+email = "me@bjeanes.com"
