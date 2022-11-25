@@ -192,7 +192,7 @@ changes if I were committing directly to `main`/`gh-pages`).
 ### Result
 
 Feel free to have a look at the [repository for the
-blog](https://github.com/covidence/covidence.github.io). The `main` branch
+blog](https://github.com/bjeanes/bjeanes.github.io). The `main` branch
 contains the history of deployed changes and the `source` branch contains the
 history of source changes.
 
