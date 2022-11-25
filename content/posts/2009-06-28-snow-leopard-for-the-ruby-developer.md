@@ -16,7 +16,7 @@ on Leopard.
 
 ### What Ships with Snow Leopard
 
-``` console
+```bash
 $ gem --version
 1.3.1
 
@@ -26,7 +26,7 @@ ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0]
 $ gem list
 
 *** LOCAL GEMS ***
- 
+
 actionmailer (2.2.2, 1.3.6)
 actionpack (2.2.2, 1.13.6)
 actionwebservice (1.2.6)

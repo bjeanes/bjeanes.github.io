@@ -24,12 +24,12 @@ at all) but I thought it might be of some use to someone. I created an
 Apache VirtualHost to act as a proxy between this resource and its
 clients. It looks like this:
 
-``` apache
+```
 <VirtualHost *:80>
   # This virtual host proxies requests for the internal resource
   ServerName external.resource.com
 
-  # Set auth header to base64 encoded 'username:password' 
+  # Set auth header to base64 encoded 'username:password'
   # where username and password are the credentials for internal resource
   RequestHeader set Authorization "Basic dXNlcm5hbWU6cGFzc3dvcmQ="
 
@@ -45,12 +45,12 @@ clients. It looks like this:
     AuthType basic
     AuthName "Our Internal Resource"
     # where all the external login/passwords are
-    AuthUserFile /var/www/.htpasswd 
+    AuthUserFile /var/www/.htpasswd
     Require valid-user
 
     # this is the secret sauce that allows EITHER
     # local access or Basic Auth access
-    Satisfy Any 
+    Satisfy Any
   </Location>
 
   RewriteEngine on

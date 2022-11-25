@@ -15,7 +15,7 @@ a rate of 1 character per second, and opening files (or even running
 After a few fruitless restarts and a keen eye on my logs I started
 noticing these errors in Console.app:
 
-``` text
+```
 9/07/09 3:01:37 PM com.apple.launchd[1] (com.apple.dynamic*pager) Exited
 with exit code: 1\
 9/07/09 3:01:37 PM com.apple.launchd Throttling respawn: Will start in

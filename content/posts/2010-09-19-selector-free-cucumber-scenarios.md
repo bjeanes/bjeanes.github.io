@@ -31,7 +31,7 @@ fantastic way to break all your integration tests.
 This is particularly true if you have scenarios like the following
 contrived one:
 
-``` cucumber
+```ruby
 When I fill in "Username" with "bjeanes" within ".main-panel form#signup-form"
 And I press "Sign up!" within ".main-panel form#signup-form"
 Then I should see "You have successfully signed up" within ".flash.notice"
@@ -67,7 +67,7 @@ When /^(.*) within ([^:"]+):$/ do |step, scope, table_or_string|
   with_scope(selector_for(scope)) do
     When "#{step}:", table_or_string
   end
-end  
+end
 ```
 
 And:
@@ -94,7 +94,7 @@ World(HtmlSelectorsHelper)
 
 My previous example of the flawed Cucumber scenario now becomes:
 
-``` cucumber
+```ruby
 When I fill in "Username" with "bjeanes" within the sign up form
 And I press "Sign up!" within the sign up form
 Then I should see "You have successfully signed up" within the notice flash
@@ -105,12 +105,12 @@ And the `selectors.rb` case statement gets the following additions:
 ``` ruby
 case
   # ...
-  
+
   when /the sign up form/
     ".main-panel form#signup-form"
   when /the (notice|error|info) flash/
     ".flash.#{$1}"
-  
+
   # ...
 end
 ```

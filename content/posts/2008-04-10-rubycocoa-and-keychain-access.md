@@ -25,14 +25,14 @@ Here’s how:
 
 1.  Run the following commands (first one will take some time):
 
-    ``` console
+    ```bash
     gen_bridge_metadata -f Security -o Security.bridgesupport
     mkdir -p /Library/BridgeSupport
     mv Security.bridgesupport /Library/BridgeSupport
     ```
 2. Open an IRB session to test it:
 
-``` irb
+```ruby
 >> require 'osx/cocoa'
 => true
 >> OSX.require_framework 'Security'
@@ -76,7 +76,7 @@ password_length = password.shift # => 10
 password_data = password.shift # OSX::ObjcPtr object
 password = password_data.bytestr(password_length)
 
-# The last item is another OSX::ObjcPtr. I haven't figured 
+# The last item is another OSX::ObjcPtr. I haven't figured
 # out how to cast or use this yet but will post when I've
 # figured it out
 keychain_item = password.shift
@@ -92,7 +92,7 @@ been getting (myself included)
 
 There is good news for anyone that has been getting the following error:
 
-``` text
+```
 undefined local variable or method `trans’ for <UNDEFINED> … </>:REXML::Document
 Usage: gen_bridge_metadata [options] <headers…>
 Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
@@ -122,4 +122,3 @@ but I’ll show both fixes.
     `/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rexml/document.rb`
 2.  Find the line that has `if trans` and change it to `if transitive`
 3.  Save!
-

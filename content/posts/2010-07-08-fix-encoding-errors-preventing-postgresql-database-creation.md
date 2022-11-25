@@ -9,7 +9,7 @@ updated = 2011-08-28T20:49:28Z
 I recently was setting up a new VPS on Linode and I got the following
 error when trying to create a new database:
 
-``` text
+```
 ERROR: new encoding is incompatible with the encoding of the template database
 HINT: Use the same encoding as in the template database, or use template0 as template.
 ```
@@ -23,7 +23,7 @@ If Postgres has already been installed, however, you can run the
 following commands (assuming Postgres version 8.4) to reinitialise the
 database with the correct encoding:
 
-``` console
+```bash
 pg_dropcluster --stop 8.4 main
 pg_createcluster --start -e UTF-8 8.4 main
 ```

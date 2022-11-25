@@ -32,10 +32,10 @@ Digging deeper I found that when an object is added to an association
 via the `association.build` method, the parent object
 isn’t actually set:
 
-``` irb
+```ruby
 >> o = Organization.new(:name => "Test")
 => #<Organization id: nil, name: "Test">
->> u = o.users.build(:name => "Test User")  
+>> u = o.users.build(:name => "Test User")
 => #<User id: nil, organization_id: nil, name: "Test User">
 >> u.organization
 => nil

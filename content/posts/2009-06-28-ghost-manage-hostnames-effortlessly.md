@@ -37,7 +37,7 @@ not on Leopard.
 
 ### Usage
 
-``` console
+```bash
 $ ghost add mydevsite.local
   [Adding] mydevsite.local -> 127.0.0.1
 
