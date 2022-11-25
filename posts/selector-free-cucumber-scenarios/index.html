@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta itemprop="name" content="Bo Jeanes" />
+  <meta itemprop="description" content="" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://bjeanes.com/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://bjeanes.com/favicon-32x32.png" />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="https://bjeanes.com/favicon-16x16.png"
+  />
+  <link
+    rel="shortcut icon"
+    href="https://bjeanes.com/favicon.ico"
+  />
+  <link rel="stylesheet" href="https://bjeanes.com/style.css"/>
+  
+  <title>Selector-Free Cucumber Scenarios</title>
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://bjeanes.com/atom.xml">
+  
+
+  <body id="page">
+
+	
+<header id="site-header" class="animated slideInUp faster">
+  <div class="hdr-wrapper section-inner">
+    <div class="hdr-left">
+      <div class="site-branding">
+        <a href="https:&#x2F;&#x2F;bjeanes.com">Bo Jeanes</a>
+      </div>
+      <nav class="site-nav hide-in-mobile">
+            
+        
+        <a href="https://bjeanes.com/posts">Posts</a>
+        
+        <a href="https://bjeanes.com/about">About</a>
+        
+      </nav>
+    </div>
+    <div class="hdr-right hdr-icons">
+      <span class="hdr-social hide-in-mobile">
+        
+
+<a href="https:&#x2F;&#x2F;github.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="github">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;gitlab.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="gitlab">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;twitter.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="twitter">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;instagram.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="instagram">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;bjeanes&#x2F;" target="_blank" rel="noopener me"
+   title="linkedin">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+  
+</a>
+
+<a href="mailto:me@bjeanes.com" target="_blank" rel="noopener me"
+   title="email">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+  
+</a>
+
+
+      </span>
+      <button id="menu-btn" class="hdr-btn" title="Menu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-menu"
+        >
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div id="mobile-menu" class="animated fast">
+  <ul>
+    
+    <li><a href="https://bjeanes.com/posts">Posts</a></li>
+    
+    <li><a href="https://bjeanes.com/about">About</a></li>
+    
+  </ul>
+</div>
+
+	
+	
+
+		
+<main class="site-main section-inner animated fadeIn faster">
+  <article class="thin">
+	<header class="post-header">
+	  <div class="post-meta">
+		
+		<span>Sep 19, 2010</span>
+		<small> - 
+<span class="reading-time" title="Estimated read time">
+  
+  3 min read
+  
+</span>
+</small>
+		
+            
+	  </div>
+	  <h1>Selector-Free Cucumber Scenarios</h1>
+	</header>
+
+	<div class="content">
+        
+	  <p><small>(a Serbo-Croation translation by Anja Skrbaa is available <a href="http://science.webhostinggeeks.com/selektor-free">here</a>)</small></p>
+<p>I’ve been using Cucumber since pretty much the first day I heard about
+it. I’ve worked on a lot of projects that have relied on it’s presence
+for reliable development. Therefore, I’ve put a lot of effort into
+perfecting my Cucumber infrastructure to make this fantastic tool even
+better. I’m going to share one such morsel of code that makes developing
+with Cucumber even greater.</p>
+<h2 id="the-problem">The Problem</h2>
+<p>I’ve worked on a lot of web applications and, as I’m sure many of you
+know, quite often the development of a web application is focussed on
+the functionality foremost, and the interface and style is incorporated
+later. It may be that the client doesn’t yet know the feel they want for
+their project or that they want to focus their budget towards
+prototyping the application first.</p>
+<p>This is fine, except for the fact that changing the HTML and CSS of a
+web application after a lot of functionality has been developed is a
+fantastic way to break all your integration tests.</p>
+<p>This is particularly true if you have scenarios like the following
+contrived one:</p>
+<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#bf616a;">When I</span><span> fill </span><span style="color:#b48ead;">in </span><span>&quot;</span><span style="color:#a3be8c;">Username</span><span>&quot; with &quot;</span><span style="color:#a3be8c;">bjeanes</span><span>&quot; within &quot;</span><span style="color:#a3be8c;">.main-panel form#signup-form</span><span>&quot;
+</span><span style="color:#bf616a;">And I</span><span> press &quot;</span><span style="color:#a3be8c;">Sign up!</span><span>&quot; within &quot;</span><span style="color:#a3be8c;">.main-panel form#signup-form</span><span>&quot;
+</span><span style="color:#bf616a;">Then I</span><span> should see &quot;</span><span style="color:#a3be8c;">You have successfully signed up</span><span>&quot; within &quot;</span><span style="color:#a3be8c;">.flash.notice</span><span>&quot;
+</span></code></pre>
+<p>The problem is, of course, that designers might change the HTML that
+used to be <code>.main-panel form#signup-form</code> into something sexier and more
+semantic.</p>
+<h2 id="the-solution">The Solution</h2>
+<p>This problem is not unlike an already-solved one; we’ve all moved away
+from hardcoding URLs like &quot;/users/new&quot; into our views and Cucumber
+scenarios and replacing them with <code>new_user_path</code> and <code>the signup page</code>,
+respectively.</p>
+<p>So why not apply the same formula that <code>paths.rb</code> uses for removing URLs
+from scenarios to our situation with selectors?</p>
+<p>Here’s what I add to all new projects:</p>
+<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;"># I&#39;m in features/step_definitions/web_ext_steps.rb
+</span><span>
+</span><span style="color:#bf616a;">When </span><span>/</span><span style="color:#96b5b4;">^(.*) within ([^:&quot;]+)$</span><span>/ </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">step</span><span>, </span><span style="color:#bf616a;">scope</span><span>|
+</span><span>  with_scope(selector_for(scope)) </span><span style="color:#b48ead;">do
+</span><span>    </span><span style="color:#bf616a;">When</span><span> step
+</span><span>  </span><span style="color:#b48ead;">end
+</span><span style="color:#b48ead;">end
+</span><span>
+</span><span style="color:#65737e;"># Multi-line version of above
+</span><span style="color:#bf616a;">When </span><span>/</span><span style="color:#96b5b4;">^(.*) within ([^:&quot;]+):$</span><span>/ </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">step</span><span>, </span><span style="color:#bf616a;">scope</span><span>, </span><span style="color:#bf616a;">table_or_string</span><span>|
+</span><span>  with_scope(selector_for(scope)) </span><span style="color:#b48ead;">do
+</span><span>    </span><span style="color:#bf616a;">When </span><span>&quot;#{step}</span><span style="color:#a3be8c;">:</span><span>&quot;, table_or_string
+</span><span>  </span><span style="color:#b48ead;">end
+</span><span style="color:#b48ead;">end
+</span></code></pre>
+<p>And:</p>
+<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;"># I&#39;m in features/support/selectors.rb
+</span><span>
+</span><span style="color:#b48ead;">module </span><span>HtmlSelectorsHelper
+</span><span>  </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">selector_for</span><span>(</span><span style="color:#bf616a;">scope</span><span>)
+</span><span>    </span><span style="color:#b48ead;">case</span><span> scope
+</span><span>    </span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">the body</span><span>/
+</span><span>      &quot;</span><span style="color:#a3be8c;">html &gt; body</span><span>&quot;
+</span><span>    </span><span style="color:#b48ead;">else
+</span><span>      </span><span style="color:#8fa1b3;">raise </span><span>&quot;</span><span style="color:#a3be8c;">Can&#39;t find mapping from </span><span style="color:#96b5b4;">\&quot;</span><span>#{scope}</span><span style="color:#96b5b4;">\&quot;</span><span style="color:#a3be8c;"> to a selector.</span><span style="color:#96b5b4;">\n</span><span>&quot; +
+</span><span>        &quot;</span><span style="color:#a3be8c;">Now, go and add a mapping in </span><span>#{</span><span style="color:#bf616a;">__FILE__</span><span>}&quot;
+</span><span>    </span><span style="color:#b48ead;">end
+</span><span>  </span><span style="color:#b48ead;">end
+</span><span style="color:#b48ead;">end
+</span><span>
+</span><span style="color:#bf616a;">World</span><span>(</span><span style="color:#bf616a;">HtmlSelectorsHelper</span><span>)
+</span></code></pre>
+<h2 id="applying-the-solution">Applying the Solution</h2>
+<p>My previous example of the flawed Cucumber scenario now becomes:</p>
+<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#bf616a;">When I</span><span> fill </span><span style="color:#b48ead;">in </span><span>&quot;</span><span style="color:#a3be8c;">Username</span><span>&quot; with &quot;</span><span style="color:#a3be8c;">bjeanes</span><span>&quot; within the sign up form
+</span><span style="color:#bf616a;">And I</span><span> press &quot;</span><span style="color:#a3be8c;">Sign up!</span><span>&quot; within the sign up form
+</span><span style="color:#bf616a;">Then I</span><span> should see &quot;</span><span style="color:#a3be8c;">You have successfully signed up</span><span>&quot; within the notice flash
+</span></code></pre>
+<p>And the <code>selectors.rb</code> case statement gets the following additions:</p>
+<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">case
+</span><span>  </span><span style="color:#65737e;"># ...
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">the sign up form</span><span>/
+</span><span>    &quot;</span><span style="color:#a3be8c;">.main-panel form#signup-form</span><span>&quot;
+</span><span>  </span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">the (notice|error|info) flash</span><span>/
+</span><span>    &quot;</span><span style="color:#a3be8c;">.flash.</span><span>#{$</span><span style="color:#bf616a;">1</span><span>}&quot;
+</span><span>
+</span><span>  </span><span style="color:#65737e;"># ...
+</span><span style="color:#b48ead;">end
+</span></code></pre>
+<p>Notice how the scenario now identifies things on our page by their
+semantic identifiers, not by brittle CSS or XPath locations which are
+prone to change. As a bonus, now <del>if</del> when they do change, the paths only need to be updated in a single
+location in our Cucumber test suite!</p>
+<h2 id="patching-cucumber">Patching Cucumber</h2>
+<p>I feel pretty strongly that CSS and XPath don’t belong in our feature
+files because not only does it encourage brittle tests (as shown above),
+but also because those selectors are entirely irrelevant to end users,
+and that’s kind of the main point of using a natural language DSL to
+describe our integration tests, i.e. putting on the user shoes.</p>
+<del>
+I’d really like to patch this back into Cucumber, and I entirely plan to
+do so, providing I get the time.
+</del>
+I got the time, and here is my [pull
+request](http://github.com/aslakhellesoy/cucumber-rails/pull/63) to have
+it merged.
+<h2 id="expanding-the-solution">Expanding the Solution</h2>
+<p>You’ll note my <code>HtmlSelectorsHelper</code> module only accommodates CSS
+selectors. That’s only because I have never needed XPath in this
+context. It’d be very simple to modify my examples to do so, though,
+with a combination of multiple return values and a splat. That’s an
+exercise for the reader (or me if I end up patching Cucumber).</p>
+<h2 id="final-word">Final Word</h2>
+<p>I apologise for the length of this article, but I congratulate you for
+making it all the way through it!</p>
+<p>I now have so many blog post ideas lined up that I’ve had to create a
+new category in Things.app just to hold them all. This means that I’ll
+be striving to get a few more posts done and out the door in the next
+few weeks, including a performance comparison of different data
+encapsulations for web application APIs on the iPhone (i.e. is it better
+to use Plists, JSON, or XML?) and a post on why I think there should be
+8 RESTful actions, not the 7 that Rails prescribes by default.</p>
+
+	</div>
+	<hr class="post-end">
+	<footer class="post-info">
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>819 Words</p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-09-19T13:53:00Z</p>
+    
+	</footer>
+  </article>
+    
+  
+  <div class="post-nav thin">
+	
+	
+  </div>
+
+  
+</main>
+
+	  </div>
+	  
+	  
+
+
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+  <p>&copy; 2022 <a href="https:&#x2F;&#x2F;bjeanes.com">Bo Jeanes</a></p>
+  <p>Made with <a href="https://www.getzola.org" target="_blank" rel="noopener">Zola</a> &#183; Theme <a href="https://github.com/VersBinarii/hermit_zola" target="_blank" rel="noopener">Hermit_Zola</a>
+	
+	&#183; <a href="https://bjeanes.com/atom.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+	
+  </p>
+</footer>
+
+
+
+
+	</div>
+	
+	<script src="https://bjeanes.com/js/main.js"></script>
+
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+
+    
+
+	
+	<script src="https://bjeanes.com/js/copy.js"></script>
+	
+	<script src="https://bjeanes.com/js/main.js"></script>
+
+    
+    
+
+	
+  </body>
+</html>

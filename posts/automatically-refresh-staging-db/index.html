@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta itemprop="name" content="Bo Jeanes" />
+  <meta itemprop="description" content="" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://bjeanes.com/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://bjeanes.com/favicon-32x32.png" />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="https://bjeanes.com/favicon-16x16.png"
+  />
+  <link
+    rel="shortcut icon"
+    href="https://bjeanes.com/favicon.ico"
+  />
+  <link rel="stylesheet" href="https://bjeanes.com/style.css"/>
+  
+  <title>Automatically refresh staging databases weekly from production snapshot</title>
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://bjeanes.com/atom.xml">
+  
+
+  <body id="page">
+
+	
+<header id="site-header" class="animated slideInUp faster">
+  <div class="hdr-wrapper section-inner">
+    <div class="hdr-left">
+      <div class="site-branding">
+        <a href="https:&#x2F;&#x2F;bjeanes.com">Bo Jeanes</a>
+      </div>
+      <nav class="site-nav hide-in-mobile">
+            
+        
+        <a href="https://bjeanes.com/posts">Posts</a>
+        
+        <a href="https://bjeanes.com/about">About</a>
+        
+      </nav>
+    </div>
+    <div class="hdr-right hdr-icons">
+      <span class="hdr-social hide-in-mobile">
+        
+
+<a href="https:&#x2F;&#x2F;github.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="github">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;gitlab.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="gitlab">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;twitter.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="twitter">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;instagram.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="instagram">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;bjeanes&#x2F;" target="_blank" rel="noopener me"
+   title="linkedin">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+  
+</a>
+
+<a href="mailto:me@bjeanes.com" target="_blank" rel="noopener me"
+   title="email">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+  
+</a>
+
+
+      </span>
+      <button id="menu-btn" class="hdr-btn" title="Menu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-menu"
+        >
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div id="mobile-menu" class="animated fast">
+  <ul>
+    
+    <li><a href="https://bjeanes.com/posts">Posts</a></li>
+    
+    <li><a href="https://bjeanes.com/about">About</a></li>
+    
+  </ul>
+</div>
+
+	
+	
+
+		
+<main class="site-main section-inner animated fadeIn faster">
+  <article class="thin">
+	<header class="post-header">
+	  <div class="post-meta">
+		
+		<span>Dec 11, 2017</span>
+		<small> - 
+<span class="reading-time" title="Estimated read time">
+  
+  4 min read
+  
+</span>
+</small>
+		
+            
+	  </div>
+	  <h1>Automatically refresh staging databases weekly from production snapshot</h1>
+	</header>
+
+	<div class="content">
+        
+	  <p>To get the most out of staging environments, it is important to have production
+quality data (in both variety and size) at your disposal to identify potential
+production problems before your customers do. For example, good data allows
+developers to check that new features behave as expected with real-world data,
+that a bugfix actually fixes a bug for a known scenario, or to benchmark a
+database migration or the performance of new code.</p>
+<p>Like many technology companies, at <a href="https://www.covidence.org">Covidence</a> we
+use staging environment in a number of these critical ways, and more. In fact,
+we actually use several different staging environments, some persistent and
+some temporary.</p>
+<p><img src="https://bjeanes.com/posts/automatically-refresh-staging-db/heroku-pipelines.png" alt="Screenshot of the Covidence Heroku pipeline" /></p>
+<h3 id="production-deployments">Production Deployments</h3>
+<p>In production, we run two main deployments: <code>production</code> and <code>demo</code>. Our
+<code>production</code> environment is... just that. Our <code>demo</code> environment is version of
+our application that acts as a kind of playground for potential customers to
+evaluate our product or for existing customers to learn or experiment with the
+product without risking their production data. Data in this environment is
+expunged on a rolling basis.</p>
+<h3 id="non-production-deployments">Non-production Deployments</h3>
+<p>In staging, we have one environment each to mirror the production versions:
+<code>staging</code> and <code>demo-staging</code>. These two deployments automatically get the
+latest version of the code that has passed our continuous integration test
+suite. The expectation is that these environments should be reasonably stable
+and relatively safe to deploy to the production environments.</p>
+<p>Additionally, we have a <code>dev</code> environment which deploys the latest code,
+regardless of build status. This environment is expected to be less stable and
+is sometimes used to deploy feature branches that need to see production
+quality data before it can be merged to <code>master</code>. This also tends to be the
+environment in which migrations are tested and benchmarked.</p>
+<p>Lastly, we use an excellent feature of Heroku Pipelines to create disposable
+staging apps for any open pull request to allow us to sanity check and QA test
+the change.</p>
+<h3 id="data">Data</h3>
+<p>Of all those environments, only the pull request apps have &quot;seed&quot; data.
+<code>staging</code>, <code>demo-staging</code>, and <code>dev</code> always have a recent snapshot of
+production data to work with.</p>
+<p>Keeping fresh production quality data in staging environments is a really
+common problem for many companies and can often go along time without a
+solution. However, we knew that it was an important problem to solve if we were
+to work efficiently and effectively with our small team.</p>
+<p>I want to share how we leverage some handy features of <a href="https://www.heroku.com/postgres">Heroku
+Postgres</a> to have effortless, push-button
+production quality data in these staging environments.</p>
+<h3 id="scheduled-and-push-button-database-forks">Scheduled and push-button database forks</h3>
+<p>Basically, we use Heroku's database &quot;forking&quot; functionality, environment
+variable-based configuration and database promotion, the Heroku Toolbelt, and a
+few Heroku API calls to orchestrate a replacement DB.</p>
+<p>We wrap up these steps in a script which runs every Sunday night via a
+scheduled Buildkite job or whenever we push the &quot;Build&quot; button manually. This
+means that our staging environment is never stale by more than about a week.</p>
+<p>The steps to do this for each app are:</p>
+<ol>
+<li>Create a new database as a <code>--fast --fork</code> of the production database, which
+will use a compination of Postgres Write-Ahead Logs and leader-follower
+replication to relatively quickly prepare a new database as a replica and
+once it has caught up to the primary database, will separate from it as a
+standalone instance.</li>
+<li>Keep track of the name of the old DB and the new DB.</li>
+<li>When the replica is fully prepared and ready to process queries, promote it
+via environment variables on and a restart of the application.</li>
+<li>De-provision the old database so we aren't paying for it.</li>
+</ol>
+<p>For our <code>demo</code> to <code>demo-staging</code> copy, the dataset is actually so small that we
+are using cheaper plans which don't support Heroku's forking, so for that we do
+something slightly different:</p>
+<ol>
+<li>Create new database</li>
+<li>Initiate a copy of data from the production version to staging version
+(essentially a dump and then restore)</li>
+<li>Once complete, promote new database and de-provision old one, as above.</li>
+</ol>
+<h4 id="code">Code</h4>
+<p>Here's the actual script we use, more-or-less un-changed:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/usr/bin/env bash
+</span><span>
+</span><span style="color:#96b5b4;">set </span><span style="color:#bf616a;">-ex
+</span><span>
+</span><span style="color:#65737e;"># Pass in Heroku API token
+</span><span style="color:#bf616a;">token</span><span>=$</span><span style="color:#bf616a;">1
+</span><span>
+</span><span style="color:#65737e;"># We run this script in a stateless Docker image, so to make the script a bit
+</span><span style="color:#65737e;"># cleaner, we just write out the credentials to a file that the Heroku Toolbelt
+</span><span style="color:#65737e;"># knows to read.
+</span><span style="color:#b48ead;">if </span><span>! </span><span style="color:#bf616a;">grep -lq</span><span> api.heroku.com </span><span style="color:#bf616a;">~</span><span>/.netrc </span><span style="color:#d08770;">2</span><span>&gt;/dev/null; </span><span style="color:#b48ead;">then
+</span><span>  </span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">machine api.heroku.com</span><span>&quot; &gt; </span><span style="color:#bf616a;">~</span><span>/.netrc
+</span><span>  </span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">  login dev+heroku@covidence.org</span><span>&quot; &gt;&gt; </span><span style="color:#bf616a;">~</span><span>/.netrc
+</span><span>  </span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">  password </span><span>$</span><span style="color:#bf616a;">token</span><span>&quot; &gt;&gt; </span><span style="color:#bf616a;">~</span><span>/.netrc
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">chmod</span><span> 0600 </span><span style="color:#bf616a;">~</span><span>/.netrc
+</span><span style="color:#b48ead;">fi
+</span><span>
+</span><span style="color:#65737e;"># Helper function for calling Heroku API
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">hapi </span><span>{
+</span><span>  </span><span style="color:#bf616a;">curl </span><span>\
+</span><span style="color:#bf616a;">    --fail </span><span>\
+</span><span style="color:#bf616a;">    --silent </span><span>\
+</span><span style="color:#bf616a;">    --netrc </span><span>\
+</span><span style="color:#bf616a;">    --header </span><span>&#39;</span><span style="color:#a3be8c;">Accept: application/vnd.heroku+json; version=3</span><span>&#39; \
+</span><span>    https://api.heroku.com$</span><span style="color:#bf616a;">*
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;"># Routine to wait for DB to be caught up, then promote it and de-provision the
+</span><span style="color:#65737e;"># old instance.
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">promote </span><span>{
+</span><span>  </span><span style="color:#bf616a;">app</span><span>=$</span><span style="color:#bf616a;">1
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:wait</span><span style="color:#bf616a;"> --wait-interval</span><span> 10</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:unfollow</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app --confirm </span><span>$</span><span style="color:#bf616a;">app </span><span>$</span><span style="color:#bf616a;">app</span><span>::NEW_DATABASE || </span><span style="color:#bf616a;">true
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> addons:attach</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app </span><span>$</span><span style="color:#bf616a;">app</span><span>::DATABASE</span><span style="color:#bf616a;"> --as</span><span> OLD_DATABASE
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:promote</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> NEW_DATABASE
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> addons:detach</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> NEW_DATABASE
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> addons:destroy</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app --confirm </span><span>$</span><span style="color:#bf616a;">app</span><span> OLD_DATABASE
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> run:detached</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> rails runner &#39;</span><span style="color:#a3be8c;">Ops::Staging::Search.massacre!</span><span>&#39;
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;"># Routine to create a new DB with a deterministic name so that we can more
+</span><span style="color:#65737e;"># easily promote it later.
+</span><span style="color:#65737e;">#
+</span><span style="color:#65737e;"># There is also some logic here to recover from a build which got interrupted
+</span><span style="color:#65737e;"># mid-way so that we don&#39;t accumulate orphaned DBs that we have to pay for.
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">create </span><span>{
+</span><span>  </span><span style="color:#bf616a;">app</span><span>=$</span><span style="color:#bf616a;">1
+</span><span>  </span><span style="color:#bf616a;">plan</span><span>=$</span><span style="color:#bf616a;">2
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">shift</span><span> 2
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">existing</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">hapi</span><span style="color:#a3be8c;"> /addons/</span><span>$</span><span style="color:#bf616a;">app</span><span style="color:#a3be8c;">::DATABASE </span><span>| </span><span style="color:#bf616a;">jq -Mr</span><span style="color:#a3be8c;"> .name)
+</span><span>  </span><span style="color:#bf616a;">new</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">hapi</span><span style="color:#a3be8c;"> /addons/</span><span>$</span><span style="color:#bf616a;">app</span><span style="color:#a3be8c;">::NEW_DATABASE </span><span>| </span><span style="color:#bf616a;">jq -Mr</span><span style="color:#a3be8c;"> .name </span><span>|| </span><span style="color:#bf616a;">true</span><span style="color:#a3be8c;">)
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-z </span><span>&quot;$</span><span style="color:#bf616a;">new</span><span>&quot; </span><span style="color:#96b5b4;">]</span><span>; </span><span style="color:#b48ead;">then
+</span><span>    </span><span style="color:#bf616a;">heroku</span><span> addons:create \
+</span><span style="color:#bf616a;">      -a </span><span>$</span><span style="color:#bf616a;">app</span><span> heroku-postgresql:$</span><span style="color:#bf616a;">plan </span><span>\
+</span><span style="color:#bf616a;">      --as</span><span> NEW_DATABASE \
+</span><span>      $</span><span style="color:#bf616a;">*
+</span><span>  </span><span style="color:#b48ead;">else
+</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span>&quot;$</span><span style="color:#bf616a;">new</span><span>&quot; == &quot;$</span><span style="color:#bf616a;">existing</span><span>&quot; </span><span style="color:#96b5b4;">]</span><span>; </span><span style="color:#b48ead;">then
+</span><span>      </span><span style="color:#bf616a;">heroku</span><span> addons:detach</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> NEW_DATABASE
+</span><span>      </span><span style="color:#bf616a;">create </span><span>$</span><span style="color:#bf616a;">app </span><span>$</span><span style="color:#bf616a;">plan
+</span><span>    </span><span style="color:#b48ead;">else
+</span><span>      </span><span style="color:#bf616a;">true </span><span style="color:#65737e;"># already got a new one in waiting
+</span><span>    </span><span style="color:#b48ead;">fi
+</span><span>  </span><span style="color:#b48ead;">fi
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;"># Takes a snapshot and copies it. This takes longer, breaks the destination
+</span><span style="color:#65737e;"># DB until it has completed, so is only used for demo to demo-staging, which
+</span><span style="color:#65737e;"># use Hobby DBs which cannot be followed/forked.
+</span><span style="color:#65737e;">#
+</span><span style="color:#65737e;"># One benefit of this which might be worth applying to staging/dev is that the
+</span><span style="color:#65737e;"># destination data sizes (tables+indexes) are much smaller, which suits the
+</span><span style="color:#65737e;"># smaller instance sizes used there.
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">copy </span><span>{
+</span><span>  </span><span style="color:#bf616a;">src</span><span>=$</span><span style="color:#bf616a;">1
+</span><span>  </span><span style="color:#bf616a;">dst</span><span>=$</span><span style="color:#bf616a;">2
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:copy $</span><span style="color:#bf616a;">src</span><span>::DATABASE NEW_DATABASE \
+</span><span style="color:#bf616a;">    --wait-interval</span><span> 10 \
+</span><span style="color:#bf616a;">    --app </span><span>$</span><span style="color:#bf616a;">dst </span><span>\
+</span><span style="color:#bf616a;">    --confirm </span><span>$</span><span style="color:#bf616a;">dst
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;"># Create new DBs and trigger loading of data
+</span><span style="color:#bf616a;">create</span><span> covidence-dev     premium-0</span><span style="color:#bf616a;"> --fork</span><span> covidence-production::DATABASE</span><span style="color:#bf616a;"> --fast
+</span><span style="color:#bf616a;">create</span><span> covidence-staging premium-2</span><span style="color:#bf616a;"> --fork</span><span> covidence-production::DATABASE</span><span style="color:#bf616a;"> --fast
+</span><span style="color:#bf616a;">create</span><span> covidence-demo-staging hobby-basic
+</span><span style="color:#bf616a;">copy</span><span> covidence-demo covidence-demo-staging
+</span><span>
+</span><span style="color:#65737e;"># Promote DBs (these steps block until each DB to be ready for promotion)
+</span><span style="color:#bf616a;">promote</span><span> covidence-dev
+</span><span style="color:#bf616a;">promote</span><span> covidence-staging
+</span><span style="color:#bf616a;">promote</span><span> covidence-demo-staging
+</span></code></pre>
+
+	</div>
+	<hr class="post-end">
+	<footer class="post-info">
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1127 Words</p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2017-12-11</p>
+    
+	</footer>
+  </article>
+    
+  
+  <div class="post-nav thin">
+	
+	
+  </div>
+
+  
+</main>
+
+	  </div>
+	  
+	  
+
+
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+  <p>&copy; 2022 <a href="https:&#x2F;&#x2F;bjeanes.com">Bo Jeanes</a></p>
+  <p>Made with <a href="https://www.getzola.org" target="_blank" rel="noopener">Zola</a> &#183; Theme <a href="https://github.com/VersBinarii/hermit_zola" target="_blank" rel="noopener">Hermit_Zola</a>
+	
+	&#183; <a href="https://bjeanes.com/atom.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+	
+  </p>
+</footer>
+
+
+
+
+	</div>
+	
+	<script src="https://bjeanes.com/js/main.js"></script>
+
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+
+    
+
+	
+	<script src="https://bjeanes.com/js/copy.js"></script>
+	
+	<script src="https://bjeanes.com/js/main.js"></script>
+
+    
+    
+
+	
+  </body>
+</html>

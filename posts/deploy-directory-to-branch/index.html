@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta itemprop="name" content="Bo Jeanes" />
+  <meta itemprop="description" content="" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://bjeanes.com/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://bjeanes.com/favicon-32x32.png" />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="https://bjeanes.com/favicon-16x16.png"
+  />
+  <link
+    rel="shortcut icon"
+    href="https://bjeanes.com/favicon.ico"
+  />
+  <link rel="stylesheet" href="https://bjeanes.com/style.css"/>
+  
+  <title>Deploy a sub-directory as a branch</title>
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://bjeanes.com/atom.xml">
+  
+
+  <body id="page">
+
+	
+<header id="site-header" class="animated slideInUp faster">
+  <div class="hdr-wrapper section-inner">
+    <div class="hdr-left">
+      <div class="site-branding">
+        <a href="https:&#x2F;&#x2F;bjeanes.com">Bo Jeanes</a>
+      </div>
+      <nav class="site-nav hide-in-mobile">
+            
+        
+        <a href="https://bjeanes.com/posts">Posts</a>
+        
+        <a href="https://bjeanes.com/about">About</a>
+        
+      </nav>
+    </div>
+    <div class="hdr-right hdr-icons">
+      <span class="hdr-social hide-in-mobile">
+        
+
+<a href="https:&#x2F;&#x2F;github.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="github">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;gitlab.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="gitlab">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;twitter.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="twitter">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;instagram.com&#x2F;bjeanes" target="_blank" rel="noopener me"
+   title="instagram">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+  
+</a>
+
+<a href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;bjeanes&#x2F;" target="_blank" rel="noopener me"
+   title="linkedin">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+  
+</a>
+
+<a href="mailto:me@bjeanes.com" target="_blank" rel="noopener me"
+   title="email">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+  
+</a>
+
+
+      </span>
+      <button id="menu-btn" class="hdr-btn" title="Menu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-menu"
+        >
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div id="mobile-menu" class="animated fast">
+  <ul>
+    
+    <li><a href="https://bjeanes.com/posts">Posts</a></li>
+    
+    <li><a href="https://bjeanes.com/about">About</a></li>
+    
+  </ul>
+</div>
+
+	
+	
+
+		
+<main class="site-main section-inner animated fadeIn faster">
+  <article class="thin">
+	<header class="post-header">
+	  <div class="post-meta">
+		
+		<span>Dec 11, 2017</span>
+		<small> - 
+<span class="reading-time" title="Estimated read time">
+  
+  4 min read
+  
+</span>
+</small>
+		
+            
+	  </div>
+	  <h1>Deploy a sub-directory as a branch</h1>
+	</header>
+
+	<div class="content">
+        
+	  <p>This post outlines a mechanism for using one branch as the source to generate a
+compiled artifact into another branch. This is achieved without resorting to
+moving files around a working directory and staging dirty changes away safely,
+by leveraging some neat internals of Git.</p>
+<h3 id="why">Why?</h3>
+<p>But first, why would someone want to do this?</p>
+<p>In general, storing (deterministically) buildable artifacts in a repository can
+be unneccessary and even problematic. For example: building a binary which
+can't run on all platforms that might use the repository; or creating large
+files which grow the repository size rapidly (e.g. JARs).</p>
+<p>In the past, I have been in situations where using Git's object model to store
+an immutable history of changes in compiled outputs has been useful, in
+particular for analytical purposes.</p>
+<p>However, this time, the reason is rather mundane: GitHub's Jekyll compilation
+whitelists certain plugins (for good, security-related reasons) and I had set
+up this blog using a theme and plugin combination that apparently is not
+compatible with GitHub-built Jekyll projects.</p>
+<h3 id="how">How</h3>
+<p>GitHub expects to find source files for GitHub Pages deployment in either the
+<code>gh-pages</code> or <code>main</code> branch (depending on whether its building a project page
+or a user/org page). All that was necessary was to generate the compiled files
+into that appropriate branch.</p>
+<p>However, I did not want it to be up to the person making changes to the blog to
+have to remember to generate and commit the generated files. In addition, it was
+important to me that the Git history of source changes was not conflated with
+the adjacent need to store the compiled version.</p>
+<p>That meant:</p>
+<ol>
+<li>As much automated as possible</li>
+<li>The compiled branch (<code>main</code>, in this case) should be nothing but the
+generated files and a separate commit history.</li>
+</ol>
+<h4 id="understanding-git-commit">Understanding <code>git commit</code></h4>
+<p>When you run a command like <code>git commit .</code>, Git is doing a few of things
+of interest internally:</p>
+<ol>
+<li><code>git-write-tree</code> stores the current state of your (staged) files as a tree</li>
+<li><code>git-commit-tree</code> creates a commit for that tree (and, usually, a parent
+commit)</li>
+<li><code>git-update-ref</code> Updating a ref (branch) to point to that new commit</li>
+</ol>
+<p>By dropping down a level and taking control of these primitives directly, we
+can actually exercise a little bit more control over what is in the commit and
+how that commit relates to the rest of the repository's history.</p>
+<h4 id="writing-a-tree-at-a-custom-root">Writing a tree at a custom root</h4>
+<p>The key ingredient that we will leverage is the <code>--prefix</code> flag to
+<code>git-write-tree</code>. This allows us to create a tree object rooted at an arbitrary
+directory!</p>
+<p>For example, compare the following:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>$ git show $(git write-tree)
+</span><span>tree c97ce6b80599da62e34a684a245dec5df1228b8d
+</span><span>
+</span><span>.buildkite/
+</span><span>.gitignore
+</span><span>CNAME
+</span><span>Gemfile
+</span><span>Gemfile.lock
+</span><span>_config.yml
+</span><span>_data/
+</span><span>_drafts/
+</span><span>assets/
+</span><span>bin/
+</span><span>index.html
+</span><span>pages/
+</span><span>
+</span><span>$ git show $(git write-tree --prefix pages)
+</span><span>tree 8e479816fadad469d16bcb16c24413feb780765f
+</span><span>
+</span><span>archive.html
+</span><span>category.html
+</span><span>tag.html
+</span></code></pre>
+<h3 id="piecing-it-together">Piecing it together</h3>
+<p>The main caveat to account for is that <code>git-write-tree</code> will only write staged
+or committed files. I don't want to keep the built files in the source branch
+so I have the build directory ignored, which means those files are neither
+committed nor staged.</p>
+<p>To work around this, a <code>bin/deploy</code> script temporarily stages the files for the
+duration of the commit building. <strong>NOTE</strong>, because I am deploying to <code>main</code>
+branch, I configured the repository's default branch to be <code>source</code> and the
+<code>bin/deploy</code> script lived there, along with all the Jekyll source files.</p>
+<p>Here's a simplified version of the script:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/usr/bin/env bash
+</span><span>
+</span><span style="color:#bf616a;">branch</span><span>=&quot;</span><span style="color:#a3be8c;">main</span><span>&quot;
+</span><span style="color:#bf616a;">build_dir</span><span>=&quot;</span><span style="color:#a3be8c;">dist</span><span>&quot;
+</span><span>
+</span><span style="color:#65737e;"># This can be substituted for any command which builds artifacts to a
+</span><span style="color:#65737e;"># specific directory
+</span><span style="color:#bf616a;">bundle</span><span> exec jekyll build</span><span style="color:#bf616a;"> --destination </span><span>$</span><span style="color:#bf616a;">build_dir
+</span><span>
+</span><span style="color:#65737e;"># Force the files to be added, regardless of .gitignore
+</span><span style="color:#bf616a;">git</span><span> add</span><span style="color:#bf616a;"> -f </span><span>$</span><span style="color:#bf616a;">build_dir
+</span><span>
+</span><span style="color:#65737e;"># Write tree to an object
+</span><span style="color:#bf616a;">tree</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> write-tree</span><span style="color:#bf616a;"> --prefix</span><span>=$</span><span style="color:#bf616a;">build_dir</span><span style="color:#a3be8c;">)
+</span><span>
+</span><span style="color:#65737e;"># Un-stage the build so it is back to being ignored
+</span><span style="color:#bf616a;">git</span><span> reset -- $</span><span style="color:#bf616a;">build_dir
+</span><span>
+</span><span style="color:#65737e;"># Create a new commit for that tree as a child of target branch&#39;s commit
+</span><span style="color:#bf616a;">commit</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> commit-tree</span><span style="color:#bf616a;"> -p </span><span>$</span><span style="color:#bf616a;">branch -m </span><span>&quot;</span><span style="color:#a3be8c;">Deploy</span><span>&quot; $</span><span style="color:#bf616a;">tree</span><span style="color:#a3be8c;">)
+</span><span>
+</span><span style="color:#65737e;"># Update the GitHub Pages&#39; branch to the new commit
+</span><span style="color:#bf616a;">git</span><span> update-ref refs/heads/$</span><span style="color:#bf616a;">branch </span><span>$</span><span style="color:#bf616a;">commit
+</span><span>
+</span><span style="color:#65737e;"># Push the compiled branch to GitHub
+</span><span style="color:#bf616a;">git</span><span> push origin $</span><span style="color:#bf616a;">branch
+</span></code></pre>
+<h3 id="automated-builds">Automated builds</h3>
+<p>I used our existing <a href="https://buildkite.com">Buildkite</a> CI setup to quickly add
+a build which essentially just called <code>bin/deploy</code> to automatically deploy
+changes we made to GitHub (much the way that GitHub would automatically deploy
+changes if I were committing directly to <code>main</code>/<code>gh-pages</code>).</p>
+<h3 id="some-changes-for-resilience">Some changes for resilience</h3>
+<ul>
+<li>
+<p>I wanted to preserve committer/authorship metadata for the deploy commits to
+make it clear whose latest change is deployed. To handle this, the
+<code>bin/deploy</code> script takes these details from the commit being built and sets
+some env vars before we generate the deploy commit:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_AUTHOR_NAME</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> show</span><span style="color:#bf616a;"> -s --format</span><span>=&#39;</span><span style="color:#a3be8c;">%an</span><span>&#39;</span><span style="color:#a3be8c;"> HEAD)
+</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_COMMITTER_NAME</span><span>=&quot;$</span><span style="color:#bf616a;">GIT_AUTHOR_NAME</span><span>&quot;
+</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_AUTHOR_EMAIL</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> show</span><span style="color:#bf616a;"> -s --format</span><span>=&#39;</span><span style="color:#a3be8c;">%ae</span><span>&#39;</span><span style="color:#a3be8c;"> HEAD)
+</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_COMMITTER_EMAIL</span><span>=&quot;$</span><span style="color:#bf616a;">GIT_AUTHOR_EMAIL</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">commit</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> commit-tree</span><span style="color:#bf616a;"> -p </span><span>$</span><span style="color:#bf616a;">branch -m </span><span>&quot;</span><span style="color:#a3be8c;">Deploy</span><span>&quot; $</span><span style="color:#bf616a;">tree</span><span style="color:#a3be8c;">)
+</span></code></pre>
+</li>
+<li>
+<p>I wanted to make it clear which commit had been deployed, so I augmented the
+commit creation step to record a description of the source commit in the commit
+message, including whether or not the working directory had uncommitted
+changes:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">identifier</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> describe</span><span style="color:#bf616a;"> --dirty --always</span><span style="color:#a3be8c;">) </span><span style="color:#65737e;"># e.g. &quot;213c9af&quot;, &quot;213c9a-dirty&quot;
+</span><span style="color:#bf616a;">commit</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> commit-tree</span><span style="color:#bf616a;"> -p </span><span>$</span><span style="color:#bf616a;">branch -m </span><span>&quot;</span><span style="color:#a3be8c;">Deploy </span><span>$</span><span style="color:#bf616a;">identifier</span><span>&quot; $</span><span style="color:#bf616a;">tree</span><span style="color:#a3be8c;">)
+</span></code></pre>
+</li>
+<li>
+<p>For maximum re-usability, I have the script detect the target branch based on
+the type of repository (project or user/org):</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Determine which branch GitHub pages is built from, for this repository
+</span><span style="color:#bf616a;">remote</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> config remote.origin.url)
+</span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[[ </span><span>$</span><span style="color:#bf616a;">remote </span><span>= *.github.io </span><span style="color:#96b5b4;">]] </span><span>|| </span><span style="color:#96b5b4;">[[ </span><span>$</span><span style="color:#bf616a;">remote </span><span>= *.github.io.git </span><span style="color:#96b5b4;">]]</span><span>; </span><span style="color:#b48ead;">then
+</span><span>  </span><span style="color:#bf616a;">branch</span><span>=</span><span style="color:#a3be8c;">main
+</span><span style="color:#b48ead;">else
+</span><span>  </span><span style="color:#bf616a;">branch</span><span>=</span><span style="color:#a3be8c;">gh-pages
+</span><span style="color:#b48ead;">fi
+</span></code></pre>
+</li>
+<li>
+<p>To still work in CI where a clean checkout has occurred without necessarily
+creating local branch refs, I use long-form names
+(<code>refs/remotes/origin/$branch</code> or <code>refs/heads/$branch</code>, as appropriate)</p>
+</li>
+</ul>
+<h3 id="result">Result</h3>
+<p>Feel free to have a look at the <a href="https://github.com/bjeanes/bjeanes.github.io">repository for the
+blog</a>. The <code>main</code> branch
+contains the history of deployed changes and the <code>source</code> branch contains the
+history of source changes.</p>
+<p>This blog post was deployed in this manner.</p>
+<hr />
+<p><a href="https://gist.github.com/nobuoka/d0f088df57d50e4cda1a">Related gist</a></p>
+
+	</div>
+	<hr class="post-end">
+	<footer class="post-info">
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1019 Words</p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2017-12-11</p>
+    
+	</footer>
+  </article>
+    
+  
+  <div class="post-nav thin">
+	
+	
+  </div>
+
+  
+</main>
+
+	  </div>
+	  
+	  
+
+
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+  <p>&copy; 2022 <a href="https:&#x2F;&#x2F;bjeanes.com">Bo Jeanes</a></p>
+  <p>Made with <a href="https://www.getzola.org" target="_blank" rel="noopener">Zola</a> &#183; Theme <a href="https://github.com/VersBinarii/hermit_zola" target="_blank" rel="noopener">Hermit_Zola</a>
+	
+	&#183; <a href="https://bjeanes.com/atom.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+	
+  </p>
+</footer>
+
+
+
+
+	</div>
+	
+	<script src="https://bjeanes.com/js/main.js"></script>
+
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+
+    
+
+	
+	<script src="https://bjeanes.com/js/copy.js"></script>
+	
+	<script src="https://bjeanes.com/js/main.js"></script>
+
+    
+    
+
+	
+  </body>
+</html>
