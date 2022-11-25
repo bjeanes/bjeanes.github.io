@@ -34,7 +34,7 @@ Here’s a piece of code that provides an “infinite” lazy sequence. In this 
             tweets (:body response)]
 
         (when (not-empty tweets)
-          (concat tweets 
+          (concat tweets
                   (tweets-for user (:id (last tweets)))))))))
 ```
 
@@ -66,15 +66,15 @@ Assume for a moment that we have some calculation (`process`) that takes a consi
   (map #(Thread/sleep 100) tweets))
 ```
 
-If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence. 
+If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence.
 
 This would mean that instead of processing 10 tweets, waiting, processing 10 tweets, waiting, etc.:
 
-![lazy](/lazy.png)
+![Diagram of lazy sequencing](lazy.png)
 
 ... we would be able to process tweets continuously back-to-back:
 
-![motivated](/motivated.png)
+![Diagram showing the "motivated" sequencing](motivated.png)
 
 Wouldn't also be great if we didn't have to think about the parallelism at all? To this end, I present `motivate`:
 
@@ -99,7 +99,7 @@ Let’s compare:
 
 The speed difference is noticeable even when processing only a 100 tweets. If we were doing more than 100 milliseconds/tweet of processing, fetching a lot more data, or dealing with a slow upstream dependency, the speed improvements would be even clearer.
 
-The last (optional) parameter to `motivate` is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk. 
+The last (optional) parameter to `motivate` is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk.
 
 Essentially, the motivation you give to the lazy sequence is a trade-off between waiting for IO and wasting IO; that is, the lower the number, the more likely you are to wait on IO but the higher the number, the more IO you’ll perform unnecessarily (at least, if you aren’t guaranteed to consume the whole sequence.
 
