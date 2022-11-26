@@ -1,0 +1,76 @@
+==================================================================
+https://keybase.io/bjeanes
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://bjeanes.com
+  * I am bjeanes (https://keybase.io/bjeanes) on keybase.
+  * I have a public key with fingerprint C726 E9B7 6E41 1A87 6AFE  EF7B 98A8 21F7 8D73 53C4
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "client": {
+            "name": "keybase.io node.js client",
+            "version": "0.4.11"
+        },
+        "key": {
+            "fingerprint": "c726e9b76e411a876afeef7b98a821f78d7353c4",
+            "host": "keybase.io",
+            "key_id": "98A821F78D7353C4",
+            "uid": "9e7c72231b0e05df3e9b8974a0641500",
+            "username": "bjeanes"
+        },
+        "merkle_root": {
+            "ctime": 1407019372,
+            "hash": "297ef9365a4ea01655f6e40a02849a728afd64183d0a5a2ec968baba7f69cebe759bcf90fd9c1938b2e08c20cf48b8148df9fff7b0ca18820b7fad9f78e888a8",
+            "seqno": 32467
+        },
+        "service": {
+            "hostname": "bjeanes.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1407020220,
+    "expire_in": 157680000,
+    "prev": "f659b3c7b221ab9403cce9442d66dca4ebbe7bb112f2fc0cf4fb06c13310d5f0",
+    "seqno": 46,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v1
+
+owFVkltoHUUYx09uTa1Nja1KLAm02yclnM7MXmYmKrao0WitUqlPNYeZ2W+SzWX3
+ZPfkpGmIiIh3m2pAxVubtqK2RaUBE0VTsUIlkYRARQUvgQgixgcfrLTS6kys2M7T
+zs7v+3/f/z+zr64qV1kxKWrefvz4+vaKmV9k7oHvez4ecmQSDjotQ47qiSAu2a9Y
+9ILT4nTDoBQZ5KNkQ5yEkO/KNlxkmp0ypFmUxIZCeS+PsTPcbHlbraO4A9JiGlkx
+R1ESAJc0AA9jwWggNICmkjPBCNaUhdT1XeUZzc4kK13W1lnWLESh+cvZVsO3Una7
+5W+zfP+/B0BND+JiiQD5oXZNN8apJ1DgYR8hC2aQXvQku0DEkNlxeyHt7oFCmiTL
+plUpsgT2EEWYu5SYgUTWaWoIp6C5G/jCA4Fw4PvauEECEeZxQQkTOjS9mBsi4QsC
+igdMCimoDrgCCdTnUmmOdMiVUWaSAGKKIKU9Jhn2WKi51iYTpARmjCBJtQi5yQYY
+MzEZBxn0xYnT4hIvoMN2m5YjBXZsG9rl3vIq6TUlxTQpJSrpMQedpVKxxVouDRYt
+OACykMGxZY2CjOLQ3Nild4oNemkcBBGCmh3YXYxSKESW8GnAkFm2D5SNpg6MS1dR
+SQgWknvIVQq455EwCEJlkpMmCCkxJppoZb1riQKFXRej0Nfof5NeYAYVHUYzizpi
+UepPwRl+qqKxOldRmVtRU2lfbW7VFfX/PeWp2ZW5R0enxrbsLa899dXahuO1dRN3
+LX1X/m3v6fqh1e0v7H9p/cwtq1dms0dWta3YiHo/JDfOFRa7amn11PTD130zsPHp
+55/t2185MbN06tuz244Mk4UdFw4/MRd0NzbdeuhsG2xb+LrvvtMTZ27+9Srd/Mkb
+owdOBJ/D4Zo1P/2+67mpl++ZuPZME24fr686PzK2xRt/Zn6o6ecPXtt6YWTusb//
+WJhf98oXbPLF7buveef9z9Yt3ltIb9hVvrvh03NZ+8lNY18++cj4zn24+vUfr6y6
+6b222s2jd5yY/+st/u6r/Z3XXz22Y8/0SE12Z/fJSfQgfPTn+c0H1/j3N07vqTv3
+5vjiwNLsbGtrQ3j02PaHfvgH
+=OyhD
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/bjeanes
+
+==================================================================
