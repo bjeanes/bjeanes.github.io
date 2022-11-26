@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - shell</title>
+	<link href="https://bjeanes.com/tags/shell/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2017-12-11T00:00:00+00:00</updated>
+	<id>https://bjeanes.com/tags/shell/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Deploy a sub-directory as a branch</title>
+		<published>2017-12-11T00:00:00+00:00</published>
+		<updated>2017-12-11T00:00:00+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/deploy-directory-to-branch/" type="text/html"/>
+		<id>https://bjeanes.com/posts/deploy-directory-to-branch/</id>
+		<content type="html">&lt;p&gt;This post outlines a mechanism for using one branch as the source to generate a compiled artifact into another branch.
+This is achieved without resorting to moving files around a working directory and staging dirty changes away safely, by
+leveraging some neat internals of Git.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why&quot;&gt;Why?&lt;&#x2F;h3&gt;
+&lt;p&gt;But first, why would someone want to do this?&lt;&#x2F;p&gt;
+&lt;p&gt;In general, storing (deterministically) buildable artifacts in a repository can be unneccessary and even problematic.
+For example: building a binary which can&#x27;t run on all platforms that might use the repository; or creating large files
+which grow the repository size rapidly (e.g. JARs).&lt;&#x2F;p&gt;
+&lt;p&gt;In the past, I have been in situations where using Git&#x27;s object model to storean immutable history of changes in
+compiled outputs has been useful, inparticular for analytical purposes.&lt;&#x2F;p&gt;
+&lt;p&gt;However, this time, the reason is rather mundane: GitHub&#x27;s Jekyll compilation whitelists certain plugins (for good,
+security-related reasons) and I had set up this blog using a theme and plugin combination that apparently is not
+compatible with GitHub-built Jekyll projects.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how&quot;&gt;How&lt;&#x2F;h3&gt;
+&lt;p&gt;GitHub expects to find source files for GitHub Pages deployment in either the &lt;code&gt;gh-pages&lt;&#x2F;code&gt; or &lt;code&gt;main&lt;&#x2F;code&gt; branch (depending on
+whether its building a project page or a user&#x2F;org page). All that was necessary was to generate the compiled files into
+that appropriate branch.&lt;&#x2F;p&gt;
+&lt;p&gt;However, I did not want it to be up to the person making changes to the blog to have to remember to generate and commit
+the generated files. In addition, it was important to me that the Git history of source changes was not conflated with
+the adjacent need to store the compiled version.&lt;&#x2F;p&gt;
+&lt;p&gt;That meant:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;As much automated as possible&lt;&#x2F;li&gt;
+&lt;li&gt;The compiled branch (&lt;code&gt;main&lt;&#x2F;code&gt;, in this case) should be nothing but the generated files and a separate commit history.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h4 id=&quot;understanding-git-commit&quot;&gt;Understanding &lt;code&gt;git commit&lt;&#x2F;code&gt;&lt;&#x2F;h4&gt;
+&lt;p&gt;When you run a command like &lt;code&gt;git commit .&lt;&#x2F;code&gt;, Git is doing a few of things of interest internally:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;git-write-tree&lt;&#x2F;code&gt; stores the current state of your (staged) files as a tree&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;git-commit-tree&lt;&#x2F;code&gt; creates a commit for that tree (and, usually, a parent
+commit)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;git-update-ref&lt;&#x2F;code&gt; Updating a ref (branch) to point to that new commit&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;By dropping down a level and taking control of these primitives directly, we can actually exercise a little bit more
+control over what is in the commit and how that commit relates to the rest of the repository&#x27;s history.&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;writing-a-tree-at-a-custom-root&quot;&gt;Writing a tree at a custom root&lt;&#x2F;h4&gt;
+&lt;p&gt;The key ingredient that we will leverage is the &lt;code&gt;--prefix&lt;&#x2F;code&gt; flag to &lt;code&gt;git-write-tree&lt;&#x2F;code&gt;. This allows us to create a tree
+object rooted at an arbitrary directory!&lt;&#x2F;p&gt;
+&lt;p&gt;For example, compare the following:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;$ git show $(git write-tree)
+&lt;&#x2F;span&gt;&lt;span&gt;tree c97ce6b80599da62e34a684a245dec5df1228b8d
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;.buildkite&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;.gitignore
+&lt;&#x2F;span&gt;&lt;span&gt;CNAME
+&lt;&#x2F;span&gt;&lt;span&gt;Gemfile
+&lt;&#x2F;span&gt;&lt;span&gt;Gemfile.lock
+&lt;&#x2F;span&gt;&lt;span&gt;_config.yml
+&lt;&#x2F;span&gt;&lt;span&gt;_data&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;_drafts&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;assets&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;bin&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;index.html
+&lt;&#x2F;span&gt;&lt;span&gt;pages&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;$ git show $(git write-tree --prefix pages)
+&lt;&#x2F;span&gt;&lt;span&gt;tree 8e479816fadad469d16bcb16c24413feb780765f
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;archive.html
+&lt;&#x2F;span&gt;&lt;span&gt;category.html
+&lt;&#x2F;span&gt;&lt;span&gt;tag.html
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;piecing-it-together&quot;&gt;Piecing it together&lt;&#x2F;h3&gt;
+&lt;p&gt;The main caveat to account for is that &lt;code&gt;git-write-tree&lt;&#x2F;code&gt; will only write staged or committed files. I don&#x27;t want to keep
+the built files in the source branch so I have the build directory ignored, which means those files are neither
+committed nor staged.&lt;&#x2F;p&gt;
+&lt;p&gt;To work around this, a &lt;code&gt;bin&#x2F;deploy&lt;&#x2F;code&gt; script temporarily stages the files for the duration of the commit building.
+&lt;strong&gt;NOTE&lt;&#x2F;strong&gt;, because I am deploying to &lt;code&gt;main&lt;&#x2F;code&gt; branch, I configured the repository&#x27;s default branch to be &lt;code&gt;source&lt;&#x2F;code&gt; and the
+&lt;code&gt;bin&#x2F;deploy&lt;&#x2F;code&gt; script lived there, along with all the Jekyll source files.&lt;&#x2F;p&gt;
+&lt;p&gt;Here&#x27;s a simplified version of the script:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#!&#x2F;usr&#x2F;bin&#x2F;env bash
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;main&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;build_dir&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;dist&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# This can be substituted for any command which builds artifacts to a
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# specific directory
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;bundle&lt;&#x2F;span&gt;&lt;span&gt; exec jekyll build&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; --destination &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;build_dir
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Force the files to be added, regardless of .gitignore
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; add&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -f &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;build_dir
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Write tree to an object
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; write-tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; --prefix&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;build_dir&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Un-stage the build so it is back to being ignored
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; reset&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt; -- &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;build_dir
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Create a new commit for that tree as a child of target branch&amp;#39;s commit
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; commit-tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -p &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch -m &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Deploy&amp;quot; $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Update the GitHub Pages&amp;#39; branch to the new commit
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; update-ref refs&#x2F;heads&#x2F;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;commit
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Push the compiled branch to GitHub
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; push origin $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;automated-builds&quot;&gt;Automated builds&lt;&#x2F;h3&gt;
+&lt;p&gt;I used our existing &lt;a href=&quot;https:&#x2F;&#x2F;buildkite.com&quot;&gt;Buildkite&lt;&#x2F;a&gt; CI setup to quickly add a build which essentially just called
+&lt;code&gt;bin&#x2F;deploy&lt;&#x2F;code&gt; to automatically deploy changes we made to GitHub (much the way that GitHub would automatically deploy
+changes if I were committing directly to &lt;code&gt;main&lt;&#x2F;code&gt;&#x2F;&lt;code&gt;gh-pages&lt;&#x2F;code&gt;).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;some-changes-for-resilience&quot;&gt;Some changes for resilience&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;I wanted to preserve committer&#x2F;authorship metadata for the deploy commits to make it clear whose latest change is
+deployed. To handle this, the &lt;code&gt;bin&#x2F;deploy&lt;&#x2F;code&gt; script takes these details from the commit being built and sets some env
+vars before we generate the deploy commit:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;export &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;GIT_AUTHOR_NAME&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; show&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -s --format&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;%an&amp;#39; HEAD)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;export &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;GIT_COMMITTER_NAME&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;GIT_AUTHOR_NAME&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;export &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;GIT_AUTHOR_EMAIL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; show&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -s --format&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;%ae&amp;#39; HEAD)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;export &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;GIT_COMMITTER_EMAIL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;GIT_AUTHOR_EMAIL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; commit-tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -p &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch -m &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Deploy&amp;quot; $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;I wanted to make it clear which commit had been deployed, so I augmented the commit creation step to record a
+description of the source commit in the commit message, including whether or not the working directory had uncommitted
+changes:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;identifier&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; describe&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; --dirty --always&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# e.g. &amp;quot;213c9af&amp;quot;, &amp;quot;213c9a-dirty&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; commit-tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -p &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch -m &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Deploy $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;identifier&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot; $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tree&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;For maximum re-usability, I have the script detect the target branch based on the type of repository (project or
+user&#x2F;org):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Determine which branch GitHub pages is built from, for this repository
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;remote&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; config remote.origin.url)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[[ &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;remote &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span&gt;.github.io &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[[ &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;remote &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span&gt;.github.io.git &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;; then
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;main
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;branch&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;gh-pages
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fi
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;To still work in CI where a clean checkout has occurred without necessarily creating local branch refs, I use
+long-form names (&lt;code&gt;refs&#x2F;remotes&#x2F;origin&#x2F;$branch&lt;&#x2F;code&gt; or &lt;code&gt;refs&#x2F;heads&#x2F;$branch&lt;&#x2F;code&gt;, as appropriate)&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;result&quot;&gt;Result&lt;&#x2F;h3&gt;
+&lt;p&gt;Feel free to have a look at the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bjeanes&#x2F;bjeanes.github.io&quot;&gt;repository for the blog&lt;&#x2F;a&gt;. The &lt;code&gt;main&lt;&#x2F;code&gt;
+branch contains the history of deployed changes and the &lt;code&gt;source&lt;&#x2F;code&gt; branch contains the history of source changes.&lt;&#x2F;p&gt;
+&lt;p&gt;This blog post was deployed in this manner.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;nobuoka&#x2F;d0f088df57d50e4cda1a&quot;&gt;Related gist&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Using Fish shell&#x27;s event system to behave like method_missing</title>
+		<published>2009-10-07T09:07:00+00:00</published>
+		<updated>2011-08-28T21:03:23+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/using-fish-shells-event-system-to-behave-like-method-missing/" type="text/html"/>
+		<id>https://bjeanes.com/posts/using-fish-shells-event-system-to-behave-like-method-missing/</id>
+		<content type="html">&lt;p&gt;Dr Nic’s latest post, &lt;a href=&quot;https:&#x2F;&#x2F;web.archive.org&#x2F;web&#x2F;20170911072928&#x2F;http:&#x2F;&#x2F;drnicwilliams.com&#x2F;2009&#x2F;10&#x2F;07&#x2F;hash-bang-cucumber&#x2F;&quot;&gt;hash bang
+cucumber&lt;&#x2F;a&gt;, reminded
+me of a piece of hax I whipped up a few weeks ago with Ruby and Fish Shell.&lt;&#x2F;p&gt;
+&lt;p&gt;Fish has an event system that allows you to register functions to be auto-run after or during certain events (such as
+when a particular environment variable is changed). One of this events is called &lt;code&gt;fish_command_not_found&lt;&#x2F;code&gt;. It is
+triggered whenever you type a non-existant command into the prompt.&lt;&#x2F;p&gt;
+&lt;p&gt;With this in mind, you can trigger certain commands to run by matching what fish couldn’t manage to run automatically by
+catching this event.&lt;&#x2F;p&gt;
+&lt;p&gt;For instance:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;fish&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-fish &quot;&gt;&lt;code class=&quot;language-fish&quot; data-lang=&quot;fish&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;__fish_method_missing &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;--on-event &lt;&#x2F;span&gt;&lt;span&gt;fish_command_not_found
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;method_missing $argv
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;funcsave &lt;&#x2F;span&gt;&lt;span&gt;method_missing
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Given that function is created (simply paste the whole code block into your Fish terminal), I can now create a command
+called &lt;code&gt;method_missing&lt;&#x2F;code&gt; (or whatever you call inside your &lt;code&gt;__fish_method_missing&lt;&#x2F;code&gt;) and place it somewhere in your
+&lt;code&gt;$PATH&lt;&#x2F;code&gt; — I like &lt;code&gt;~&#x2F;.config&#x2F;fish&#x2F;bin&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;My &lt;code&gt;method_missing&lt;&#x2F;code&gt; binary is simply something like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#!&#x2F;usr&#x2F;bin&#x2F;env ruby
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;command &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;ARGV&lt;&#x2F;span&gt;&lt;span&gt;.shift
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;cmd&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Running &lt;&#x2F;span&gt;&lt;span&gt;#{cmd.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;inspect&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; instead&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;system&lt;&#x2F;span&gt;&lt;span&gt;(cmd)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; command
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^git(@|:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\&#x2F;\&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;).*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;git$&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;  run(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;git clone &lt;&#x2F;span&gt;&lt;span&gt;#{command.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;inspect&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^(?:ftp|https?):&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\&#x2F;\&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;.+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;t(?:ar&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;)?gz$&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;  run(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;curl &lt;&#x2F;span&gt;&lt;span&gt;#{command.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;inspect&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; | tar xzv&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$stderr&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;No default action defined in &lt;&#x2F;span&gt;&lt;span&gt;#{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;__FILE__&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;inspect&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;abort
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Each command you want to register just becomes a new &lt;code&gt;when&lt;&#x2F;code&gt;
+statement. For instance, to implement the functionality Dr Nic was
+trying to achieve, I simply modify the &lt;code&gt;case&lt;&#x2F;code&gt; block as such:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; command
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^[a-z0-9_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\-\&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;]+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;feature(:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;+)?$&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;  run(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;cucumber &lt;&#x2F;span&gt;&lt;span&gt;#{command}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The existing entries I have in my &lt;code&gt;method_missing&lt;&#x2F;code&gt; command will auto-clone the repository of a pasted Git URL and
+download and expand a URL for a tar file, respectively. Not too shabby, and dead easy to implement.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Fish Shell version of __git_ps1 Function That is Bundled with Git</title>
+		<published>2009-07-04T15:34:00+00:00</published>
+		<updated>2011-08-28T21:04:52+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/fish-shell-version-of-git-ps1-function-that-is-bundled-with-git/" type="text/html"/>
+		<id>https://bjeanes.com/posts/fish-shell-version-of-git-ps1-function-that-is-bundled-with-git/</id>
+		<content type="html">&lt;p&gt;Today at ActionHack, I was showing off Fish Shell to &lt;a href=&quot;http:&#x2F;&#x2F;twitter.com&#x2F;geoffreyd&quot;&gt;@geoffreyd&lt;&#x2F;a&gt;. I was showing off all
+the cool fish prompt features I had, but pointed out that my git branch portion needed some beefing up, as it didn&#x27;t
+show the current mode nor commit shas when not in a branch.&lt;&#x2F;p&gt;
+&lt;p&gt;Knowing that git came with a &lt;code&gt;__git_ps1()&lt;&#x2F;code&gt; function for Bash that achieves this, I decided to port it to Fish tonight.
+My shell scripting fu is pretty weak but as far as I can tell it works great and I am now using it in my shell.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is the Fish function (I’ve kept the function name the same as the bash one):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;__git_ps1
+&lt;&#x2F;span&gt;&lt;span&gt;  set -l g (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; rev-parse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; --git-dir&lt;&#x2F;span&gt;&lt;span&gt; ^&#x2F;dev&#x2F;null)
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;-n &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; -l r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; -l b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;-d &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;..&#x2F;.dotest&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;-f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;..&#x2F;.dotest&#x2F;rebasing&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|REBASE&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;elseif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;[ -&lt;&#x2F;span&gt;&lt;span&gt;f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;..&#x2F;.dotest&#x2F;applying&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|AM&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|AM&#x2F;REBASE&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (git symbolic-ref HEAD ^&#x2F;dev&#x2F;null)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;elseif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;[ -&lt;&#x2F;span&gt;&lt;span&gt;f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;.dotest-merge&#x2F;interactive&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|REBASE-i&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (cat &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;.dotest-merge&#x2F;head-name&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;elseif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;[ -&lt;&#x2F;span&gt;&lt;span&gt;d &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;.dotest-merge&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|REBASE-m&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (cat &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;.dotest-merge&#x2F;head-name&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;elseif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;[ -&lt;&#x2F;span&gt;&lt;span&gt;f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;MERGE_HEAD&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|MERGING&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (git symbolic-ref HEAD ^&#x2F;dev&#x2F;null)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;-f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;BISECT_LOG&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;|BISECTING&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (git symbolic-ref HEAD ^&#x2F;dev&#x2F;null)
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;-z &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (git describe --exact-match HEAD ^&#x2F;dev&#x2F;null)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;[ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;-z &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (cut -c1-7 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;HEAD&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;...&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;not&lt;&#x2F;span&gt;&lt;span&gt; test $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;argv
+&lt;&#x2F;span&gt;&lt;span&gt;  		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; argv &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot; (%s)&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;set&lt;&#x2F;span&gt;&lt;span&gt; b (echo $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;b &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;sed -e &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;s|^refs&#x2F;heads&#x2F;||&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;printf &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;argv &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;r&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; ^&#x2F;dev&#x2F;null
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Enjoy :)&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

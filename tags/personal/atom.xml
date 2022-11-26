@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - personal</title>
+	<link href="https://bjeanes.com/tags/personal/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-11-26T00:22:42+00:00</updated>
+	<id>https://bjeanes.com/tags/personal/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Happier as a Hacker</title>
+		<published>2012-09-06T00:22:42+00:00</published>
+		<updated>2022-11-26T00:22:42+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/happier-as-a-hacker/" type="text/html"/>
+		<id>https://bjeanes.com/posts/happier-as-a-hacker/</id>
+		<content type="html">&lt;p&gt;I’ve grown a lot in the last few years, personally and, specifically, in my career. My values have changed and it’s
+affected the way I think and work.&lt;&#x2F;p&gt;
+&lt;p&gt;There has been a gradual progression towards caring more and more about the Right Way™ to do things. For example, more
+than ever before, I value simplicity and clarity over ease and cleverness (an epidemic that greatly afflicts the Ruby
+community, in my opinion).&lt;&#x2F;p&gt;
+&lt;p&gt;But, these values have come at a cost to me. Somewhere along the way, I complacently let &lt;em&gt;getting it right&lt;&#x2F;em&gt; become far
+more important than &lt;em&gt;getting it done&lt;&#x2F;em&gt;.” Don’t get me wrong, getting things right is very important — where I went wrong
+was valuing getting it right the &lt;strong&gt;first&lt;&#x2F;strong&gt; time.&lt;&#x2F;p&gt;
+&lt;p&gt;It may not plague others to the extent that it has me, but this misplaced obsession has gotten in the way of progress.
+It’s caused a type of analysis paralysis not unlike writers’ block; I discard ideas and directions too early because
+they aren’t “good enough.” But exploring a potentially bad direction is still being better than having no direction
+— which is the only place you end up when you discard ideas before they have a chance to blossom.&lt;&#x2F;p&gt;
+&lt;p&gt;In the eternal words of &lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Into_the_Woods&quot;&gt;Little Red Ridinghood&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Isn&#x27;t it nice to know a lot?
+And a little bit not.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;I was happier as a hacker, blissfully ignorant as I was, because I got things done.&lt;&#x2F;p&gt;
+&lt;p&gt;It’s time to become a hacker again; it’s time to be creative and explorative, and work towards &lt;em&gt;approximating&lt;&#x2F;em&gt; the Right
+Way™, iteratively. Truly, this is one of the great realizations of Agile — focus on progress instead of planning and
+pre-empting every possible outcome.&lt;&#x2F;p&gt;
+&lt;p&gt;I can’t forget that.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Narrator&lt;&#x2F;strong&gt;: He forgot that. [ed: 2022]&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

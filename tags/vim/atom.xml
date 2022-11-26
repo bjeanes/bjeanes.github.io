@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - vim</title>
+	<link href="https://bjeanes.com/tags/vim/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2012-11-30T03:54:40+00:00</updated>
+	<id>https://bjeanes.com/tags/vim/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Pure Evil</title>
+		<published>2012-09-07T04:31:19+00:00</published>
+		<updated>2012-11-30T03:54:40+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/pure-evil/" type="text/html"/>
+		<id>https://bjeanes.com/posts/pure-evil/</id>
+		<content type="html">&lt;p&gt;I love Vim. I take that back — I love &lt;strong&gt;modal editing&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Actually, I think very few people like &lt;em&gt;Vim&lt;&#x2F;em&gt;, it just happens to be the best kid on the block at modal editing. But,
+after using Vim (and, God, does it take a while to learn to &lt;em&gt;use&lt;&#x2F;em&gt; it), you are reduced to a &lt;q&gt;&lt;a href=&quot;http:&#x2F;&#x2F;haldean.org&#x2F;docstore&#x2F;?vim-problems&quot;&gt;pathetic teary wreck
+every time you have to use a text editor that isn&#x27;t vim&lt;&#x2F;a&gt;&lt;&#x2F;q&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;And why &lt;em&gt;is&lt;&#x2F;em&gt; it so debilitating to use something other than Vim for those who have honed their modal editing skills?
+Frankly, magic sauce of Vim is (mostly) made up from a few quite simple ingredients: motions, text objects, operators.
+There are plenty of cool tricks hidden inside Vim, but those three main things are the things you really miss,
+consistently, when using something else.&lt;&#x2F;p&gt;
+&lt;p&gt;Every now and then, when forced outside of the comforting (yet somehow cold) embrace of Vim, the Vimmer flirts with
+Sublime Text 2’s &lt;a href=&quot;http:&#x2F;&#x2F;www.sublimetext.com&#x2F;docs&#x2F;2&#x2F;vintage.html&quot;&gt;vintage mode&lt;&#x2F;a&gt; or
+&lt;a href=&quot;http:&#x2F;&#x2F;plugins.intellij.net&#x2F;plugin&#x2F;?id=164&quot;&gt;IdeaVIM&lt;&#x2F;a&gt;. We may even be impressed — but, eventually, something falls apart
+and the abstraction leaks.&lt;&#x2F;p&gt;
+&lt;p&gt;Usually, this failure happens because the Vi(m) emulation layer often doesn’t implement motions, text objects, and
+operators. They just implement some keystrokes that appear to do the same thing in the same way — until you try
+something the developer didn’t preempt.&lt;&#x2F;p&gt;
+&lt;p&gt;If I could have an editor that did these things &lt;em&gt;properly&lt;&#x2F;em&gt;, I would have no real attachment to Vim. I have other things
+about Vim that I love and would hate to lose but they aren’t unique and other editors (can) have them, too.&lt;&#x2F;p&gt;
+&lt;p&gt;Luckily for me, I’ve been doing too much Clojure to ignore Emacs forever and 2 weeks ago, I switched. Here&#x27;s how it
+played out:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nope — not for me... But, wait! Let us try this &lt;a href=&quot;http:&#x2F;&#x2F;emacswiki.org&#x2F;emacs&#x2F;Evil&quot;&gt;Evil Mode&lt;&#x2F;a&gt; so we can mock their
+pitiful attempt at modal editing (&lt;em&gt;evil laugh here&lt;&#x2F;em&gt;).  What’s this‽ It’s actually good!&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Inner dialogs aside, I’m not kidding; Evil Mode is stunning. It doesn’t have &lt;em&gt;everything&lt;&#x2F;em&gt; — but everything that it does
+have is built up using the same &lt;strike&gt;functions&lt;&#x2F;strike&gt; macros that you can use to extend it. Those are:
+&lt;code&gt;(evil-define-state)&lt;&#x2F;code&gt; (“mode” is an existing term in Emacs so what Vim calls modes, Evil Mode calls “states”),
+&lt;code&gt;(evil-define-motion)&lt;&#x2F;code&gt;, &lt;code&gt;(evil-define-operator)&lt;&#x2F;code&gt;, &lt;code&gt;(evil-define-text-object)&lt;&#x2F;code&gt;, and a &lt;a href=&quot;https:&#x2F;&#x2F;gitorious.org&#x2F;evil&#x2F;evil&#x2F;blobs&#x2F;raw&#x2F;doc&#x2F;doc&#x2F;evil.pdf&quot;&gt;few
+others&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Evil Mode correctly implements the plumbing to wire these things together so that the Vim “language” which becomes
+natural and reflexive (e.g. &lt;code&gt;di”&lt;&#x2F;code&gt; -&amp;gt; “&lt;strong&gt;d&lt;&#x2F;strong&gt;elete &lt;strong&gt;i&lt;&#x2F;strong&gt;nside double quotes”, &lt;code&gt;vt &lt;&#x2F;code&gt; -&amp;gt; “&lt;strong&gt;v&lt;&#x2F;strong&gt;isually select &lt;strong&gt;t&lt;&#x2F;strong&gt;ill
+space`) is completely preserved. If you wanted to define a new text object (e.g. a Ruby block), it is trivial to do so
+and all of the motions and operators will work flawlessly with it immediately. Frankly, it’s not even that nice in Vim.&lt;&#x2F;p&gt;
+&lt;p&gt;At the end of the day, I’ve always hated things like VimScript and Vim’s single-threadedness but I could never walk away
+from a truly powerful (and mostly extensible) modal editing system. Now, that has changed; I get ELisp (which, for all
+its faults, is exponentially better than VimScript), a saner package system, and a level of extensibility that, by
+design, can never be matched by Vim. All that and I don’t have to give up modal editing? Hell yes!&lt;&#x2F;p&gt;
+&lt;p&gt;Bonus points: one of the “states” that Evil implements is an Emacs state; this leaves Emacs and all it’s default
+behavior and keymappings 100% intact, meaning you can pair fearlessly with Emacsen, or slowly learn more about the Emacs
+way of doing things, if desirable.&lt;&#x2F;p&gt;
+&lt;p&gt;So far, I’ve rarely noticed I’m not in Vim and am constantly surprised when I employ Vim reflexes in Emacs and they work
+&lt;em&gt;exactly&lt;&#x2F;em&gt; as expected or better (seriously, try &lt;code&gt;:%s&#x2F;foo&#x2F;bar&#x2F;g&lt;&#x2F;code&gt; in Evil mode and tell me you don’t squeal with joy).&lt;&#x2F;p&gt;
+&lt;p&gt;I refuse to pick a single side, so I’m picking both. I’m going to edit modally in Emacs and I’m going to be happy doing
+it! I don’t care if I simultaneously piss off Vim users and Emacs users — hell, they need more things in common
+anyway...&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

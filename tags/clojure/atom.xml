@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - clojure</title>
+	<link href="https://bjeanes.com/tags/clojure/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2012-09-20T16:28:53+00:00</updated>
+	<id>https://bjeanes.com/tags/clojure/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Call Clojure function on a timer</title>
+		<published>2012-09-20T16:07:00+00:00</published>
+		<updated>2012-09-20T16:28:53+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/call-clojure-function-on-a-timer/" type="text/html"/>
+		<id>https://bjeanes.com/posts/call-clojure-function-on-a-timer/</id>
+		<content type="html">&lt;p&gt;In Clojure, I didn&#x27;t see a nice way to simply call a function on a timer (e.g. to poll for changes in another service).&lt;&#x2F;p&gt;
+&lt;p&gt;I didn&#x27;t find something in &lt;code&gt;clojure.core&lt;&#x2F;code&gt; to achieve this readily (but &lt;code&gt;clojure.core&lt;&#x2F;code&gt; is quite big, so I may have missed something obvious — let me know), so I whipped up the following to put in my project&#x27;s &lt;code&gt;util.clj&lt;&#x2F;code&gt; file:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;clojure&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-clojure &quot;&gt;&lt;code class=&quot;language-clojure&quot; data-lang=&quot;clojure&quot;&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;defn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;tick
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Call f with args every ms. First call will be after ms&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  [ms f &amp;amp; args]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;future
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;doseq &lt;&#x2F;span&gt;&lt;span&gt;[f (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;repeatedly &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;apply&lt;&#x2F;span&gt;&lt;span&gt; f args))]
+&lt;&#x2F;span&gt;&lt;span&gt;      (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;Thread&#x2F;sleep&lt;&#x2F;span&gt;&lt;span&gt; ms)
+&lt;&#x2F;span&gt;&lt;span&gt;      (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;))))
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;defn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;tick-now
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Call f with args every ms. First call will be immediately (and blocking)&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  [ms f &amp;amp; args]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;apply&lt;&#x2F;span&gt;&lt;span&gt; f args)
+&lt;&#x2F;span&gt;&lt;span&gt;  (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;apply&lt;&#x2F;span&gt;&lt;span&gt; tick ms f args)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There are two variants. &lt;code&gt;tick&lt;&#x2F;code&gt; waits &lt;code&gt;ms&lt;&#x2F;code&gt; milliseconds and then calls &lt;code&gt;f&lt;&#x2F;code&gt; with &lt;code&gt;args&lt;&#x2F;code&gt; and repeats indefinitely. &lt;code&gt;tick-now&lt;&#x2F;code&gt; does the same thing except it calls &lt;code&gt;f&lt;&#x2F;code&gt; with &lt;code&gt;args&lt;&#x2F;code&gt; &lt;em&gt;before&lt;&#x2F;em&gt; starting the timer.&lt;&#x2F;p&gt;
+&lt;p&gt;They are simple to use:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;clojure&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-clojure &quot;&gt;&lt;code class=&quot;language-clojure&quot; data-lang=&quot;clojure&quot;&gt;&lt;span&gt;user=&amp;gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tick &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;500 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;println &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hi&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;))
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;; 500ms delay
+&lt;&#x2F;span&gt;&lt;span&gt;hi
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;; 500ms delay
+&lt;&#x2F;span&gt;&lt;span&gt;hi
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;; 500ms delay
+&lt;&#x2F;span&gt;&lt;span&gt;hi
+&lt;&#x2F;span&gt;&lt;span&gt;...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In my project, I&#x27;m using them like so:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;clojure&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-clojure &quot;&gt;&lt;code class=&quot;language-clojure&quot; data-lang=&quot;clojure&quot;&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;defn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;start-fetchers
+&lt;&#x2F;span&gt;&lt;span&gt;  [api-token]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;future
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;[minutes (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;partial&lt;&#x2F;span&gt;&lt;span&gt; * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;60 1000&lt;&#x2F;span&gt;&lt;span&gt;)]
+&lt;&#x2F;span&gt;&lt;span&gt;      (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tick-now &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;minutes &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;60&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;                update-project-list!
+&lt;&#x2F;span&gt;&lt;span&gt;                api-token)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tick-now &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;minutes &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;                fetch-milestones!
+&lt;&#x2F;span&gt;&lt;span&gt;                api-token
+&lt;&#x2F;span&gt;&lt;span&gt;                projects-to-fetch
+&lt;&#x2F;span&gt;&lt;span&gt;                milestones-by-project))))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>

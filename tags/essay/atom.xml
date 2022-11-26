@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - essay</title>
+	<link href="https://bjeanes.com/tags/essay/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2012-03-06T05:26:08+00:00</updated>
+	<id>https://bjeanes.com/tags/essay/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Factories breed complexity</title>
+		<published>2012-02-26T19:22:56+00:00</published>
+		<updated>2012-03-06T05:26:08+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/factories-breed-complexity/" type="text/html"/>
+		<id>https://bjeanes.com/posts/factories-breed-complexity/</id>
+		<content type="html">&lt;p&gt;&lt;strong&gt;Important: A big aspect of this post was the comments. My new blog doesn&#x27;t have comments so until I find a way to
+capture them here, please &lt;a href=&quot;https:&#x2F;&#x2F;web.archive.org&#x2F;web&#x2F;20220528193024&#x2F;https:&#x2F;&#x2F;bjeanes.com&#x2F;2012&#x2F;02&#x2F;factories-breed-complexity#comments&quot;&gt;view the old version via Wayback
+Machine&lt;&#x2F;a&gt;.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Having maintainable code is great. Maintainable code allows you to deliver improvements faster, happier, and more
+reliably.&lt;&#x2F;p&gt;
+&lt;p&gt;Furthermore, the measures that developers need to take and the strategies that we have to employ to achieve maintainable
+code have been understood for years, if not decades. Especially in the realm of object-oriented programming, but
+certainly not exclusively, most of these principles boil down to reducing coupling and system complexity. A system whose
+parts are coupled as loosely as possible is a modular system; the parts know little of each other and a lot about
+themselves and they have thin and specific interfaces between each other.&lt;&#x2F;p&gt;
+&lt;p&gt;Test-driven development is one of the many tools at a developer&#x27;s disposal to achieve code quality. Unfortunately, there
+is a lot of naïveté around the benefits of TDD. A lot of developers see TDD as primarily a tool for verifying system
+correctness. While TDD does of course offer this benefit, and arguably better than retroactive automated testing, the
+real benefit of TDD is that it offers short feedback loops that guide the design&#x2F;architecture of the system.&lt;&#x2F;p&gt;
+&lt;p&gt;Since it is accepted that a loosely-coupled modular system is a simpler system, it stands that tools, such as TDD, which
+guide a design towards modularity and simplicity are good tools. A module that is tightly coupled to another is not
+easily tested in isolation. However, if the isolated tests are written first, it is difficult to write a passing
+implementation for that module that maintains such a low degree of coupling. Therefore, good TDD should guide you
+towards a simpler design (though it is certainly not the only way).&lt;&#x2F;p&gt;
+&lt;p&gt;Unfortunately, factories work against this goal. Factories debilitate TDD&#x27;s ability to give you feedback into the
+complexity of your design.&lt;&#x2F;p&gt;
+&lt;p&gt;To be clear, I am not talking about the &lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Factory_method_pattern&quot;&gt;Factory Method Pattern&lt;&#x2F;a&gt; or
+the &lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Abstract_factory_pattern&quot;&gt;Abstract Factory Pattern&lt;&#x2F;a&gt; — both of which can be described
+as ways to &lt;q src=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Object_creation#Creating_objects&quot;&gt;decouple a particular implementation
+of an object from code for the creation of such an object&lt;&#x2F;q&gt;
+(&lt;cite&gt;&lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Object_creation#Creating_objects&quot;&gt;Wikipedia&lt;&#x2F;a&gt;&lt;&#x2F;cite&gt;). Instead, I am talking about
+the &amp;quot;factories&amp;quot; for replacing fixtures in tests — something which has seemingly obsessed the Ruby (Rails, especially)
+community. The two primary Ruby libraries for factory-based fixture replacement are
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;thoughtbot&#x2F;factory_girl&quot;&gt;factory_girl&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;notahat&#x2F;machinist&quot;&gt;Machinist&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;A tool such as Machinist or factory_girl &lt;q&gt;generates data for the attributes you don&#x27;t care about, and constructs any
+necessary associated objects, leaving you to specify only the fields you care about in your test&lt;&#x2F;q&gt; (from Machinist&#x27;s
+own &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;notahat&#x2F;machinist&#x2F;blob&#x2F;master&#x2F;README.markdown&quot;&gt;README file&lt;&#x2F;a&gt;). This sounds nice at first, because
+it makes your tests more readable and relevant. However, behind the scenes, these tools are still creating other objects
+and entities and introducing them into your test environment. By having data and objects in tests that are irrelevant to
+the functionality that is being tested (in &lt;em&gt;isolation&lt;&#x2F;em&gt;, remember), a developer creates an environment that permits, if
+not invites, silent dependencies to creep into an implementation.&lt;&#x2F;p&gt;
+&lt;p&gt;Furthermore, and perhaps more significantly, by creating objects (and usually entire &lt;em&gt;hierarchies&lt;&#x2F;em&gt; of objects) with such
+ease and opacity, you are outright masking the dependencies (*cough* complexity *cough* coupling) between your
+implementation and those entities. If forced to stub out all those intricacies, the system complexity would be
+screamingly obvious and a developer would quickly avail herself of a rewrite to reduce complexity or thin out the
+interface.&lt;&#x2F;p&gt;
+&lt;p&gt;Instead of having feedback that guides a developer to simplicity, fixture factories seem to guide developers to
+complexity by masking dependencies as one-line simplicity. In fact, that one (or five, whatever) line setup is a shotgun
+blast of environmental dependencies that are hidden from the architect. That complexity will come back for revenge after
+being ignored for so long.&lt;&#x2F;p&gt;
+&lt;p&gt;It seems that factory_girl and Machinist exist to make testing components more convenient. This is, at face value, an
+admirable and desirable goal. However, in unit tests, the cost is too high for any system of considerable size.&lt;&#x2F;p&gt;
+&lt;p&gt;Please, do the right thing and avoid the convenience and &amp;quot;fun&amp;quot; of the factory_girl temptress. You will trend towards a
+simpler system and as a bonus (in fact, an incredible one) your test suite will likely be exponentially faster which, in
+turn, will breed simplicity by letting you have more feedback more often.&lt;&#x2F;p&gt;
+&lt;p&gt;P.S. It shouldn&#x27;t go without mention that factories can be absolutely awesome for integration tests. Integration tests
+aren&#x27;t used for guiding system design nor testing in isolation so the drawbacks of these tools drop away. However, both
+factory_girl and Machinist use RSpec as some of their very first usage examples and this troubles me deeply.&lt;&#x2F;p&gt;
+&lt;p&gt;P.P.S. A lot of these arguments can be applied to fixtures too. However, they usually don&#x27;t create hordes of objects
+invisibly and litter your environment with them. Also, they aren&#x27;t as slow. But yes, the fewer factories &lt;em&gt;and&lt;&#x2F;em&gt; fixtures
+in a test, the better.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Update for clarity&lt;&#x2F;strong&gt;: Firstly, I am absolutely just talking about unit tests. If you are testing code that
+&lt;em&gt;integrates&lt;&#x2F;em&gt; with ActiveRecord or number of levels of your stack, then factories and fixtures are certainly defensible
+(though I still prefer to steer clear). Secondly, I&#x27;ve tried to be careful about where I use the words simple, easy,
+complex, and difficult. For the definitions that I intend, please watch (at least the first 10 minutes of) &lt;a href=&quot;http:&#x2F;&#x2F;www.infoq.com&#x2F;presentations&#x2F;Simple-Made-Easy&quot;&gt;Simple Made
+Easy&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

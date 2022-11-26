@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - ruby</title>
+	<link href="https://bjeanes.com/tags/ruby/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2013-03-14T15:37:12+00:00</updated>
+	<id>https://bjeanes.com/tags/ruby/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Selector-Free Cucumber Scenarios</title>
+		<published>2010-09-19T13:53:00+00:00</published>
+		<updated>2013-03-14T15:37:12+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/selector-free-cucumber-scenarios/" type="text/html"/>
+		<id>https://bjeanes.com/posts/selector-free-cucumber-scenarios/</id>
+		<content type="html">&lt;p&gt;&lt;small&gt;(a Serbo-Croation translation by Anja Skrbaa is available &lt;a href=&quot;http:&#x2F;&#x2F;science.webhostinggeeks.com&#x2F;selektor-free&quot;&gt;here&lt;&#x2F;a&gt;)&lt;&#x2F;small&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I’ve been using Cucumber since pretty much the first day I heard about it. I’ve worked on a lot of projects that have
+relied on it’s presence for reliable development. Therefore, I’ve put a lot of effort into perfecting my Cucumber
+infrastructure to make this fantastic tool even better. I’m going to share one such morsel of code that makes developing
+with Cucumber even greater.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h2&gt;
+&lt;p&gt;I’ve worked on a lot of web applications and, as I’m sure many of you know, quite often the development of a web
+application is focussed on the functionality foremost, and the interface and style is incorporated later. It may be that
+the client doesn’t yet know the feel they want for their project or that they want to focus their budget towards
+prototyping the application first.&lt;&#x2F;p&gt;
+&lt;p&gt;This is fine, except for the fact that changing the HTML and CSS of a web application after a lot of functionality has
+been developed is a fantastic way to break all your integration tests.&lt;&#x2F;p&gt;
+&lt;p&gt;This is particularly true if you have scenarios like the following contrived one:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;When I fill in &amp;quot;Username&amp;quot; with &amp;quot;bjeanes&amp;quot; within &amp;quot;.main-panel form#signup-form&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;And I press &amp;quot;Sign up!&amp;quot; within &amp;quot;.main-panel form#signup-form&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;Then I should see &amp;quot;You have successfully signed up&amp;quot; within &amp;quot;.flash.notice&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The problem is, of course, that designers might change the HTML that used to be &lt;code&gt;.main-panel form#signup-form&lt;&#x2F;code&gt; into
+something sexier and more semantic.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-solution&quot;&gt;The Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;This problem is not unlike an already-solved one; we’ve all moved away from hardcoding URLs like &amp;quot;&#x2F;users&#x2F;new&amp;quot; into our
+views and Cucumber scenarios and replacing them with &lt;code&gt;new_user_path&lt;&#x2F;code&gt; and &lt;code&gt;the signup page&lt;&#x2F;code&gt;, respectively.&lt;&#x2F;p&gt;
+&lt;p&gt;So why not apply the same formula that &lt;code&gt;paths.rb&lt;&#x2F;code&gt; uses for removing URLs from scenarios to our situation with selectors?&lt;&#x2F;p&gt;
+&lt;p&gt;Here’s what I add to all new projects:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# I&amp;#39;m in features&#x2F;step_definitions&#x2F;web_ext_steps.rb
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^(.*) within ([^:&amp;quot;]+)$&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;step&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;|
+&lt;&#x2F;span&gt;&lt;span&gt;  with_scope(selector_for(scope)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When&lt;&#x2F;span&gt;&lt;span&gt; step
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Multi-line version of above
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^(.*) within ([^:&amp;quot;]+):$&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;step&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;table_or_string&lt;&#x2F;span&gt;&lt;span&gt;|
+&lt;&#x2F;span&gt;&lt;span&gt;  with_scope(selector_for(scope)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;#{step}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;:&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;, table_or_string
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# I&amp;#39;m in features&#x2F;support&#x2F;selectors.rb
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;module &lt;&#x2F;span&gt;&lt;span&gt;HtmlSelectorsHelper
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;selector_for&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; scope
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;the body&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;html &amp;gt; body&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;raise &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Can&amp;#39;t find mapping from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;#{scope}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; to a selector.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Now, go and add a mapping in &lt;&#x2F;span&gt;&lt;span&gt;#{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;__FILE__&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;World&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;HtmlSelectorsHelper&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;applying-the-solution&quot;&gt;Applying the Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;My previous example of the flawed Cucumber scenario now becomes:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When I&lt;&#x2F;span&gt;&lt;span&gt; fill &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Username&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;bjeanes&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; within the sign up form
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;And I&lt;&#x2F;span&gt;&lt;span&gt; press &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Sign up!&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; within the sign up form
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;Then I&lt;&#x2F;span&gt;&lt;span&gt; should see &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;You have successfully signed up&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; within the notice flash
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And the &lt;code&gt;selectors.rb&lt;&#x2F;code&gt; case statement gets the following additions:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;case
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;the sign up form&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;.main-panel form#signup-form&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;the (notice|error|info) flash&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;.flash.&lt;&#x2F;span&gt;&lt;span&gt;#{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$1&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Notice how the scenario now identifies things on our page by their semantic identifiers, not by brittle CSS or XPath
+locations which are prone to change. As a bonus, now &lt;del&gt;if&lt;&#x2F;del&gt; when they do change, the paths only need to be
+updated in a single location in our Cucumber test suite!&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;patching-cucumber&quot;&gt;Patching Cucumber&lt;&#x2F;h2&gt;
+&lt;p&gt;I feel pretty strongly that CSS and XPath don’t belong in our feature files because not only does it encourage brittle
+tests (as shown above), but also because those selectors are entirely irrelevant to end users, and that’s kind of the
+main point of using a natural language DSL to describe our integration tests, i.e. putting on the user shoes.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;del&gt;I’d really like to patch this back into Cucumber, and I entirely plan to do so, providing I get the time.&lt;&#x2F;del&gt;
+I got the time, and here is my &lt;a href=&quot;http:&#x2F;&#x2F;github.com&#x2F;aslakhellesoy&#x2F;cucumber-rails&#x2F;pull&#x2F;63&quot;&gt;pull request&lt;&#x2F;a&gt; to have it merged.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;expanding-the-solution&quot;&gt;Expanding the Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;You’ll note my &lt;code&gt;HtmlSelectorsHelper&lt;&#x2F;code&gt; module only accommodates CSS selectors. That’s only because I have never needed
+XPath in this context. It’d be very simple to modify my examples to do so, though, with a combination of multiple return
+values and a splat. That’s an exercise for the reader (or me if I end up patching Cucumber).&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;final-word&quot;&gt;Final Word&lt;&#x2F;h2&gt;
+&lt;p&gt;I apologise for the length of this article, but I congratulate you for making it all the way through it!&lt;&#x2F;p&gt;
+&lt;p&gt;I now have so many blog post ideas lined up that I’ve had to create a new category in Things.app just to hold them all.
+This means that I’ll be striving to get a few more posts done and out the door in the next few weeks, including a
+performance comparison of different data encapsulations for web application APIs on the iPhone (i.e. is it better to use
+Plists, JSON, or XML?) and a post on why I think there should be 8 RESTful actions, not the 7 that Rails prescribes by
+default.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Using fields_for with Nested Attributes, Calling it Multiple Times</title>
+		<published>2009-07-03T07:01:00+00:00</published>
+		<updated>2011-08-28T21:12:55+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/using-fields-for-with-nested-attributes-calling-it-multiple-times/" type="text/html"/>
+		<id>https://bjeanes.com/posts/using-fields-for-with-nested-attributes-calling-it-multiple-times/</id>
+		<content type="html">&lt;p&gt;There has been quite an annoying problem that has been bugging
+&lt;a href=&quot;http:&#x2F;&#x2F;twitter.com&#x2F;chendo&quot;&gt;@chendo&lt;&#x2F;a&gt; and I today.&lt;&#x2F;p&gt;
+&lt;p&gt;In short, &lt;a href=&quot;http:&#x2F;&#x2F;api.rubyonrails.org&#x2F;classes&#x2F;ActionView&#x2F;Helpers&#x2F;FormHelper.html#M001895&quot;&gt;&lt;code&gt;fields_for&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; when used with &lt;code&gt;accepts_nested_attributes_for&lt;&#x2F;code&gt;does not reset it’s index when it’s called multiple times for the same attribute.&lt;&#x2F;p&gt;
+&lt;p&gt;Our scenario was the following:&lt;&#x2F;p&gt;
+&lt;p&gt;We had a 3 levels of hierarchical data that we had to display in a
+&lt;code&gt;&amp;lt;table&amp;gt;&lt;&#x2F;code&gt;. Because of the nature of the data we were
+displaying one level as columns and the other level as rows.
+Unfortunately, HTML mandates that we group everything by rows — each
+column is really just a single cell. This means that we have to iterate
+over the “column” values not just once, but once for every row.&lt;&#x2F;p&gt;
+&lt;p&gt;Now, &lt;code&gt;fields_for&lt;&#x2F;code&gt; takes care of naming your
+&lt;code&gt;&amp;lt;input&amp;gt;&lt;&#x2F;code&gt; tags magically with the correct indexes so that
+your models can accept the params directly and magic happens. However,
+evidently calling &lt;code&gt;fields_for&lt;&#x2F;code&gt; multiple times was not
+part of the original intention, and it seems resetting the index after
+each call was neglected.&lt;&#x2F;p&gt;
+&lt;p&gt;`chendo couldn&#x27;t see a cleaner way of doing this so we added our own option to reset the index. We didn&#x27;t just override the behaviour in case there is a good reason to leave it, but here is our code:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;ActionView::Helpers::FormBuilder
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;fields_for_with_nested_attributes_with_index_reset&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;association_name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;block&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; args.last.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_a?&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;Hash&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt; args.last[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:reset_index&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;@nested_child_index &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    fields_for_without_nested_attributes_without_index_reset(association_name, args, block)
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  alias_method_change &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:fields_for_with_nested_attributes&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:index_reset
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Unescaping UTF-8 Strings in Ruby 1.9</title>
+		<published>2009-06-30T02:49:00+00:00</published>
+		<updated>2011-08-28T21:55:46+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/unescaping-utf-8-strings-in-ruby-1-9/" type="text/html"/>
+		<id>https://bjeanes.com/posts/unescaping-utf-8-strings-in-ruby-1-9/</id>
+		<content type="html">&lt;p&gt;Today, Ryan Bigg and I encountered a little issue with &lt;code&gt;String&lt;&#x2F;code&gt; encodings in Ruby 1.9. In this project, some Merb UTF-8
+params needed to be unescaped. We spent some trying to force strings into UTF-8 encoding but for some reason while the
+encoding was UTF–8, the actual contents of the strings were getting massacred.&lt;&#x2F;p&gt;
+&lt;p&gt;Long story short:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# In Ruby 1.9
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Broken
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;URI&lt;&#x2F;span&gt;&lt;span&gt;::unescape(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Baden-W&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;%C&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;%B&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;Crttemberg&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# =&amp;gt; &amp;quot;Baden-WÃ¼rttemberg&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Working
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;CGI&lt;&#x2F;span&gt;&lt;span&gt;::unescape(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Baden-W&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;%C&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;%B&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;Crttemberg&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# =&amp;gt; &amp;quot;Baden-Württemberg&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Another lesson we learnt on our adventures today is the following:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span&gt;m1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Munich&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; m1.encoding  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# let&amp;#39;s suppose it is something other than UTF-8, such as ASCII-8Bit
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;m2 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;München&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; m2.encoding  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# let&amp;#39;s suppose we have a UTF-8 encoded string
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# The following will raise an exception about mismatched encodings
+&lt;&#x2F;span&gt;&lt;span&gt;m3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; m1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt;&amp;lt;&lt;&#x2F;span&gt;&lt;span&gt; m2
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# The easiest way to get around this is to do the concatenation like so:
+&lt;&#x2F;span&gt;&lt;span&gt;m3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; m3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; m1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt;&amp;lt;&lt;&#x2F;span&gt;&lt;span&gt; m2.force_encoding(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;UTF-8&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>RubyCocoa and Keychain access</title>
+		<published>2008-04-10T12:00:00+00:00</published>
+		<updated>2011-08-28T21:21:57+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/rubycocoa-and-keychain-access/" type="text/html"/>
+		<id>https://bjeanes.com/posts/rubycocoa-and-keychain-access/</id>
+		<content type="html">&lt;p&gt;There have been a few posts asking how to access and manipulate the Keychain from within RubyCocoa but no answers
+supplied. As someone who is just getting into RubyCocoa (and Cocoa all together for that matter), I thought I’d document
+once and for all the process I took to get it working.&lt;&#x2F;p&gt;
+&lt;p&gt;I am running on Leopard and while 10.5 is supposed to ship with BridgeSupport for most frameworks, the Security
+framework must have been left out. After playing around with using other frameworks (such as the AddressBook framework)
+and seeing how they were used, I did a bit of digging in the Apple Developer Documentation (incredible resource for
+anyone starting out) and stumbled across this gem: &lt;a href=&quot;https:&#x2F;&#x2F;developer.apple.com&#x2F;library&#x2F;archive&#x2F;documentation&#x2F;Cocoa&#x2F;Conceptual&#x2F;RubyPythonCocoa&#x2F;Articles&#x2F;GenerateFrameworkMetadata.html#&#x2F;&#x2F;apple_ref&#x2F;doc&#x2F;uid&#x2F;TP40005426-SW9&quot;&gt;Generate Framework
+Metadata&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;After reading this, I was accessing the keychain within 5 minutes.  Here’s how:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Run the following commands (first one will take some time):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;gen_bridge_metadata -f&lt;&#x2F;span&gt;&lt;span&gt; Security&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; Security.bridgesupport
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mkdir -p&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;Library&#x2F;BridgeSupport
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mv&lt;&#x2F;span&gt;&lt;span&gt; Security.bridgesupport &#x2F;Library&#x2F;BridgeSupport
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Open an IRB session to test it:&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;require &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;osx&#x2F;cocoa&amp;#39;                           &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#=&amp;gt; true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;OSX&lt;&#x2F;span&gt;&lt;span&gt;.require_framework &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Security&amp;#39;              &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#=&amp;gt; true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;defined? &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;OSX&lt;&#x2F;span&gt;&lt;span&gt;::SecKeychainAddGenericPassword() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#=&amp;gt; &amp;quot;method&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Hoorah! Two steps! Well, one because the second one was just testing… Now go make password-able RubyCocoa application! I
+am not sure how to pull this off with deployable apps but I suggest your apps could ship with the file or run those
+commands on first-run or if the Security.bridgesupport file doesn’t exist. Note: I have not tested either of those
+scenarios, but I would guess the latter would be more reliable for cross-version development (i.e. Tiger + Leopard)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how-to-use-these-methods&quot;&gt;How to use these methods&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Require needed libraries
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;require &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;osx&#x2F;cocoa&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;OSX
+&lt;&#x2F;span&gt;&lt;span&gt;require_framework &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Security&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Set up some relevant variables
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;service &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Test Service&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;account &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;MyUsername&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;MyPassword&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Add password to default keychain (first param)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;SecKeychainAddGenericPassword&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil&lt;&#x2F;span&gt;&lt;span&gt;, service.length, service, account.length, account, password.length, password, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Finding a password in default keychain (first param)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;status, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;SecKeychainFindGenericPassword&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil&lt;&#x2F;span&gt;&lt;span&gt;, service.length, service, account.length, account)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Password-related data
+&lt;&#x2F;span&gt;&lt;span&gt;password_length &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password.shift &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# =&amp;gt; 10
+&lt;&#x2F;span&gt;&lt;span&gt;password_data &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password.shift &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# OSX::ObjcPtr object
+&lt;&#x2F;span&gt;&lt;span&gt;password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password_data.bytestr(password_length)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# The last item is another OSX::ObjcPtr. I haven&amp;#39;t figured
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# out how to cast or use this yet but will post when I&amp;#39;ve
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# figured it out
+&lt;&#x2F;span&gt;&lt;span&gt;keychain_item &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password.shift
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Yay it works! You can also check the password exists
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# in the Keychain Access utility. I&amp;#39;ve confirmed that
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# this works
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt; password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# =&amp;gt; &amp;quot;MyPassword&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;update-4-8-08-below-is-a-fix-for-the-rexml-bug-some-people-have&quot;&gt;[UPDATE 4&#x2F;8&#x2F;08]: Below is a fix for the REXML bug some people have&lt;&#x2F;h3&gt;
+&lt;p&gt;been getting (myself included)&lt;&#x2F;p&gt;
+&lt;p&gt;There is good news for anyone that has been getting the following error:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;undefined local variable or method `trans’ for &amp;lt;UNDEFINED&amp;gt; … &amp;lt;&#x2F;&amp;gt;:REXML::Document
+&lt;&#x2F;span&gt;&lt;span&gt;Usage: gen_bridge_metadata [options] &amp;lt;headers…&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There is a very simple fix. This is caused by a typo in the source of REXML. It’s such a massive bug I can’t believe it
+made it into the release of Ruby but i did some poking around and it looks like they renamed a method and didn’t change
+all references to it.&lt;&#x2F;p&gt;
+&lt;p&gt;There are two ways to fix it: patching REXML and patching &lt;code&gt;gen_bridge_metadata&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Personally I prefer patching the generator for peace of mind and I submitted the patch upstream, but never heard back.&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;patching-gen-bridge-metadata&quot;&gt;Patching &lt;code&gt;gen_bridge_metadata&lt;&#x2F;code&gt;&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;code&gt;&#x2F;usr&#x2F;bin&#x2F;gen_bridge_metadata&lt;&#x2F;code&gt; and find the method definition for
+&lt;code&gt;generate_xml&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Replace &lt;code&gt;0&lt;&#x2F;code&gt; in the &lt;code&gt;xml_document.write()&lt;&#x2F;code&gt; with &lt;code&gt;-1&lt;&#x2F;code&gt; (both occurrences)&lt;&#x2F;li&gt;
+&lt;li&gt;Save!&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h4 id=&quot;patching-rexml&quot;&gt;Patching REXML&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Open
+&lt;code&gt;&#x2F;System&#x2F;Library&#x2F;Frameworks&#x2F;Ruby.framework&#x2F;Versions&#x2F;1.8&#x2F;usr&#x2F;lib&#x2F;ruby&#x2F;1.8&#x2F;rexml&#x2F;document.rb&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Find the line that has &lt;code&gt;if trans&lt;&#x2F;code&gt; and change it to &lt;code&gt;if transitive&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Save!&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
+</feed>

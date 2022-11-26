@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - rails</title>
+	<link href="https://bjeanes.com/tags/rails/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2013-03-14T15:37:12+00:00</updated>
+	<id>https://bjeanes.com/tags/rails/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Factories breed complexity</title>
+		<published>2012-02-26T19:22:56+00:00</published>
+		<updated>2012-03-06T05:26:08+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/factories-breed-complexity/" type="text/html"/>
+		<id>https://bjeanes.com/posts/factories-breed-complexity/</id>
+		<content type="html">&lt;p&gt;&lt;strong&gt;Important: A big aspect of this post was the comments. My new blog doesn&#x27;t have comments so until I find a way to
+capture them here, please &lt;a href=&quot;https:&#x2F;&#x2F;web.archive.org&#x2F;web&#x2F;20220528193024&#x2F;https:&#x2F;&#x2F;bjeanes.com&#x2F;2012&#x2F;02&#x2F;factories-breed-complexity#comments&quot;&gt;view the old version via Wayback
+Machine&lt;&#x2F;a&gt;.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Having maintainable code is great. Maintainable code allows you to deliver improvements faster, happier, and more
+reliably.&lt;&#x2F;p&gt;
+&lt;p&gt;Furthermore, the measures that developers need to take and the strategies that we have to employ to achieve maintainable
+code have been understood for years, if not decades. Especially in the realm of object-oriented programming, but
+certainly not exclusively, most of these principles boil down to reducing coupling and system complexity. A system whose
+parts are coupled as loosely as possible is a modular system; the parts know little of each other and a lot about
+themselves and they have thin and specific interfaces between each other.&lt;&#x2F;p&gt;
+&lt;p&gt;Test-driven development is one of the many tools at a developer&#x27;s disposal to achieve code quality. Unfortunately, there
+is a lot of naïveté around the benefits of TDD. A lot of developers see TDD as primarily a tool for verifying system
+correctness. While TDD does of course offer this benefit, and arguably better than retroactive automated testing, the
+real benefit of TDD is that it offers short feedback loops that guide the design&#x2F;architecture of the system.&lt;&#x2F;p&gt;
+&lt;p&gt;Since it is accepted that a loosely-coupled modular system is a simpler system, it stands that tools, such as TDD, which
+guide a design towards modularity and simplicity are good tools. A module that is tightly coupled to another is not
+easily tested in isolation. However, if the isolated tests are written first, it is difficult to write a passing
+implementation for that module that maintains such a low degree of coupling. Therefore, good TDD should guide you
+towards a simpler design (though it is certainly not the only way).&lt;&#x2F;p&gt;
+&lt;p&gt;Unfortunately, factories work against this goal. Factories debilitate TDD&#x27;s ability to give you feedback into the
+complexity of your design.&lt;&#x2F;p&gt;
+&lt;p&gt;To be clear, I am not talking about the &lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Factory_method_pattern&quot;&gt;Factory Method Pattern&lt;&#x2F;a&gt; or
+the &lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Abstract_factory_pattern&quot;&gt;Abstract Factory Pattern&lt;&#x2F;a&gt; — both of which can be described
+as ways to &lt;q src=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Object_creation#Creating_objects&quot;&gt;decouple a particular implementation
+of an object from code for the creation of such an object&lt;&#x2F;q&gt;
+(&lt;cite&gt;&lt;a href=&quot;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Object_creation#Creating_objects&quot;&gt;Wikipedia&lt;&#x2F;a&gt;&lt;&#x2F;cite&gt;). Instead, I am talking about
+the &amp;quot;factories&amp;quot; for replacing fixtures in tests — something which has seemingly obsessed the Ruby (Rails, especially)
+community. The two primary Ruby libraries for factory-based fixture replacement are
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;thoughtbot&#x2F;factory_girl&quot;&gt;factory_girl&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;notahat&#x2F;machinist&quot;&gt;Machinist&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;A tool such as Machinist or factory_girl &lt;q&gt;generates data for the attributes you don&#x27;t care about, and constructs any
+necessary associated objects, leaving you to specify only the fields you care about in your test&lt;&#x2F;q&gt; (from Machinist&#x27;s
+own &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;notahat&#x2F;machinist&#x2F;blob&#x2F;master&#x2F;README.markdown&quot;&gt;README file&lt;&#x2F;a&gt;). This sounds nice at first, because
+it makes your tests more readable and relevant. However, behind the scenes, these tools are still creating other objects
+and entities and introducing them into your test environment. By having data and objects in tests that are irrelevant to
+the functionality that is being tested (in &lt;em&gt;isolation&lt;&#x2F;em&gt;, remember), a developer creates an environment that permits, if
+not invites, silent dependencies to creep into an implementation.&lt;&#x2F;p&gt;
+&lt;p&gt;Furthermore, and perhaps more significantly, by creating objects (and usually entire &lt;em&gt;hierarchies&lt;&#x2F;em&gt; of objects) with such
+ease and opacity, you are outright masking the dependencies (*cough* complexity *cough* coupling) between your
+implementation and those entities. If forced to stub out all those intricacies, the system complexity would be
+screamingly obvious and a developer would quickly avail herself of a rewrite to reduce complexity or thin out the
+interface.&lt;&#x2F;p&gt;
+&lt;p&gt;Instead of having feedback that guides a developer to simplicity, fixture factories seem to guide developers to
+complexity by masking dependencies as one-line simplicity. In fact, that one (or five, whatever) line setup is a shotgun
+blast of environmental dependencies that are hidden from the architect. That complexity will come back for revenge after
+being ignored for so long.&lt;&#x2F;p&gt;
+&lt;p&gt;It seems that factory_girl and Machinist exist to make testing components more convenient. This is, at face value, an
+admirable and desirable goal. However, in unit tests, the cost is too high for any system of considerable size.&lt;&#x2F;p&gt;
+&lt;p&gt;Please, do the right thing and avoid the convenience and &amp;quot;fun&amp;quot; of the factory_girl temptress. You will trend towards a
+simpler system and as a bonus (in fact, an incredible one) your test suite will likely be exponentially faster which, in
+turn, will breed simplicity by letting you have more feedback more often.&lt;&#x2F;p&gt;
+&lt;p&gt;P.S. It shouldn&#x27;t go without mention that factories can be absolutely awesome for integration tests. Integration tests
+aren&#x27;t used for guiding system design nor testing in isolation so the drawbacks of these tools drop away. However, both
+factory_girl and Machinist use RSpec as some of their very first usage examples and this troubles me deeply.&lt;&#x2F;p&gt;
+&lt;p&gt;P.P.S. A lot of these arguments can be applied to fixtures too. However, they usually don&#x27;t create hordes of objects
+invisibly and litter your environment with them. Also, they aren&#x27;t as slow. But yes, the fewer factories &lt;em&gt;and&lt;&#x2F;em&gt; fixtures
+in a test, the better.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Update for clarity&lt;&#x2F;strong&gt;: Firstly, I am absolutely just talking about unit tests. If you are testing code that
+&lt;em&gt;integrates&lt;&#x2F;em&gt; with ActiveRecord or number of levels of your stack, then factories and fixtures are certainly defensible
+(though I still prefer to steer clear). Secondly, I&#x27;ve tried to be careful about where I use the words simple, easy,
+complex, and difficult. For the definitions that I intend, please watch (at least the first 10 minutes of) &lt;a href=&quot;http:&#x2F;&#x2F;www.infoq.com&#x2F;presentations&#x2F;Simple-Made-Easy&quot;&gt;Simple Made
+Easy&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Selector-Free Cucumber Scenarios</title>
+		<published>2010-09-19T13:53:00+00:00</published>
+		<updated>2013-03-14T15:37:12+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/selector-free-cucumber-scenarios/" type="text/html"/>
+		<id>https://bjeanes.com/posts/selector-free-cucumber-scenarios/</id>
+		<content type="html">&lt;p&gt;&lt;small&gt;(a Serbo-Croation translation by Anja Skrbaa is available &lt;a href=&quot;http:&#x2F;&#x2F;science.webhostinggeeks.com&#x2F;selektor-free&quot;&gt;here&lt;&#x2F;a&gt;)&lt;&#x2F;small&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I’ve been using Cucumber since pretty much the first day I heard about it. I’ve worked on a lot of projects that have
+relied on it’s presence for reliable development. Therefore, I’ve put a lot of effort into perfecting my Cucumber
+infrastructure to make this fantastic tool even better. I’m going to share one such morsel of code that makes developing
+with Cucumber even greater.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h2&gt;
+&lt;p&gt;I’ve worked on a lot of web applications and, as I’m sure many of you know, quite often the development of a web
+application is focussed on the functionality foremost, and the interface and style is incorporated later. It may be that
+the client doesn’t yet know the feel they want for their project or that they want to focus their budget towards
+prototyping the application first.&lt;&#x2F;p&gt;
+&lt;p&gt;This is fine, except for the fact that changing the HTML and CSS of a web application after a lot of functionality has
+been developed is a fantastic way to break all your integration tests.&lt;&#x2F;p&gt;
+&lt;p&gt;This is particularly true if you have scenarios like the following contrived one:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;When I fill in &amp;quot;Username&amp;quot; with &amp;quot;bjeanes&amp;quot; within &amp;quot;.main-panel form#signup-form&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;And I press &amp;quot;Sign up!&amp;quot; within &amp;quot;.main-panel form#signup-form&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;Then I should see &amp;quot;You have successfully signed up&amp;quot; within &amp;quot;.flash.notice&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The problem is, of course, that designers might change the HTML that used to be &lt;code&gt;.main-panel form#signup-form&lt;&#x2F;code&gt; into
+something sexier and more semantic.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-solution&quot;&gt;The Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;This problem is not unlike an already-solved one; we’ve all moved away from hardcoding URLs like &amp;quot;&#x2F;users&#x2F;new&amp;quot; into our
+views and Cucumber scenarios and replacing them with &lt;code&gt;new_user_path&lt;&#x2F;code&gt; and &lt;code&gt;the signup page&lt;&#x2F;code&gt;, respectively.&lt;&#x2F;p&gt;
+&lt;p&gt;So why not apply the same formula that &lt;code&gt;paths.rb&lt;&#x2F;code&gt; uses for removing URLs from scenarios to our situation with selectors?&lt;&#x2F;p&gt;
+&lt;p&gt;Here’s what I add to all new projects:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# I&amp;#39;m in features&#x2F;step_definitions&#x2F;web_ext_steps.rb
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^(.*) within ([^:&amp;quot;]+)$&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;step&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;|
+&lt;&#x2F;span&gt;&lt;span&gt;  with_scope(selector_for(scope)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When&lt;&#x2F;span&gt;&lt;span&gt; step
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Multi-line version of above
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;^(.*) within ([^:&amp;quot;]+):$&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;step&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;table_or_string&lt;&#x2F;span&gt;&lt;span&gt;|
+&lt;&#x2F;span&gt;&lt;span&gt;  with_scope(selector_for(scope)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;#{step}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;:&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;, table_or_string
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# I&amp;#39;m in features&#x2F;support&#x2F;selectors.rb
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;module &lt;&#x2F;span&gt;&lt;span&gt;HtmlSelectorsHelper
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;selector_for&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;scope&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;case&lt;&#x2F;span&gt;&lt;span&gt; scope
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;the body&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;html &amp;gt; body&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;raise &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Can&amp;#39;t find mapping from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;#{scope}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; to a selector.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#56b6c2;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Now, go and add a mapping in &lt;&#x2F;span&gt;&lt;span&gt;#{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;__FILE__&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;World&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;HtmlSelectorsHelper&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;applying-the-solution&quot;&gt;Applying the Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;My previous example of the flawed Cucumber scenario now becomes:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;When I&lt;&#x2F;span&gt;&lt;span&gt; fill &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Username&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;bjeanes&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; within the sign up form
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;And I&lt;&#x2F;span&gt;&lt;span&gt; press &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Sign up!&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; within the sign up form
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;Then I&lt;&#x2F;span&gt;&lt;span&gt; should see &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;You have successfully signed up&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt; within the notice flash
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And the &lt;code&gt;selectors.rb&lt;&#x2F;code&gt; case statement gets the following additions:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;case
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# ...
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;the sign up form&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;.main-panel form#signup-form&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;when &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&#x2F;the (notice|error|info) flash&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;.flash.&lt;&#x2F;span&gt;&lt;span&gt;#{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$1&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Notice how the scenario now identifies things on our page by their semantic identifiers, not by brittle CSS or XPath
+locations which are prone to change. As a bonus, now &lt;del&gt;if&lt;&#x2F;del&gt; when they do change, the paths only need to be
+updated in a single location in our Cucumber test suite!&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;patching-cucumber&quot;&gt;Patching Cucumber&lt;&#x2F;h2&gt;
+&lt;p&gt;I feel pretty strongly that CSS and XPath don’t belong in our feature files because not only does it encourage brittle
+tests (as shown above), but also because those selectors are entirely irrelevant to end users, and that’s kind of the
+main point of using a natural language DSL to describe our integration tests, i.e. putting on the user shoes.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;del&gt;I’d really like to patch this back into Cucumber, and I entirely plan to do so, providing I get the time.&lt;&#x2F;del&gt;
+I got the time, and here is my &lt;a href=&quot;http:&#x2F;&#x2F;github.com&#x2F;aslakhellesoy&#x2F;cucumber-rails&#x2F;pull&#x2F;63&quot;&gt;pull request&lt;&#x2F;a&gt; to have it merged.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;expanding-the-solution&quot;&gt;Expanding the Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;You’ll note my &lt;code&gt;HtmlSelectorsHelper&lt;&#x2F;code&gt; module only accommodates CSS selectors. That’s only because I have never needed
+XPath in this context. It’d be very simple to modify my examples to do so, though, with a combination of multiple return
+values and a splat. That’s an exercise for the reader (or me if I end up patching Cucumber).&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;final-word&quot;&gt;Final Word&lt;&#x2F;h2&gt;
+&lt;p&gt;I apologise for the length of this article, but I congratulate you for making it all the way through it!&lt;&#x2F;p&gt;
+&lt;p&gt;I now have so many blog post ideas lined up that I’ve had to create a new category in Things.app just to hold them all.
+This means that I’ll be striving to get a few more posts done and out the door in the next few weeks, including a
+performance comparison of different data encapsulations for web application APIs on the iPhone (i.e. is it better to use
+Plists, JSON, or XML?) and a post on why I think there should be 8 RESTful actions, not the 7 that Rails prescribes by
+default.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Using partial layouts to DRY out your views</title>
+		<published>2009-11-05T00:59:00+00:00</published>
+		<updated>2011-08-28T21:28:55+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/using-partial-layouts-to-dry-out-your-views/" type="text/html"/>
+		<id>https://bjeanes.com/posts/using-partial-layouts-to-dry-out-your-views/</id>
+		<content type="html">&lt;p&gt;The other day we got some HTML from the designer of one of our clients to implement as the new UI for an app we are
+building at work. Overall the HTML was good but implementing it started to feel like I was repeating myself.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, around all the apps form the client’s design had a rounded white box, the HTML of which went something like
+this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;content-wht&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;content-wht-inside&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;fieldset&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;frow&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Currency:&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;select &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;fs&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;option&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;EUR&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;option&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;select&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;frow frlast&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;File:&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;file&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;fieldset&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;cround&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;align&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;center&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;img &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;src&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&#x2F;images&#x2F;round-corners-bottom.gif&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;alt&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It’s a lot of &lt;code&gt;div&lt;&#x2F;code&gt; tags to have to repeat around every form that has this style. Luckily a nice feature of Rails
+partials can help out.  Create a shared partial file that will act as a layout like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;erb&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-erb &quot;&gt;&lt;code class=&quot;language-erb&quot; data-lang=&quot;erb&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&amp;lt;!-- app&#x2F;views&#x2F;shared&#x2F;_fieldset.html.erb --&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;content-wht&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;content-wht-inside&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;fieldset&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;lt;%= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;yield &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;fieldset&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;cround&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;align&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;center&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;img &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;src&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&#x2F;images&#x2F;round-corners-bottom.gif&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;alt&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then in your views that need to have this white box, simply wrap your content in that layout like so:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;erb&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-erb &quot;&gt;&lt;code class=&quot;language-erb&quot; data-lang=&quot;erb&quot;&gt;&lt;span&gt;&amp;lt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;render &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:layout &lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;shared&#x2F;fieldset&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;frow&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Currency:&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;select &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;fs&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;option&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;EUR&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;option&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;select&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;frow frlast&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;File:&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;file&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&amp;lt;!-- Or, if the inner content is already in a partial --&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;%= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;render&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:partial &lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;form&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:layout &lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;shared&#x2F;fieldset&amp;#39; &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Using fields_for can generate invalid HTML</title>
+		<published>2009-07-30T03:47:00+00:00</published>
+		<updated>2011-08-28T20:39:47+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/using-fields-for-can-generate-invalid-html/" type="text/html"/>
+		<id>https://bjeanes.com/posts/using-fields-for-can-generate-invalid-html/</id>
+		<content type="html">&lt;p&gt;Just a quick post so show you how &lt;code&gt;fields_for&lt;&#x2F;code&gt; form helper can cause invalid HTML when used in combination with
+&lt;code&gt;accepts_nested_attributes_for&lt;&#x2F;code&gt; in your views.&lt;&#x2F;p&gt;
+&lt;p&gt;If you are for any reason editing&#x2F;creating your child objects in a tabular form, your view might look something like
+this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;erb&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-erb &quot;&gt;&lt;code class=&quot;language-erb&quot; data-lang=&quot;erb&quot;&gt;&lt;span&gt;&amp;lt;% form_for(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;@todo_list&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;| %&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;%= f.label      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:name &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;%= f.text_field &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:name &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;h3&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;To Do Items:&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;h3&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;table&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;thead&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;To Do Item&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Due Date&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Done?&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;thead&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tbody&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;% f.fields_for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:items &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span&gt;|&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;item&lt;&#x2F;span&gt;&lt;span&gt;| %&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;%= item.text_field &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:content &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;%= item.text_field &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:due_date &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;%= item.check_box  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:done &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tbody&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;table&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;%= f.submit &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Save&amp;#39; &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end &lt;&#x2F;span&gt;&lt;span&gt;%&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;At first glance this looks fine. However, when the &lt;code&gt;ToDoList&lt;&#x2F;code&gt; model has &lt;code&gt;accepts_nested_attributes_for :items&lt;&#x2F;code&gt;, the
+&lt;code&gt;fields_for&lt;&#x2F;code&gt; helper also outputs a hidden field for each existing &lt;code&gt;Item&lt;&#x2F;code&gt; instance with it’s ID.&lt;&#x2F;p&gt;
+&lt;p&gt;This means that we get the following HTML:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;form &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;action&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&#x2F;to_do_lists&#x2F;1&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;edit_to_do_list&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;edit_to_do_list_1&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;method&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;post&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;style&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;margin:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;padding:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;display:inline&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;_method&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;put&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;authenticity_token&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;CE2jyRoewbwsqu4eX8AFWFqsgrMfCN35Jzy6b43MhsA=&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;div&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_name&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Name&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;label&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_name&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[name]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;30&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;text&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Sup&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;h3&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;To Do Items:&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;h3&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;table&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;thead&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;To Do Item&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Due Date&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Done?&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;th&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;thead&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tbody&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_0_id&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][0][id]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;1&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_0_content&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][0][content]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;30&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;text&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;arst&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_0_due_date&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][0][due_date]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;30&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;text&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;2009-07-30&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][0][done]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;0&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_0_done&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][0][done]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;checkbox&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;1&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_1_id&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][1][id]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;2&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_1_content&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][1][content]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;30&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;text&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;arst&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_1_due_date&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][1][due_date]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;size&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;30&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;text&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;2009-07-30&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][1][done]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;0&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_1_done&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][1][done]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;checkbox&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;1&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;td&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tbody&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;table&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_submit&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;commit&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;submit&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Save&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;form&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The keen eye will notice the hidden &lt;code&gt;&amp;lt;input&amp;gt;&lt;&#x2F;code&gt; tags that are direct children of the &lt;code&gt;tbody&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tbody&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_0_id&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][0][id]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;1&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&amp;lt;!-- clip! --&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;input &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list_items_attributes_1_id&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;to_do_list[items_attributes][1][id]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;hidden&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;2&amp;quot; &lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&amp;lt;!-- clip! --&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tr&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tbody&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This is not a valid place for an &lt;code&gt;&amp;lt;input&amp;gt;&lt;&#x2F;code&gt; tag.&lt;&#x2F;p&gt;
+&lt;p&gt;I’ve put an example project demonstrating this on &lt;a href=&quot;http:&#x2F;&#x2F;github.com&#x2F;bjeanes&#x2F;fields_for_invalid_html&quot;&gt;my GitHub&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Using accepts_nested_attributes_for When the Child Object validates_presence_of Parent</title>
+		<published>2009-07-06T04:45:00+00:00</published>
+		<updated>2011-08-28T21:10:08+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/using-accepts-nested-attributes-for-when-the-child-object-validates-presence-of-parent/" type="text/html"/>
+		<id>https://bjeanes.com/posts/using-accepts-nested-attributes-for-when-the-child-object-validates-presence-of-parent/</id>
+		<content type="html">&lt;p&gt;I came across an interesting dilemma today in Rails 2.3 whilst trying to
+use &lt;code&gt;accepts_nested_attributes_for&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;The models I have were:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;Organization &amp;lt; ActiveRecord::Base
+&lt;&#x2F;span&gt;&lt;span&gt;  has_many &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:users
+&lt;&#x2F;span&gt;&lt;span&gt;  accepts_nested_attributes_for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:users
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;User &amp;lt; ActiveRecord::Base
+&lt;&#x2F;span&gt;&lt;span&gt;  belongs_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:organization
+&lt;&#x2F;span&gt;&lt;span&gt;  validates_presence_of &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:organization
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I had an “Organization” creation form which allowed an administrator to
+create an Organization and an initial user for it. However, even though
+I had filled in all the required fields to pass the validations I was
+constantly getting the following error: &lt;code&gt;Organization can not be blank&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Digging deeper I found that when an object is added to an association
+via the &lt;code&gt;association.build&lt;&#x2F;code&gt; method, the parent object
+isn’t actually set:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt; o &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;Organization&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;new&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:name &lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Test&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#&amp;lt;Organization id: nil, name: &amp;quot;Test&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt; u &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; o.users.build(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:name &lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Test User&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#&amp;lt;User id: nil, organization_id: nil, name: &amp;quot;Test User&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt; u.organization
+&lt;&#x2F;span&gt;&lt;span&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Apparently this flaw also applies to
+&lt;code&gt;accepts_nested_attributes_for&lt;&#x2F;code&gt;. When I send through the
+User &lt;code&gt;params&lt;&#x2F;code&gt; through from my form normally with the
+&lt;code&gt;Organization&lt;&#x2F;code&gt; params, it creates the
+&lt;code&gt;User&lt;&#x2F;code&gt; object in the &lt;code&gt;users&lt;&#x2F;code&gt; association
+as you’d expect, but raises a validation error because the
+&lt;code&gt;User&lt;&#x2F;code&gt; instance doesn’t recognise that it is has a parent
+&lt;code&gt;Organization&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;My quick 5 minute fix was to modify the &lt;code&gt;Organization&lt;&#x2F;code&gt;
+model thusly:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;Organization &amp;lt; ActiveRecord::Base
+&lt;&#x2F;span&gt;&lt;span&gt;  has_many &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:users
+&lt;&#x2F;span&gt;&lt;span&gt;  accepts_nested_attributes_for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:users
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;users_attributes_with_self_assignment=&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;attributes&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.users_attributes_without_self_assignment &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; attributes
+&lt;&#x2F;span&gt;&lt;span&gt;    users.each { |&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u&lt;&#x2F;span&gt;&lt;span&gt;| u.organization &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self &lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;  alias_method_chain &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:users_attributes=&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:self_assignment
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Related Rails bugs seem to be
+&lt;a href=&quot;https:&#x2F;&#x2F;rails.lighthouseapp.com&#x2F;projects&#x2F;8994-ruby-on-rails&#x2F;tickets&#x2F;1943&quot;&gt;here&lt;&#x2F;a&gt;
+and
+&lt;a href=&quot;https:&#x2F;&#x2F;rails.lighthouseapp.com&#x2F;projects&#x2F;8994-ruby-on-rails&#x2F;tickets&#x2F;2815&quot;&gt;here&lt;&#x2F;a&gt;.
+&lt;a href=&quot;https:&#x2F;&#x2F;rails.lighthouseapp.com&#x2F;projects&#x2F;8994&#x2F;tickets&#x2F;1619-patch-support-for-inverse-option-in-associations&quot;&gt;This
+patch&lt;&#x2F;a&gt;
+will also solve the problem and is currently &lt;a href=&quot;http:&#x2F;&#x2F;github.com&#x2F;rails&#x2F;rails&#x2F;commit&#x2F;ccea98389abbf150b886c9f964b1def47f00f237&quot;&gt;in
+edge&lt;&#x2F;a&gt;,
+but didn’t make it in time for Rails 2.3.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Using fields_for with Nested Attributes, Calling it Multiple Times</title>
+		<published>2009-07-03T07:01:00+00:00</published>
+		<updated>2011-08-28T21:12:55+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/using-fields-for-with-nested-attributes-calling-it-multiple-times/" type="text/html"/>
+		<id>https://bjeanes.com/posts/using-fields-for-with-nested-attributes-calling-it-multiple-times/</id>
+		<content type="html">&lt;p&gt;There has been quite an annoying problem that has been bugging
+&lt;a href=&quot;http:&#x2F;&#x2F;twitter.com&#x2F;chendo&quot;&gt;@chendo&lt;&#x2F;a&gt; and I today.&lt;&#x2F;p&gt;
+&lt;p&gt;In short, &lt;a href=&quot;http:&#x2F;&#x2F;api.rubyonrails.org&#x2F;classes&#x2F;ActionView&#x2F;Helpers&#x2F;FormHelper.html#M001895&quot;&gt;&lt;code&gt;fields_for&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; when used with &lt;code&gt;accepts_nested_attributes_for&lt;&#x2F;code&gt;does not reset it’s index when it’s called multiple times for the same attribute.&lt;&#x2F;p&gt;
+&lt;p&gt;Our scenario was the following:&lt;&#x2F;p&gt;
+&lt;p&gt;We had a 3 levels of hierarchical data that we had to display in a
+&lt;code&gt;&amp;lt;table&amp;gt;&lt;&#x2F;code&gt;. Because of the nature of the data we were
+displaying one level as columns and the other level as rows.
+Unfortunately, HTML mandates that we group everything by rows — each
+column is really just a single cell. This means that we have to iterate
+over the “column” values not just once, but once for every row.&lt;&#x2F;p&gt;
+&lt;p&gt;Now, &lt;code&gt;fields_for&lt;&#x2F;code&gt; takes care of naming your
+&lt;code&gt;&amp;lt;input&amp;gt;&lt;&#x2F;code&gt; tags magically with the correct indexes so that
+your models can accept the params directly and magic happens. However,
+evidently calling &lt;code&gt;fields_for&lt;&#x2F;code&gt; multiple times was not
+part of the original intention, and it seems resetting the index after
+each call was neglected.&lt;&#x2F;p&gt;
+&lt;p&gt;`chendo couldn&#x27;t see a cleaner way of doing this so we added our own option to reset the index. We didn&#x27;t just override the behaviour in case there is a good reason to leave it, but here is our code:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;ActionView::Helpers::FormBuilder
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;fields_for_with_nested_attributes_with_index_reset&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;association_name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;block&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; args.last.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_a?&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;Hash&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt; args.last[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:reset_index&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;@nested_child_index &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    fields_for_without_nested_attributes_without_index_reset(association_name, args, block)
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  alias_method_change &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:fields_for_with_nested_attributes&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:index_reset
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>

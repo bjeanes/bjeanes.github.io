@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - obj-c</title>
+	<link href="https://bjeanes.com/tags/obj-c/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2011-08-28T21:24:26+00:00</updated>
+	<id>https://bjeanes.com/tags/obj-c/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Generating Sound from Sine Waves on the iPhone</title>
+		<published>2009-06-29T11:31:00+00:00</published>
+		<updated>2011-08-28T21:24:26+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/generating-sound-from-sine-waves-on-the-iphone/" type="text/html"/>
+		<id>https://bjeanes.com/posts/generating-sound-from-sine-waves-on-the-iphone/</id>
+		<content type="html">&lt;p&gt;A few months ago I saw this extremely addictive flash game&#x2F;toy called
+&lt;a href=&quot;http:&#x2F;&#x2F;lab.andre-michelle.com&#x2F;tonematrix&quot;&gt;ToneMatrix&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;My immediate thought was: &amp;quot;This would make quite possibly the coolest iPhone application ever.&amp;quot;&lt;&#x2F;p&gt;
+&lt;p&gt;So my good friend, &lt;a href=&quot;http:&#x2F;&#x2F;twitter.com&#x2F;sync1983&quot;&gt;Anthony Mittaz&lt;&#x2F;a&gt;, and I
+decided to have a crack at it but hit one immediate hurdle; however
+proficient an iPhone developer Anthony is, he hadn’t done anything to do
+with sound, and nor had I, in &lt;em&gt;any&lt;&#x2F;em&gt; language&#x2F;framework, let alone on the
+iPhone. Let me tell you this: Apple’s documentation in this area is
+severely lacking. Tangent: well, almost all Apple documentation on
+specialised things is pretty sparse.&lt;&#x2F;p&gt;
+&lt;p&gt;I think we spent about two weeks’ worth of nights reading documentation,
+source code (Cocoa, iPhone, Java, C, and others), and plain outright
+stabbing in the dark code-wise getting not much more than ugly pops and
+crackles. Whenever we thought we had a clean note working, we’d change
+the frequency to what &lt;strong&gt;should&lt;&#x2F;strong&gt; be another nice clean note, and would
+instead get ear-shattering screeches.&lt;&#x2F;p&gt;
+&lt;p&gt;Nonetheless we persevered and were even able to come up with a nifty
+little piece of code that could take an array of frequencies and play
+them together in what could be made to sound like a pleasant chord.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is the relevant code:&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;code&quot;&gt;Code&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;TonePlayer.h&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;objective-c&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-objective-c &quot;&gt;&lt;code class=&quot;language-objective-c&quot; data-lang=&quot;objective-c&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;lt;Foundation&#x2F;Foundation.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;lt;AudioUnit&#x2F;AudioUnit.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;lt;math.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;kTonesAvailable &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;16
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;kOutputBus &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;kInputBus &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span&gt;kNumChannels &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;@interface &lt;&#x2F;span&gt;&lt;span&gt;TonePlayer &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span&gt;NSObject {
+&lt;&#x2F;span&gt;&lt;span&gt;  AudioComponentInstance audioUnit;
+&lt;&#x2F;span&gt;&lt;span&gt;  AudioStreamBasicDescription audioFormat;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; phase[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kTonesAvailable&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kTonesAvailable&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;-(OSStatus)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;start&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;-(OSStatus)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;stop&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;-(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;resetFrequencies&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;-(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;cleanUp&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;-(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;intialiseAudio&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;@end
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Some C function headers to get arount compile errors while I refactor to be more readable
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;phaseOffsetFromFrequency&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;OSStatus &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;RenderCallback&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void*&lt;&#x2F;span&gt;&lt;span&gt;, AudioUnitRenderActionFlags&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; AudioTimeStamp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;UInt32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;UInt32&lt;&#x2F;span&gt;&lt;span&gt;, AudioBufferList&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;TonePlayer.m&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;objective-c&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-objective-c &quot;&gt;&lt;code class=&quot;language-objective-c&quot; data-lang=&quot;objective-c&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;#import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;TonePlayer.h&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;typedef struct &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;@defs&lt;&#x2F;span&gt;&lt;span&gt;(TonePlayer);
+&lt;&#x2F;span&gt;&lt;span&gt;} SinewaveDef;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;@implementation &lt;&#x2F;span&gt;&lt;span&gt;TonePlayer
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;static float &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;gSampleRate &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;44100.&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;static float&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;111&lt;&#x2F;span&gt;&lt;span&gt;]  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;8.1758&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;8.6620&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;9.1770&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;9.7227&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;10.3009&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;10.9134&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;11.5623&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;12.2499&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;12.9783&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;13.7500&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;14.5676&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;15.4339&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;16.3516&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;17.3239&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;18.3540&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;19.4454&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;20.6017&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;21.8268&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;23.1247&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;24.4997&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;25.9565&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;27.5000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;29.1352&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;30.8677&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32.7032&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;34.6478&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;36.7081&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;38.8909&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;41.2034&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;43.6535&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;46.2493&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;48.9994&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;51.9131&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;55.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;58.2705&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;61.7354&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;65.4064&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;69.2957&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;73.4162&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;77.7817&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;82.4069&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;87.3071&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;92.4986&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;97.9989&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;103.8262&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;110.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;116.5409&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;123.4708&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;130.8128&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;138.5913&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;146.8324&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;155.5635&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;164.8138&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;174.6141&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;184.9972&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;195.9977&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;207.6523&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;220.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;233.0819&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;246.9417&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;261.6256&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;277.1826&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;293.6648&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;311.1270&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;329.6276&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;349.2282&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;369.9944&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;391.9954&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;415.3047&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;440.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;466.1638&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;493.8833&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;523.2511&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;554.3653&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;587.3295&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;622.2540&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;659.2551&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;698.4565&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;739.9888&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;783.9909&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;830.6094&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;880.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;932.3275&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;987.7666&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1046.5023&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1108.7305&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1174.6591&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1244.5079&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1318.5102&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1396.9129&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1479.9777&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1567.9817&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1661.2188&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1760.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1864.6550&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1975.5332&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2093.0045&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2217.4610&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2349.3181&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2489.0159&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2637.0205&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2793.8259&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2959.9554&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;3135.9635&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;3322.4376&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;3520.0000&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;3729.3101&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;3951.0664&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;4186.0090&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;4434.9221&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;4698.6363
+&lt;&#x2F;span&gt;&lt;span&gt;  };
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;OSStatus    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;RenderCallback&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void                          *&lt;&#x2F;span&gt;&lt;span&gt;inRefCon,
+&lt;&#x2F;span&gt;&lt;span&gt;                           AudioUnitRenderActionFlags    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;ioActionFlags,
+&lt;&#x2F;span&gt;&lt;span&gt;                           &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;const&lt;&#x2F;span&gt;&lt;span&gt; AudioTimeStamp          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;inTimeStamp,
+&lt;&#x2F;span&gt;&lt;span&gt;                           UInt32                        inBusNumber,
+&lt;&#x2F;span&gt;&lt;span&gt;                           UInt32                        inNumberFrames,
+&lt;&#x2F;span&gt;&lt;span&gt;                           AudioBufferList               &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;ioData)
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  SinewaveDef&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt; def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; inRefCon;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float *&lt;&#x2F;span&gt;&lt;span&gt;outL &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; ioData-&amp;gt;mBuffers[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mData&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float *&lt;&#x2F;span&gt;&lt;span&gt;outR &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; ioData-&amp;gt;mBuffers[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mData&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; wave, j;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; freqs[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kTonesAvailable&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;memset&lt;&#x2F;span&gt;&lt;span&gt;(freqs, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;sizeof&lt;&#x2F;span&gt;&lt;span&gt;(freqs));
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; i&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; i&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span&gt; inNumberFrames; i&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span&gt;){
+&lt;&#x2F;span&gt;&lt;span&gt;    wave &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    j &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; m &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; m &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kTonesAvailable&lt;&#x2F;span&gt;&lt;span&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span&gt;m) {
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(def-&amp;gt;frequencies[m] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt;(freqs[m] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) freqs[m] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;phaseOffsetFromFrequency&lt;&#x2F;span&gt;&lt;span&gt;(def-&amp;gt;frequencies[m]);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        wave &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0.5 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;sinf&lt;&#x2F;span&gt;&lt;span&gt;(def-&amp;gt;phase[m]);
+&lt;&#x2F;span&gt;&lt;span&gt;        def-&amp;gt;phase[m] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+=&lt;&#x2F;span&gt;&lt;span&gt; freqs[m];
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span&gt;j;
+&lt;&#x2F;span&gt;&lt;span&gt;      }
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    wave &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&#x2F;=&lt;&#x2F;span&gt;&lt;span&gt; j;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;outL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;++ =&lt;&#x2F;span&gt;&lt;span&gt; wave;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;outR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;++ =&lt;&#x2F;span&gt;&lt;span&gt; wave;
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;noErr;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;phaseOffsetFromFrequency&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt; frequency) {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;float&lt;&#x2F;span&gt;&lt;span&gt;)(frequency &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2.0 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt; M_PI &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;gSampleRate&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;-(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;resetFrequencies&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;memset&lt;&#x2F;span&gt;&lt;span&gt;(frequencies, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;sizeof&lt;&#x2F;span&gt;&lt;span&gt;(frequencies));
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;memset&lt;&#x2F;span&gt;&lt;span&gt;(phase, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0.0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;sizeof&lt;&#x2F;span&gt;&lt;span&gt;(phase));
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;-(OSStatus)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;start&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;resetFrequencies&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;  OSStatus status &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioOutputUnitStart&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; See http:&#x2F;&#x2F;www.phys.unsw.edu.au&#x2F;jw&#x2F;notes.html for note numbers
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;60&lt;&#x2F;span&gt;&lt;span&gt;]; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; C
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;64&lt;&#x2F;span&gt;&lt;span&gt;]; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; E
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;67&lt;&#x2F;span&gt;&lt;span&gt;]; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; G
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;sleep&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;64&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;67&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;71&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;sleep&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;74&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;67&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;  frequencies[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; notes[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;70&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; status;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;-(OSStatus)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;stop&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioOutputUnitStop&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;-(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;cleanUp&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioUnitUninitialize&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;-(AudioStreamBasicDescription)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;audioFormat&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; audioFormat;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Below code is a cut down version (for output only) of the code written by
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Micheal &amp;quot;Code Fighter&amp;quot; Tyson (punch on Mike)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; See http:&#x2F;&#x2F;michael.tyson.id.au&#x2F;2008&#x2F;11&#x2F;04&#x2F;using-remoteio-audio-unit&#x2F; for details
+&lt;&#x2F;span&gt;&lt;span&gt;-(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;intialiseAudio&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  OSStatus status;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Describe audio component
+&lt;&#x2F;span&gt;&lt;span&gt;  AudioComponentDescription desc;
+&lt;&#x2F;span&gt;&lt;span&gt;  desc.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;componentType &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitType_Output&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  desc.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;componentSubType &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitSubType_RemoteIO&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  desc.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;componentFlags &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  desc.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;componentFlagsMask &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  desc.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;componentManufacturer &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitManufacturer_Apple&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Get component
+&lt;&#x2F;span&gt;&lt;span&gt;  AudioComponent inputComponent &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioComponentFindNext&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;desc);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Get audio units
+&lt;&#x2F;span&gt;&lt;span&gt;  status &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioComponentInstanceNew&lt;&#x2F;span&gt;&lt;span&gt;(inputComponent, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;audioUnit);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  UInt32 flag &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Enable IO for playback
+&lt;&#x2F;span&gt;&lt;span&gt;  status &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioUnitSetProperty&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioOutputUnitProperty_EnableIO&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitScope_Output&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kOutputBus&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;flag,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;sizeof&lt;&#x2F;span&gt;&lt;span&gt;(flag));
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Describe format
+&lt;&#x2F;span&gt;&lt;span&gt;        audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mSampleRate &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;gSampleRate&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mFormatID &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioFormatLinearPCM&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mFormatFlags &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioFormatFlagsNativeFloatPacked &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioFormatFlagIsNonInterleaved&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mFramesPerPacket &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mBytesPerPacket &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= sizeof&lt;&#x2F;span&gt;&lt;span&gt;(Float32);
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mBytesPerFrame &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= sizeof&lt;&#x2F;span&gt;&lt;span&gt;(Float32);
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mChannelsPerFrame &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kNumChannels&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  audioFormat.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mBitsPerChannel &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;Apply format
+&lt;&#x2F;span&gt;&lt;span&gt;  status &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioUnitSetProperty&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitProperty_StreamFormat&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitScope_Input&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kOutputBus&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;audioFormat,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;sizeof&lt;&#x2F;span&gt;&lt;span&gt;(audioFormat));
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Set up the playback  callback
+&lt;&#x2F;span&gt;&lt;span&gt;  AURenderCallbackStruct callbackStruct;
+&lt;&#x2F;span&gt;&lt;span&gt;  callbackStruct.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;inputProc &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; RenderCallback;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;set the reference to &amp;quot;self&amp;quot; this becomes *inRefCon in the playback callback
+&lt;&#x2F;span&gt;&lt;span&gt;  callbackStruct.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;inputProcRefCon &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  status &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioUnitSetProperty&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitProperty_SetRenderCallback&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kAudioUnitScope_Global&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;kOutputBus&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;callbackStruct,
+&lt;&#x2F;span&gt;&lt;span&gt;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;sizeof&lt;&#x2F;span&gt;&lt;span&gt;(callbackStruct));
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; Initialise
+&lt;&#x2F;span&gt;&lt;span&gt;  status &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;AudioUnitInitialize&lt;&#x2F;span&gt;&lt;span&gt;(audioUnit);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;@end
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I really wish that I could remember how most of it worked, or, more
+importantly, the multitude of projects whose code we had to look at to
+get it working. If you recognise any of the code or can help add
+references on how people can build up a nice list of references for
+people to use if are following a similar pursuit.&lt;&#x2F;p&gt;
+&lt;p&gt;If you are wondering what ever happened to the application we were
+building, it seems we weren’t the only ones who recognised the potential
+of ToneMatrix as an iPhone application. During the 2-3 weeks of us
+developing the sound generation code, about 5-6 ToneMatrix clones were
+added to the AppStore. While most were crap, there was one that we felt
+left little to be improved upon and we therefore recommend everyone goes
+and downloads
+&lt;a href=&quot;http:&#x2F;&#x2F;itunes.apple.com&#x2F;WebObjects&#x2F;MZStore.woa&#x2F;wa&#x2F;viewSoftware?id=313573137&amp;amp;mt=8&quot;&gt;Melodica&lt;&#x2F;a&gt;.
+It’s just as addictive as the Flash version, only portable!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

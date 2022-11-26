@@ -41,6 +41,8 @@
         
         <a href="https://bjeanes.com/posts">Posts</a>
         
+        <a href="https://bjeanes.com/tags">Tags</a>
+        
         <a href="https://bjeanes.com/about">About</a>
         
       </nav>
@@ -119,6 +121,8 @@
     
     <li><a href="https://bjeanes.com/posts">Posts</a></li>
     
+    <li><a href="https://bjeanes.com/tags">Tags</a></li>
+    
     <li><a href="https://bjeanes.com/about">About</a></li>
     
   </ul>
@@ -149,20 +153,15 @@
 
 	<div class="content">
         
-	  <p>There have been a few posts asking how to access and manipulate the
-Keychain from within RubyCocoa but no answers supplied. As someone who
-is just getting into RubyCocoa (and Cocoa all together for that matter),
-I thought I’d document once and for all the process I took to get it
-working.</p>
-<p>I am running on Leopard and while 10.5 is supposed to ship with
-BridgeSupport for most frameworks, the Security framework must have been
-left out. After playing around with using other frameworks (such as the
-AddressBook framework) and seeing how they were used, I did a bit of
-digging in the Apple Developer Documentation (incredible resource for
-anyone starting out) and stumbled across this gem: <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html#//apple_ref/doc/uid/TP40005426">Generate Framework
+	  <p>There have been a few posts asking how to access and manipulate the Keychain from within RubyCocoa but no answers
+supplied. As someone who is just getting into RubyCocoa (and Cocoa all together for that matter), I thought I’d document
+once and for all the process I took to get it working.</p>
+<p>I am running on Leopard and while 10.5 is supposed to ship with BridgeSupport for most frameworks, the Security
+framework must have been left out. After playing around with using other frameworks (such as the AddressBook framework)
+and seeing how they were used, I did a bit of digging in the Apple Developer Documentation (incredible resource for
+anyone starting out) and stumbled across this gem: <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html#//apple_ref/doc/uid/TP40005426-SW9">Generate Framework
 Metadata</a></p>
-<p>After reading this, I was accessing the keychain within 5 minutes.
-Here’s how:</p>
+<p>After reading this, I was accessing the keychain within 5 minutes.  Here’s how:</p>
 <ol>
 <li>
 <p>Run the following commands (first one will take some time):</p>
@@ -175,20 +174,14 @@ Here’s how:</p>
 <p>Open an IRB session to test it:</p>
 </li>
 </ol>
-<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#61afef;">require </span><span style="color:#98c379;">&#39;osx/cocoa&#39;
-</span><span>=&gt; </span><span style="color:#e5c07b;">true
-</span><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#e5c07b;">OSX</span><span>.require_framework </span><span style="color:#98c379;">&#39;Security&#39;
-</span><span>=&gt; </span><span style="color:#e5c07b;">true
-</span><span style="color:#c678dd;">&gt;&gt; defined? </span><span style="color:#e5c07b;">OSX</span><span>::SecKeychainAddGenericPassword()
-</span><span>=&gt; </span><span style="color:#98c379;">&quot;method&quot;
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#61afef;">require </span><span style="color:#98c379;">&#39;osx/cocoa&#39;                           </span><span style="color:#5c6370;">#=&gt; true
+</span><span style="color:#e5c07b;">OSX</span><span>.require_framework </span><span style="color:#98c379;">&#39;Security&#39;              </span><span style="color:#5c6370;">#=&gt; true
+</span><span style="color:#c678dd;">defined? </span><span style="color:#e5c07b;">OSX</span><span>::SecKeychainAddGenericPassword() </span><span style="color:#5c6370;">#=&gt; &quot;method&quot;
 </span></code></pre>
-<p>Hoorah! Two steps! Well, one because the second one was just testing…
-Now go make password-able RubyCocoa application! I am not sure how to
-pull this off with deployable apps but I suggest your apps could ship
-with the file or run those commands on first-run or if the
-Security.bridgesupport file doesn’t exist. Note: I have not tested
-either of those scenarios, but I would guess the latter would be more
-reliable for cross-version development (i.e. Tiger + Leopard)</p>
+<p>Hoorah! Two steps! Well, one because the second one was just testing… Now go make password-able RubyCocoa application! I
+am not sure how to pull this off with deployable apps but I suggest your apps could ship with the file or run those
+commands on first-run or if the Security.bridgesupport file doesn’t exist. Note: I have not tested either of those
+scenarios, but I would guess the latter would be more reliable for cross-version development (i.e. Tiger + Leopard)</p>
 <h3 id="how-to-use-these-methods">How to use these methods</h3>
 <pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;"># Require needed libraries
 </span><span>
@@ -228,21 +221,19 @@ reliable for cross-version development (i.e. Tiger + Leopard)</p>
 <h3 id="update-4-8-08-below-is-a-fix-for-the-rexml-bug-some-people-have">[UPDATE 4/8/08]: Below is a fix for the REXML bug some people have</h3>
 <p>been getting (myself included)</p>
 <p>There is good news for anyone that has been getting the following error:</p>
-<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>undefined local variable or method `trans’ for &lt;UNDEFINED&gt; … &lt;/&gt;:REXML::Document
+<pre data-lang="text" style="background-color:#282c34;color:#dcdfe4;" class="language-text "><code class="language-text" data-lang="text"><span>undefined local variable or method `trans’ for &lt;UNDEFINED&gt; … &lt;/&gt;:REXML::Document
 </span><span>Usage: gen_bridge_metadata [options] &lt;headers…&gt;
 </span><span>Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
 </span></code></pre>
-<p>There is a very simple fix. This is caused by a typo in the source of
-REXML. It’s such a massive bug I can’t believe it made it into the
-release of Ruby but i did some poking around and it looks like they
-renamed a method and didn’t change all references to it.</p>
-<p>There are two ways to fix it—patching REXML; and patching <code>gen_bridge_metadata</code>.</p>
-<p>Personally I prefer patching the generator for peace of mind and have submitted the patch at
-<a href="http://bridgesupport.macosforge.org/trac/ticket/1">http://bridgesupport.macosforge.org/trac/ticket/1</a>,
-but I’ll show both fixes.</p>
-<h4 id="patching-genbridgemetadata">Patching gen<em>bridge</em>metadata</h4>
+<p>There is a very simple fix. This is caused by a typo in the source of REXML. It’s such a massive bug I can’t believe it
+made it into the release of Ruby but i did some poking around and it looks like they renamed a method and didn’t change
+all references to it.</p>
+<p>There are two ways to fix it: patching REXML and patching <code>gen_bridge_metadata</code>.</p>
+<p>Personally I prefer patching the generator for peace of mind and I submitted the patch upstream, but never heard back.</p>
+<h4 id="patching-gen-bridge-metadata">Patching <code>gen_bridge_metadata</code></h4>
 <ol>
-<li>Open <code>/usr/bin/gen_bridge_metadata and find the method definition for </code>generate_xml`</li>
+<li>Open <code>/usr/bin/gen_bridge_metadata</code> and find the method definition for
+<code>generate_xml</code></li>
 <li>Replace <code>0</code> in the <code>xml_document.write()</code> with <code>-1</code> (both occurrences)</li>
 <li>Save!</li>
 </ol>
@@ -258,7 +249,18 @@ but I’ll show both fixes.</p>
 	<hr class="post-end">
 	<footer class="post-info">
     
-    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>609 Words</p>
+	  <p>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+		
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/mac/">mac</a></span>
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/ruby/">ruby</a></span>
+		
+		
+    </p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>600 Words</p>
     
     <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2008-04-10T12:00:00Z</p>
     

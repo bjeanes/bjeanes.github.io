@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - mac</title>
+	<link href="https://bjeanes.com/tags/mac/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2011-08-28T21:21:57+00:00</updated>
+	<id>https://bjeanes.com/tags/mac/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Fix for &quot;dynamic_pager: cannot open swap directory &#x2F;private&#x2F;var&#x2F;vm&quot; in OS X (possibly just Snow Leopard)</title>
+		<published>2009-07-09T05:34:00+00:00</published>
+		<updated>2011-08-28T21:07:39+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/fix-for-dynamic-pager-cannot-open-swap-directory-private-var-vm-in-os-x-possibly-just-snow-leopard/" type="text/html"/>
+		<id>https://bjeanes.com/posts/fix-for-dynamic-pager-cannot-open-swap-directory-private-var-vm-in-os-x-possibly-just-snow-leopard/</id>
+		<content type="html">&lt;p&gt;Today my Snow Leopard install was going so slow it felt like I was trying to swim through molasses. The system was
+literally so slow that typing text into some text fields (especially TextMate) lagged at about a rate of 1 character per
+second, and opening files (or even running &lt;code&gt;touch&lt;&#x2F;code&gt; on them) took a couple of seconds.&lt;&#x2F;p&gt;
+&lt;p&gt;After a few fruitless restarts and a keen eye on my logs I started noticing these errors in Console.app:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:37 PM com.apple.launchd[1] (com.apple.dynamic*pager) Exited with exit code: 1
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:37 PM com.apple.launchd Throttling respawn: Will start in 10 seconds
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:47 PM com.apple.dynamic_pager[2481] dynamic_pager: cannot open swap directory &#x2F;private&#x2F;var&#x2F;vm
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:47 PM com.apple.launchd Exited with exit code: 1
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:47 PM com.apple.launchd Throttling respawn: Will start in 10 seconds
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:57 PM com.apple.dynamic_pager[2546] dynamic_pager: cannot open swap directory &#x2F;private&#x2F;var&#x2F;vm
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:57 PM com.apple.launchd Exited with exit code: 1
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:01:57 PM com.apple.launchd Throttling respawn: Will start in 10 seconds
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:02:07 PM com.apple.dynamic_pager[2547] dynamic_pager: cannot open swap directory &#x2F;private&#x2F;var&#x2F;vm
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic_pager[2547]) Exited with exit code: 1
+&lt;&#x2F;span&gt;&lt;span&gt;9&#x2F;07&#x2F;09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic_pager) Throttling respawn: Will start in 10 seconds
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I don’t know how or why they started but I was able to fix it by simply running &lt;code&gt;sudo mkdir &#x2F;private&#x2F;var&#x2F;vm&lt;&#x2F;code&gt; in
+Terminal. Within a few seconds of creating the directory, the errors ceased and I could see a swapfile created inside
+the directory.&lt;&#x2F;p&gt;
+&lt;p&gt;I have no idea what caused the directory to be deleted in the first place or why OS X isn’t smart enough to try creating
+it, but the fix is simple and instantly effective.&lt;&#x2F;p&gt;
+&lt;p&gt;Note: I am not sure if this is a Snow Leopard specific issue or not, but it very well might be. Also, these started
+right after installing Adobe CS4, so I feel pretty confident blaming that for now.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>How to Prepare Your Mac for Resale</title>
+		<published>2009-07-01T03:30:00+00:00</published>
+		<updated>2011-08-28T21:15:51+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/how-to-prepare-your-mac-for-resale/" type="text/html"/>
+		<id>https://bjeanes.com/posts/how-to-prepare-your-mac-for-resale/</id>
+		<content type="html">&lt;p&gt;First thing is first: you want to re-install Mac OS X (this guide requires Leopard). Insert your OS X disk and boot off
+it. Make sure you do a &amp;quot;Clean Install&amp;quot; so as not to leave any of your files on the system.&lt;&#x2F;p&gt;
+&lt;p&gt;When the install is finished, your computer will restart and you’ll see the traditional OS X welcome screen and the
+setup assistant. Go through all the settings, choosing anything just to get the system booted up.  However, make sure
+you take note of the user account login you use. For this guide, I will assume login of &lt;code&gt;temp&lt;&#x2F;code&gt;, and if you don’t have a
+good reason not to, you should do the same.&lt;&#x2F;p&gt;
+&lt;p&gt;At this point you want to download any Apple updates and install them, as well as install any bundled software you plan
+to advertise the machine coming with. When all your installs are finished and the machine is as you want it for the
+customer&#x2F;recipient, shut down the machine.&lt;&#x2F;p&gt;
+&lt;p&gt;Next, turn the machine back on but as soon as you hear the Mac chime noise, press and hold ⌘S until you are taken to a
+console (white text on black screen — looks real nerdy and sci-fi).&lt;&#x2F;p&gt;
+&lt;p&gt;The next step is to run all the commands in the code block below.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;em&gt;NOTE: If you didn’t use &lt;code&gt;temp&lt;&#x2F;code&gt; as your username you created in the setup assistant, make sure you replace &lt;strong&gt;all&lt;&#x2F;strong&gt;
+instances of &lt;code&gt;temp&lt;&#x2F;code&gt; with your actual username.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Mount the file system so we can modify it
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;sbin&#x2F;fsck -fy
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;sbin&#x2F;mount -uw&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Activate directory services
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;bin&#x2F;launchctl&lt;&#x2F;span&gt;&lt;span&gt; load &#x2F;System&#x2F;Library&#x2F;LaunchDaemons&#x2F;com.apple.DirectoryServices.plist &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Delete all traces of the temporary account
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;usr&#x2F;bin&#x2F;dscl&lt;&#x2F;span&gt;&lt;span&gt; .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -delete&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;Users&#x2F;temp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;usr&#x2F;bin&#x2F;dscl&lt;&#x2F;span&gt;&lt;span&gt; .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -delete&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;Groups&#x2F;admin GroupMembership temp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;bin&#x2F;rm -rf&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;Users&#x2F;temp
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Get rid of a few other files
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;bin&#x2F;rm -R&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;Library&#x2F;Preferences
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;bin&#x2F;rm -f&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;root&#x2F;.bash_history
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Now we make it appear as though the initial setup assistant
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# still needs to run
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;bin&#x2F;rm&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;var&#x2F;db&#x2F;.AppleSetupDone
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Reboot and check that it seems like
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# it is a new mac, then turn off your computer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# and sell it!
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;&#x2F;sbin&#x2F;reboot
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>RubyCocoa and Keychain access</title>
+		<published>2008-04-10T12:00:00+00:00</published>
+		<updated>2011-08-28T21:21:57+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/rubycocoa-and-keychain-access/" type="text/html"/>
+		<id>https://bjeanes.com/posts/rubycocoa-and-keychain-access/</id>
+		<content type="html">&lt;p&gt;There have been a few posts asking how to access and manipulate the Keychain from within RubyCocoa but no answers
+supplied. As someone who is just getting into RubyCocoa (and Cocoa all together for that matter), I thought I’d document
+once and for all the process I took to get it working.&lt;&#x2F;p&gt;
+&lt;p&gt;I am running on Leopard and while 10.5 is supposed to ship with BridgeSupport for most frameworks, the Security
+framework must have been left out. After playing around with using other frameworks (such as the AddressBook framework)
+and seeing how they were used, I did a bit of digging in the Apple Developer Documentation (incredible resource for
+anyone starting out) and stumbled across this gem: &lt;a href=&quot;https:&#x2F;&#x2F;developer.apple.com&#x2F;library&#x2F;archive&#x2F;documentation&#x2F;Cocoa&#x2F;Conceptual&#x2F;RubyPythonCocoa&#x2F;Articles&#x2F;GenerateFrameworkMetadata.html#&#x2F;&#x2F;apple_ref&#x2F;doc&#x2F;uid&#x2F;TP40005426-SW9&quot;&gt;Generate Framework
+Metadata&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;After reading this, I was accessing the keychain within 5 minutes.  Here’s how:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Run the following commands (first one will take some time):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;gen_bridge_metadata -f&lt;&#x2F;span&gt;&lt;span&gt; Security&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt; -o&lt;&#x2F;span&gt;&lt;span&gt; Security.bridgesupport
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mkdir -p&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;Library&#x2F;BridgeSupport
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;mv&lt;&#x2F;span&gt;&lt;span&gt; Security.bridgesupport &#x2F;Library&#x2F;BridgeSupport
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Open an IRB session to test it:&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;require &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;osx&#x2F;cocoa&amp;#39;                           &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#=&amp;gt; true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;OSX&lt;&#x2F;span&gt;&lt;span&gt;.require_framework &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Security&amp;#39;              &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#=&amp;gt; true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;defined? &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;OSX&lt;&#x2F;span&gt;&lt;span&gt;::SecKeychainAddGenericPassword() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;#=&amp;gt; &amp;quot;method&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Hoorah! Two steps! Well, one because the second one was just testing… Now go make password-able RubyCocoa application! I
+am not sure how to pull this off with deployable apps but I suggest your apps could ship with the file or run those
+commands on first-run or if the Security.bridgesupport file doesn’t exist. Note: I have not tested either of those
+scenarios, but I would guess the latter would be more reliable for cross-version development (i.e. Tiger + Leopard)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how-to-use-these-methods&quot;&gt;How to use these methods&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;ruby&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-ruby &quot;&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Require needed libraries
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;require &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;osx&#x2F;cocoa&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;OSX
+&lt;&#x2F;span&gt;&lt;span&gt;require_framework &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Security&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Set up some relevant variables
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;service &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;Test Service&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;account &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;MyUsername&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;MyPassword&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Add password to default keychain (first param)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;SecKeychainAddGenericPassword&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil&lt;&#x2F;span&gt;&lt;span&gt;, service.length, service, account.length, account, password.length, password, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Finding a password in default keychain (first param)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;status, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;SecKeychainFindGenericPassword&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;nil&lt;&#x2F;span&gt;&lt;span&gt;, service.length, service, account.length, account)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Password-related data
+&lt;&#x2F;span&gt;&lt;span&gt;password_length &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password.shift &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# =&amp;gt; 10
+&lt;&#x2F;span&gt;&lt;span&gt;password_data &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password.shift &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# OSX::ObjcPtr object
+&lt;&#x2F;span&gt;&lt;span&gt;password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password_data.bytestr(password_length)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# The last item is another OSX::ObjcPtr. I haven&amp;#39;t figured
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# out how to cast or use this yet but will post when I&amp;#39;ve
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# figured it out
+&lt;&#x2F;span&gt;&lt;span&gt;keychain_item &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; password.shift
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# Yay it works! You can also check the password exists
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# in the Keychain Access utility. I&amp;#39;ve confirmed that
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# this works
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span&gt; password &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;# =&amp;gt; &amp;quot;MyPassword&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;update-4-8-08-below-is-a-fix-for-the-rexml-bug-some-people-have&quot;&gt;[UPDATE 4&#x2F;8&#x2F;08]: Below is a fix for the REXML bug some people have&lt;&#x2F;h3&gt;
+&lt;p&gt;been getting (myself included)&lt;&#x2F;p&gt;
+&lt;p&gt;There is good news for anyone that has been getting the following error:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;undefined local variable or method `trans’ for &amp;lt;UNDEFINED&amp;gt; … &amp;lt;&#x2F;&amp;gt;:REXML::Document
+&lt;&#x2F;span&gt;&lt;span&gt;Usage: gen_bridge_metadata [options] &amp;lt;headers…&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There is a very simple fix. This is caused by a typo in the source of REXML. It’s such a massive bug I can’t believe it
+made it into the release of Ruby but i did some poking around and it looks like they renamed a method and didn’t change
+all references to it.&lt;&#x2F;p&gt;
+&lt;p&gt;There are two ways to fix it: patching REXML and patching &lt;code&gt;gen_bridge_metadata&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Personally I prefer patching the generator for peace of mind and I submitted the patch upstream, but never heard back.&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;patching-gen-bridge-metadata&quot;&gt;Patching &lt;code&gt;gen_bridge_metadata&lt;&#x2F;code&gt;&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;code&gt;&#x2F;usr&#x2F;bin&#x2F;gen_bridge_metadata&lt;&#x2F;code&gt; and find the method definition for
+&lt;code&gt;generate_xml&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Replace &lt;code&gt;0&lt;&#x2F;code&gt; in the &lt;code&gt;xml_document.write()&lt;&#x2F;code&gt; with &lt;code&gt;-1&lt;&#x2F;code&gt; (both occurrences)&lt;&#x2F;li&gt;
+&lt;li&gt;Save!&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h4 id=&quot;patching-rexml&quot;&gt;Patching REXML&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Open
+&lt;code&gt;&#x2F;System&#x2F;Library&#x2F;Frameworks&#x2F;Ruby.framework&#x2F;Versions&#x2F;1.8&#x2F;usr&#x2F;lib&#x2F;ruby&#x2F;1.8&#x2F;rexml&#x2F;document.rb&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Find the line that has &lt;code&gt;if trans&lt;&#x2F;code&gt; and change it to &lt;code&gt;if transitive&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Save!&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
+</feed>

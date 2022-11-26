@@ -41,6 +41,8 @@
         
         <a href="https://bjeanes.com/posts">Posts</a>
         
+        <a href="https://bjeanes.com/tags">Tags</a>
+        
         <a href="https://bjeanes.com/about">About</a>
         
       </nav>
@@ -119,6 +121,8 @@
     
     <li><a href="https://bjeanes.com/posts">Posts</a></li>
     
+    <li><a href="https://bjeanes.com/tags">Tags</a></li>
+    
     <li><a href="https://bjeanes.com/about">About</a></li>
     
   </ul>
@@ -149,26 +153,65 @@
 
 	<div class="content">
         
-	  <p>I love Vim. I take that back — I love <strong>modal editing</strong>. </p>
-<p>Actually, I think very few people like <em>Vim</em>, it just happens to be the best kid on the block at modal editing. But, after using Vim (and, God, does it take a while to learn to <em>use</em> it), you are reduced to a <q><a href="http://haldean.org/docstore/?vim-problems">pathetic teary wreck every time [you] have to use a text editor that isn't vim</a></q>.</p>
-<p>And why <em>is</em> it so debilitating to use something other than Vim for those who have honed their modal editing skills? Frankly, magic sauce of Vim is (mostly) made up from a few quite simple ingredients: motions, text objects, operators. There are plenty of cool tricks hidden inside Vim, but those three main things are the things you really miss, consistently, when using something else.</p>
-<p>Every now and then, when forced outside of the comforting (yet somehow cold) embrace of Vim, the Vimmer flirts with Sublime Text 2’s <a href="http://www.sublimetext.com/docs/2/vintage.html">vintage mode</a> or <a href="http://plugins.intellij.net/plugin/?id=164">IdeaVIM</a>. We may even be impressed — but, eventually, something falls apart and the abstraction leaks.</p>
-<p>Usually, this failure happens because the Vi(m) emulation layer often doesn’t implement motions, text objects, and operators. They just implement some keystrokes that appear to do the same thing in the same way — until you try something the developer didn’t preempt.</p>
-<p>If I could have an editor that did these things <em>properly</em>, I would have no real attachment to Vim. I have other things about Vim that I love and would hate to lose but they aren’t unique and other editors (can) have them, too.</p>
-<p>Luckily for me, I’ve been doing too much Clojure to ignore Emacs forever and 2 weeks ago, I switched. Here's how it played out:</p>
+	  <p>I love Vim. I take that back — I love <strong>modal editing</strong>.</p>
+<p>Actually, I think very few people like <em>Vim</em>, it just happens to be the best kid on the block at modal editing. But,
+after using Vim (and, God, does it take a while to learn to <em>use</em> it), you are reduced to a <q><a href="http://haldean.org/docstore/?vim-problems">pathetic teary wreck
+every time you have to use a text editor that isn't vim</a></q>.</p>
+<p>And why <em>is</em> it so debilitating to use something other than Vim for those who have honed their modal editing skills?
+Frankly, magic sauce of Vim is (mostly) made up from a few quite simple ingredients: motions, text objects, operators.
+There are plenty of cool tricks hidden inside Vim, but those three main things are the things you really miss,
+consistently, when using something else.</p>
+<p>Every now and then, when forced outside of the comforting (yet somehow cold) embrace of Vim, the Vimmer flirts with
+Sublime Text 2’s <a href="http://www.sublimetext.com/docs/2/vintage.html">vintage mode</a> or
+<a href="http://plugins.intellij.net/plugin/?id=164">IdeaVIM</a>. We may even be impressed — but, eventually, something falls apart
+and the abstraction leaks.</p>
+<p>Usually, this failure happens because the Vi(m) emulation layer often doesn’t implement motions, text objects, and
+operators. They just implement some keystrokes that appear to do the same thing in the same way — until you try
+something the developer didn’t preempt.</p>
+<p>If I could have an editor that did these things <em>properly</em>, I would have no real attachment to Vim. I have other things
+about Vim that I love and would hate to lose but they aren’t unique and other editors (can) have them, too.</p>
+<p>Luckily for me, I’ve been doing too much Clojure to ignore Emacs forever and 2 weeks ago, I switched. Here's how it
+played out:</p>
 <blockquote>
-<p>Nope — not for me... But, wait! Let us try this <a href="http://emacswiki.org/emacs/Evil">Evil Mode</a> so we can mock their pitiful attempt at modal editing (*evil laugh here*).  What’s this‽ It’s actually good!</p>
+<p>Nope — not for me... But, wait! Let us try this <a href="http://emacswiki.org/emacs/Evil">Evil Mode</a> so we can mock their
+pitiful attempt at modal editing (<em>evil laugh here</em>).  What’s this‽ It’s actually good!</p>
 </blockquote>
-<p>Inner dialogs aside, I’m not kidding; Evil Mode is stunning. It doesn’t have <em>everything</em> — but everything that it does have is built up using the same <strike>functions</strike> macros that you can use to extend it. Those are: <code>(evil-define-state)</code> (“mode” is an existing term in Emacs so what Vim calls modes, Evil Mode calls “states”), <code>(evil-define-motion)</code>, <code>(evil-define-operator)</code>, <code>(evil-define-text-object)</code>, and a <a href="https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf">few others</a>.</p>
-<p>Evil Mode correctly implements the plumbing to wire these things together so that the Vim “language” which becomes natural and reflexive (e.g. <code>di”</code> -&gt; “<strong>d</strong>elete <strong>i</strong>nside double quotes”, <code>vt </code> -&gt; “<strong>v</strong>isually select <strong>t</strong>ill space`) is completely preserved. If you wanted to define a new text object (e.g. a Ruby block), it is trivial to do so and all of the motions and operators will work flawlessly with it immediately. Frankly, it’s not even that nice in Vim.</p>
-<p>At the end of the day, I’ve always hated things like VimScript and Vim’s single-threadedness but I could never walk away from a truly powerful (and mostly extensible) modal editing system. Now, that has changed; I get ELisp (which, for all its faults, is exponentially better than VimScript), a saner package system, and a level of extensibility that, by design, can never be matched by Vim. All that and I don’t have to give up modal editing? Hell yes!</p>
-<p>Bonus points: one of the “states” that Evil implements is an Emacs state; this leaves Emacs and all it’s default behavior and keymappings 100% intact, meaning you can pair fearlessly with Emacsen, or slowly learn more about the Emacs way of doing things, if desirable.</p>
-<p>So far, I’ve rarely noticed I’m not in Vim and am constantly surprised when I employ Vim reflexes in Emacs and they work <em>exactly</em> as expected or better (seriously, try <code>:%s/foo/bar/g</code> in Evil mode and tell me you don’t squeal with joy).</p>
-<p>I refuse to pick a single side, so I’m picking both. I’m going to edit modally in Emacs and I’m going to be happy doing it! I don’t care if I simultaneously piss off Vim users and Emacs users — hell, they need more things in common anyway...</p>
+<p>Inner dialogs aside, I’m not kidding; Evil Mode is stunning. It doesn’t have <em>everything</em> — but everything that it does
+have is built up using the same <strike>functions</strike> macros that you can use to extend it. Those are:
+<code>(evil-define-state)</code> (“mode” is an existing term in Emacs so what Vim calls modes, Evil Mode calls “states”),
+<code>(evil-define-motion)</code>, <code>(evil-define-operator)</code>, <code>(evil-define-text-object)</code>, and a <a href="https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf">few
+others</a>.</p>
+<p>Evil Mode correctly implements the plumbing to wire these things together so that the Vim “language” which becomes
+natural and reflexive (e.g. <code>di”</code> -&gt; “<strong>d</strong>elete <strong>i</strong>nside double quotes”, <code>vt </code> -&gt; “<strong>v</strong>isually select <strong>t</strong>ill
+space`) is completely preserved. If you wanted to define a new text object (e.g. a Ruby block), it is trivial to do so
+and all of the motions and operators will work flawlessly with it immediately. Frankly, it’s not even that nice in Vim.</p>
+<p>At the end of the day, I’ve always hated things like VimScript and Vim’s single-threadedness but I could never walk away
+from a truly powerful (and mostly extensible) modal editing system. Now, that has changed; I get ELisp (which, for all
+its faults, is exponentially better than VimScript), a saner package system, and a level of extensibility that, by
+design, can never be matched by Vim. All that and I don’t have to give up modal editing? Hell yes!</p>
+<p>Bonus points: one of the “states” that Evil implements is an Emacs state; this leaves Emacs and all it’s default
+behavior and keymappings 100% intact, meaning you can pair fearlessly with Emacsen, or slowly learn more about the Emacs
+way of doing things, if desirable.</p>
+<p>So far, I’ve rarely noticed I’m not in Vim and am constantly surprised when I employ Vim reflexes in Emacs and they work
+<em>exactly</em> as expected or better (seriously, try <code>:%s/foo/bar/g</code> in Evil mode and tell me you don’t squeal with joy).</p>
+<p>I refuse to pick a single side, so I’m picking both. I’m going to edit modally in Emacs and I’m going to be happy doing
+it! I don’t care if I simultaneously piss off Vim users and Emacs users — hell, they need more things in common
+anyway...</p>
 
 	</div>
 	<hr class="post-end">
 	<footer class="post-info">
+    
+	  <p>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+		
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/vim/">vim</a></span>
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/workflow/">workflow</a></span>
+		
+		
+    </p>
     
     <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>714 Words</p>
     

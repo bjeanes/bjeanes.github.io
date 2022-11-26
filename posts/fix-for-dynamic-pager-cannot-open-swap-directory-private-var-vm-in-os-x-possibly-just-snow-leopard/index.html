@@ -41,6 +41,8 @@
         
         <a href="https://bjeanes.com/posts">Posts</a>
         
+        <a href="https://bjeanes.com/tags">Tags</a>
+        
         <a href="https://bjeanes.com/about">About</a>
         
       </nav>
@@ -119,6 +121,8 @@
     
     <li><a href="https://bjeanes.com/posts">Posts</a></li>
     
+    <li><a href="https://bjeanes.com/tags">Tags</a></li>
+    
     <li><a href="https://bjeanes.com/about">About</a></li>
     
   </ul>
@@ -149,50 +153,44 @@
 
 	<div class="content">
         
-	  <p>Today my Snow Leopard install was going so slow it felt like I was
-trying to swim through molasses. The system was literally so slow that
-typing text into some text fields (especially TextMate) lagged at about
-a rate of 1 character per second, and opening files (or even running
-<code>touch</code> on them) took a couple of seconds.</p>
-<p>After a few fruitless restarts and a keen eye on my logs I started
-noticing these errors in Console.app:</p>
-<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>9/07/09 3:01:37 PM com.apple.launchd[1] (com.apple.dynamic*pager) Exited
-</span><span>with exit code: 1\
-</span><span>9/07/09 3:01:37 PM com.apple.launchd Throttling respawn: Will start in
-</span><span>10 seconds\
-</span><span>9/07/09 3:01:47 PM com.apple.dynamic*pager[2481] dynamic*pager: cannot
-</span><span>open swap directory /private/var/vm\
-</span><span>9/07/09 3:01:47 PM com.apple.launchd Exited with exit code: 1\
-</span><span>9/07/09 3:01:47 PM com.apple.launchd Throttling respawn: Will start in
-</span><span>10 seconds\
-</span><span>9/07/09 3:01:57 PM com.apple.dynamic*pager[2546] dynamic*pager: cannot
-</span><span>open swap directory /private/var/vm\
-</span><span>9/07/09 3:01:57 PM com.apple.launchd Exited with exit code: 1\
-</span><span>9/07/09 3:01:57 PM com.apple.launchd Throttling respawn: Will start in
-</span><span>10 seconds\
-</span><span>9/07/09 3:02:07 PM com.apple.dynamic*pager[2547] dynamic\_pager: cannot
-</span><span>open swap directory /private/var/vm\
-</span><span>9/07/09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic\_pager[2547])
-</span><span>Exited with exit code: 1\
-</span><span>9/07/09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic\_pager)
-</span><span>Throttling respawn: Will start in 10 seconds\
+	  <p>Today my Snow Leopard install was going so slow it felt like I was trying to swim through molasses. The system was
+literally so slow that typing text into some text fields (especially TextMate) lagged at about a rate of 1 character per
+second, and opening files (or even running <code>touch</code> on them) took a couple of seconds.</p>
+<p>After a few fruitless restarts and a keen eye on my logs I started noticing these errors in Console.app:</p>
+<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>9/07/09 3:01:37 PM com.apple.launchd[1] (com.apple.dynamic*pager) Exited with exit code: 1
+</span><span>9/07/09 3:01:37 PM com.apple.launchd Throttling respawn: Will start in 10 seconds
+</span><span>9/07/09 3:01:47 PM com.apple.dynamic_pager[2481] dynamic_pager: cannot open swap directory /private/var/vm
+</span><span>9/07/09 3:01:47 PM com.apple.launchd Exited with exit code: 1
+</span><span>9/07/09 3:01:47 PM com.apple.launchd Throttling respawn: Will start in 10 seconds
+</span><span>9/07/09 3:01:57 PM com.apple.dynamic_pager[2546] dynamic_pager: cannot open swap directory /private/var/vm
+</span><span>9/07/09 3:01:57 PM com.apple.launchd Exited with exit code: 1
+</span><span>9/07/09 3:01:57 PM com.apple.launchd Throttling respawn: Will start in 10 seconds
+</span><span>9/07/09 3:02:07 PM com.apple.dynamic_pager[2547] dynamic_pager: cannot open swap directory /private/var/vm
+</span><span>9/07/09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic_pager[2547]) Exited with exit code: 1
+</span><span>9/07/09 3:02:07 PM com.apple.launchd[1] (com.apple.dynamic_pager) Throttling respawn: Will start in 10 seconds
 </span></code></pre>
-<p>I don’t know how or why they started but I was able to fix it by simply
-running <code>sudo mkdir /private/var/vm</code> in Terminal. Within a few seconds
-of creating the directory, the errors ceased and I could see a swapfile
-created inside the directory.</p>
-<p>I have no idea what caused the directory to be deleted in the first
-place or why OS X isn’t smart enough to try creating it, but the fix is
-simple and instantly effective.</p>
-<p>Note: I am not sure if this is a Snow Leopard specific issue or not, but
-it very well might be. Also, these started right after installing Adobe
-CS4, so I feel pretty confident blaming that for now.</p>
+<p>I don’t know how or why they started but I was able to fix it by simply running <code>sudo mkdir /private/var/vm</code> in
+Terminal. Within a few seconds of creating the directory, the errors ceased and I could see a swapfile created inside
+the directory.</p>
+<p>I have no idea what caused the directory to be deleted in the first place or why OS X isn’t smart enough to try creating
+it, but the fix is simple and instantly effective.</p>
+<p>Note: I am not sure if this is a Snow Leopard specific issue or not, but it very well might be. Also, these started
+right after installing Adobe CS4, so I feel pretty confident blaming that for now.</p>
 
 	</div>
 	<hr class="post-end">
 	<footer class="post-info">
     
-    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>374 Words</p>
+	  <p>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+		
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/mac/">mac</a></span>
+		
+		
+    </p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>366 Words</p>
     
     <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-07-09T05:34:00Z</p>
     

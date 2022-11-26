@@ -41,6 +41,8 @@
         
         <a href="https://bjeanes.com/posts">Posts</a>
         
+        <a href="https://bjeanes.com/tags">Tags</a>
+        
         <a href="https://bjeanes.com/about">About</a>
         
       </nav>
@@ -119,6 +121,8 @@
     
     <li><a href="https://bjeanes.com/posts">Posts</a></li>
     
+    <li><a href="https://bjeanes.com/tags">Tags</a></li>
+    
     <li><a href="https://bjeanes.com/about">About</a></li>
     
   </ul>
@@ -150,38 +154,28 @@
 	<div class="content">
         
 	  <p><small>(a Serbo-Croation translation by Anja Skrbaa is available <a href="http://science.webhostinggeeks.com/selektor-free">here</a>)</small></p>
-<p>I’ve been using Cucumber since pretty much the first day I heard about
-it. I’ve worked on a lot of projects that have relied on it’s presence
-for reliable development. Therefore, I’ve put a lot of effort into
-perfecting my Cucumber infrastructure to make this fantastic tool even
-better. I’m going to share one such morsel of code that makes developing
+<p>I’ve been using Cucumber since pretty much the first day I heard about it. I’ve worked on a lot of projects that have
+relied on it’s presence for reliable development. Therefore, I’ve put a lot of effort into perfecting my Cucumber
+infrastructure to make this fantastic tool even better. I’m going to share one such morsel of code that makes developing
 with Cucumber even greater.</p>
 <h2 id="the-problem">The Problem</h2>
-<p>I’ve worked on a lot of web applications and, as I’m sure many of you
-know, quite often the development of a web application is focussed on
-the functionality foremost, and the interface and style is incorporated
-later. It may be that the client doesn’t yet know the feel they want for
-their project or that they want to focus their budget towards
+<p>I’ve worked on a lot of web applications and, as I’m sure many of you know, quite often the development of a web
+application is focussed on the functionality foremost, and the interface and style is incorporated later. It may be that
+the client doesn’t yet know the feel they want for their project or that they want to focus their budget towards
 prototyping the application first.</p>
-<p>This is fine, except for the fact that changing the HTML and CSS of a
-web application after a lot of functionality has been developed is a
-fantastic way to break all your integration tests.</p>
-<p>This is particularly true if you have scenarios like the following
-contrived one:</p>
-<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#e06c75;">When I</span><span> fill </span><span style="color:#c678dd;">in </span><span style="color:#98c379;">&quot;Username&quot;</span><span> with </span><span style="color:#98c379;">&quot;bjeanes&quot;</span><span> within </span><span style="color:#98c379;">&quot;.main-panel form#signup-form&quot;
-</span><span style="color:#e06c75;">And I</span><span> press </span><span style="color:#98c379;">&quot;Sign up!&quot;</span><span> within </span><span style="color:#98c379;">&quot;.main-panel form#signup-form&quot;
-</span><span style="color:#e06c75;">Then I</span><span> should see </span><span style="color:#98c379;">&quot;You have successfully signed up&quot;</span><span> within </span><span style="color:#98c379;">&quot;.flash.notice&quot;
+<p>This is fine, except for the fact that changing the HTML and CSS of a web application after a lot of functionality has
+been developed is a fantastic way to break all your integration tests.</p>
+<p>This is particularly true if you have scenarios like the following contrived one:</p>
+<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>When I fill in &quot;Username&quot; with &quot;bjeanes&quot; within &quot;.main-panel form#signup-form&quot;
+</span><span>And I press &quot;Sign up!&quot; within &quot;.main-panel form#signup-form&quot;
+</span><span>Then I should see &quot;You have successfully signed up&quot; within &quot;.flash.notice&quot;
 </span></code></pre>
-<p>The problem is, of course, that designers might change the HTML that
-used to be <code>.main-panel form#signup-form</code> into something sexier and more
-semantic.</p>
+<p>The problem is, of course, that designers might change the HTML that used to be <code>.main-panel form#signup-form</code> into
+something sexier and more semantic.</p>
 <h2 id="the-solution">The Solution</h2>
-<p>This problem is not unlike an already-solved one; we’ve all moved away
-from hardcoding URLs like &quot;/users/new&quot; into our views and Cucumber
-scenarios and replacing them with <code>new_user_path</code> and <code>the signup page</code>,
-respectively.</p>
-<p>So why not apply the same formula that <code>paths.rb</code> uses for removing URLs
-from scenarios to our situation with selectors?</p>
+<p>This problem is not unlike an already-solved one; we’ve all moved away from hardcoding URLs like &quot;/users/new&quot; into our
+views and Cucumber scenarios and replacing them with <code>new_user_path</code> and <code>the signup page</code>, respectively.</p>
+<p>So why not apply the same formula that <code>paths.rb</code> uses for removing URLs from scenarios to our situation with selectors?</p>
 <p>Here’s what I add to all new projects:</p>
 <pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;"># I&#39;m in features/step_definitions/web_ext_steps.rb
 </span><span>
@@ -233,45 +227,45 @@ from scenarios to our situation with selectors?</p>
 </span><span>  </span><span style="color:#5c6370;"># ...
 </span><span style="color:#c678dd;">end
 </span></code></pre>
-<p>Notice how the scenario now identifies things on our page by their
-semantic identifiers, not by brittle CSS or XPath locations which are
-prone to change. As a bonus, now <del>if</del> when they do change, the paths only need to be updated in a single
-location in our Cucumber test suite!</p>
+<p>Notice how the scenario now identifies things on our page by their semantic identifiers, not by brittle CSS or XPath
+locations which are prone to change. As a bonus, now <del>if</del> when they do change, the paths only need to be
+updated in a single location in our Cucumber test suite!</p>
 <h2 id="patching-cucumber">Patching Cucumber</h2>
-<p>I feel pretty strongly that CSS and XPath don’t belong in our feature
-files because not only does it encourage brittle tests (as shown above),
-but also because those selectors are entirely irrelevant to end users,
-and that’s kind of the main point of using a natural language DSL to
-describe our integration tests, i.e. putting on the user shoes.</p>
-<del>
-I’d really like to patch this back into Cucumber, and I entirely plan to
-do so, providing I get the time.
-</del>
-I got the time, and here is my [pull
-request](http://github.com/aslakhellesoy/cucumber-rails/pull/63) to have
-it merged.
+<p>I feel pretty strongly that CSS and XPath don’t belong in our feature files because not only does it encourage brittle
+tests (as shown above), but also because those selectors are entirely irrelevant to end users, and that’s kind of the
+main point of using a natural language DSL to describe our integration tests, i.e. putting on the user shoes.</p>
+<p><del>I’d really like to patch this back into Cucumber, and I entirely plan to do so, providing I get the time.</del>
+I got the time, and here is my <a href="http://github.com/aslakhellesoy/cucumber-rails/pull/63">pull request</a> to have it merged.</p>
 <h2 id="expanding-the-solution">Expanding the Solution</h2>
-<p>You’ll note my <code>HtmlSelectorsHelper</code> module only accommodates CSS
-selectors. That’s only because I have never needed XPath in this
-context. It’d be very simple to modify my examples to do so, though,
-with a combination of multiple return values and a splat. That’s an
-exercise for the reader (or me if I end up patching Cucumber).</p>
+<p>You’ll note my <code>HtmlSelectorsHelper</code> module only accommodates CSS selectors. That’s only because I have never needed
+XPath in this context. It’d be very simple to modify my examples to do so, though, with a combination of multiple return
+values and a splat. That’s an exercise for the reader (or me if I end up patching Cucumber).</p>
 <h2 id="final-word">Final Word</h2>
-<p>I apologise for the length of this article, but I congratulate you for
-making it all the way through it!</p>
-<p>I now have so many blog post ideas lined up that I’ve had to create a
-new category in Things.app just to hold them all. This means that I’ll
-be striving to get a few more posts done and out the door in the next
-few weeks, including a performance comparison of different data
-encapsulations for web application APIs on the iPhone (i.e. is it better
-to use Plists, JSON, or XML?) and a post on why I think there should be
-8 RESTful actions, not the 7 that Rails prescribes by default.</p>
+<p>I apologise for the length of this article, but I congratulate you for making it all the way through it!</p>
+<p>I now have so many blog post ideas lined up that I’ve had to create a new category in Things.app just to hold them all.
+This means that I’ll be striving to get a few more posts done and out the door in the next few weeks, including a
+performance comparison of different data encapsulations for web application APIs on the iPhone (i.e. is it better to use
+Plists, JSON, or XML?) and a post on why I think there should be 8 RESTful actions, not the 7 that Rails prescribes by
+default.</p>
 
 	</div>
 	<hr class="post-end">
 	<footer class="post-info">
     
-    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>819 Words</p>
+	  <p>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+		
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/ruby/">ruby</a></span>
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/testing/">testing</a></span>
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/rails/">rails</a></span>
+		
+		
+    </p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>818 Words</p>
     
     <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-09-19T13:53:00Z</p>
     

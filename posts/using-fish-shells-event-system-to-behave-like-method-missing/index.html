@@ -41,6 +41,8 @@
         
         <a href="https://bjeanes.com/posts">Posts</a>
         
+        <a href="https://bjeanes.com/tags">Tags</a>
+        
         <a href="https://bjeanes.com/about">About</a>
         
       </nav>
@@ -119,6 +121,8 @@
     
     <li><a href="https://bjeanes.com/posts">Posts</a></li>
     
+    <li><a href="https://bjeanes.com/tags">Tags</a></li>
+    
     <li><a href="https://bjeanes.com/about">About</a></li>
     
   </ul>
@@ -149,29 +153,24 @@
 
 	<div class="content">
         
-	  <p>Dr Nic’s latest post, <a href="http://drnicwilliams.com/2009/10/07/hash-bang-cucumber/">hash bang
-cucumber</a>,
-reminded me of a piece of hax I whipped up a few weeks ago with Ruby and
-Fish Shell.</p>
-<p>Fish has an event system that allows you to register functions to be
-auto-run after or during certain events (such as when a particular
-environment variable is changed). One of this events is called
-<code>fish_command_not_found</code>. It is triggered whenever you type a
-non-existant command into the prompt.</p>
-<p>With this in mind, you can trigger certain commands to run by matching
-what fish couldn’t manage to run automatically by catching this event.</p>
+	  <p>Dr Nic’s latest post, <a href="https://web.archive.org/web/20170911072928/http://drnicwilliams.com/2009/10/07/hash-bang-cucumber/">hash bang
+cucumber</a>, reminded
+me of a piece of hax I whipped up a few weeks ago with Ruby and Fish Shell.</p>
+<p>Fish has an event system that allows you to register functions to be auto-run after or during certain events (such as
+when a particular environment variable is changed). One of this events is called <code>fish_command_not_found</code>. It is
+triggered whenever you type a non-existant command into the prompt.</p>
+<p>With this in mind, you can trigger certain commands to run by matching what fish couldn’t manage to run automatically by
+catching this event.</p>
 <p>For instance:</p>
-<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#c678dd;">function </span><span style="color:#61afef;">__fish_method_missing --on-event fish_command_not_found
-</span><span>  method_missing $argv
-</span><span>end
+<pre data-lang="fish" style="background-color:#282c34;color:#dcdfe4;" class="language-fish "><code class="language-fish" data-lang="fish"><span style="color:#c678dd;">function </span><span style="color:#61afef;">__fish_method_missing </span><span style="color:#e06c75;">--on-event </span><span>fish_command_not_found
+</span><span>  </span><span style="color:#e06c75;">method_missing $argv
+</span><span style="color:#c678dd;">end
 </span><span>
-</span><span>funcsave method_missing
+</span><span style="color:#e06c75;">funcsave </span><span>method_missing
 </span></code></pre>
-<p>Given that function is created (simply paste the whole code block into
-your Fish terminal), I can now create a command called
-<code>method_missing</code> (or whatever you call inside your
-<code>__fish_method_missing</code>) and place it somewhere in your <code>$PATH</code> — I like
-<code>~/.config/fish/bin</code>.</p>
+<p>Given that function is created (simply paste the whole code block into your Fish terminal), I can now create a command
+called <code>method_missing</code> (or whatever you call inside your <code>__fish_method_missing</code>) and place it somewhere in your
+<code>$PATH</code> — I like <code>~/.config/fish/bin</code>.</p>
 <p>My <code>method_missing</code> binary is simply something like this:</p>
 <pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;">#!/usr/bin/env ruby
 </span><span>
@@ -198,19 +197,26 @@ trying to achieve, I simply modify the <code>case</code> block as such:</p>
 <pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">case</span><span> command
 </span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/^[a-z0-9_</span><span style="color:#56b6c2;">\-\/</span><span style="color:#98c379;">]+</span><span style="color:#56b6c2;">\.</span><span style="color:#98c379;">feature(:</span><span style="color:#56b6c2;">\d</span><span style="color:#98c379;">+)?$/
 </span><span>  run(</span><span style="color:#98c379;">&quot;cucumber </span><span>#{command}</span><span style="color:#98c379;">&quot;</span><span>)
-</span><span style="color:#5c6370;"># ... 
+</span><span style="color:#5c6370;"># ...
 </span><span style="color:#c678dd;">end
 </span></code></pre>
-<p>The existing entries I have in my <code>method_missing</code> command will
-auto-clone the repository of a pasted Git URL and download and expand a
-URL for a tar file, respectively. Not too shabby, and dead easy to
-implement</p>
+<p>The existing entries I have in my <code>method_missing</code> command will auto-clone the repository of a pasted Git URL and
+download and expand a URL for a tar file, respectively. Not too shabby, and dead easy to implement.</p>
 
 	</div>
 	<hr class="post-end">
 	<footer class="post-info">
     
-    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>301 Words</p>
+	  <p>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+		
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/shell/">shell</a></span>
+		
+		
+    </p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>305 Words</p>
     
     <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-10-07T09:07:00Z</p>
     

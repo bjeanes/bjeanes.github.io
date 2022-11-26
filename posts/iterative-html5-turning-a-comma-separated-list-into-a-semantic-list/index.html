@@ -41,6 +41,8 @@
         
         <a href="https://bjeanes.com/posts">Posts</a>
         
+        <a href="https://bjeanes.com/tags">Tags</a>
+        
         <a href="https://bjeanes.com/about">About</a>
         
       </nav>
@@ -119,6 +121,8 @@
     
     <li><a href="https://bjeanes.com/posts">Posts</a></li>
     
+    <li><a href="https://bjeanes.com/tags">Tags</a></li>
+    
     <li><a href="https://bjeanes.com/about">About</a></li>
     
   </ul>
@@ -149,37 +153,33 @@
 
 	<div class="content">
         
-	  <p>In the process of going through the redesign of <a href="http://mocra.com">http://mocra.com</a>, I keep finding better ways to make
-the HTML more semantic.</p>
-<p><a href="http://chendo.net">Jack Chen</a> and I have been turning the design into 
-HTML over the last few days and we’ve been striving to be as semantic as
-possible by taking advantage of new HTML5 elements and by separating the
-content further from the design code with all the new CSS3 selectors.</p>
-<p>Here’s an example of something we just did to make the HTML cleaner and
-more meaningful, whilst still maintaining the look and style.</p>
-<p>Here’s what we are styling:</p>
-<p><img src="http://img.skitch.com/20091112-qujhy29f4e5mkpradfd3hb9hnj.jpg" alt="image" /></p>
+	  <p>In the process of going through the redesign of our company website, I keep finding better ways to make the HTML more
+semantic.</p>
+<p><a href="https://chen.do">Jack Chen</a> and I have been turning the design into HTML over the last few days and we’ve been
+striving to be as semantic as possible by taking advantage of new HTML5 elements and by separating the content further
+from the design code with all the new CSS3 selectors.</p>
+<p>Here’s an example of something we just did to make the HTML cleaner and more meaningful, whilst still maintaining the
+look and style.</p>
 <p>Usually your HTML (or HAML in this case) would look something like this:</p>
 <pre data-lang="haml" style="background-color:#282c34;color:#dcdfe4;" class="language-haml "><code class="language-haml" data-lang="haml"><span>%</span><span style="color:#e06c75;">footer
 </span><span>  %</span><span style="color:#e06c75;">aside
-</span><span>    = link_to </span><span style="color:#98c379;">&#39;Dr Nic Williams&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://drnicwilliams.com/&#39;
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Dr Nic Williams&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://github.com/drnic&#39;
 </span><span>    ,
-</span><span>    = link_to </span><span style="color:#98c379;">&#39;Bodaniel Jeanes&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://bjeanes.com/&#39;
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Bo Jeanes&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://bjeanes.com/&#39;
 </span><span>    ,
-</span><span>    = link_to </span><span style="color:#98c379;">&#39;Jack Chen&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://chendo.net/&#39;
-</span><span>    ,                      
-</span><span>    = link_to </span><span style="color:#98c379;">&#39;Ryan Bigg&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://frozenplague.net/&#39;
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Jack Chen&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://chen.do/&#39;
+</span><span>    ,
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Ryan Bigg&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://ryanbigg.com/&#39;
 </span></code></pre>
-<p>However, we can make this <strong>list</strong> of people more semantic by using an
-<code>&lt;ul&gt;</code> element and some CSS magic.</p>
+<p>However, we can make this <strong>list</strong> of people more semantic by using an <code>&lt;ul&gt;</code> element and some CSS magic.</p>
 <p>Here’s what the new HTML (HAML here) would look like:</p>
 <pre data-lang="haml" style="background-color:#282c34;color:#dcdfe4;" class="language-haml "><code class="language-haml" data-lang="haml"><span>%</span><span style="color:#e06c75;">footer
 </span><span>  %</span><span style="color:#e06c75;">aside
 </span><span>    %</span><span style="color:#e06c75;">ul
-</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Dr Nic Williams&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://drnicwilliams.com/&#39;
-</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Bodaniel Jeanes&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://bjeanes.com/&#39;
-</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Jack Chen&#39;</span><span>,       </span><span style="color:#98c379;">&#39;http://chendo.net/&#39;
-</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Ryan Bigg&#39;</span><span>,       </span><span style="color:#98c379;">&#39;http://frozenplague.net/&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Dr Nic Williams&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://github.com/drnic&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Bo Jeanes&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://bjeanes.com/&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Jack Chen&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://chen.do/&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Ryan Bigg&#39;</span><span>, </span><span style="color:#98c379;">&#39;https://ryanbigg.com/&#39;
 </span></code></pre>
 <p>And the CSS (Sass here):</p>
 <pre data-lang="sass" style="background-color:#282c34;color:#dcdfe4;" class="language-sass "><code class="language-sass" data-lang="sass"><span style="color:#e06c75;">body
@@ -192,13 +192,13 @@ more meaningful, whilst still maintaining the look and style.</p>
 </span><span>        list-style: none
 </span><span>        margin: </span><span style="color:#e5c07b;">0
 </span><span>        padding: </span><span style="color:#e5c07b;">0
-</span><span>      
+</span><span>
 </span><span style="color:#c678dd;">        </span><span style="color:#e06c75;">li
 </span><span>          display: inline
-</span><span>          
+</span><span>
 </span><span style="color:#c678dd;">          &amp;</span><span style="color:#e5c07b;">:</span><span style="color:#c678dd;">after
 </span><span>            content: </span><span style="color:#98c379;">&quot;,&quot;
-</span><span>            
+</span><span>
 </span><span style="color:#c678dd;">          &amp;</span><span style="color:#e5c07b;">:</span><span style="color:#c678dd;">last-child</span><span style="color:#e5c07b;">:</span><span style="color:#c678dd;">after
 </span><span>            content: </span><span style="color:#98c379;">&quot;&quot;
 </span></code></pre>
@@ -207,7 +207,16 @@ more meaningful, whilst still maintaining the look and style.</p>
 	<hr class="post-end">
 	<footer class="post-info">
     
-    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>233 Words</p>
+	  <p>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+		
+		
+		<span class="tag"><a href="https://bjeanes.com/tags/css/">css</a></span>
+		
+		
+    </p>
+    
+    <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>224 Words</p>
     
     <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-11-12T06:42:00Z</p>
     

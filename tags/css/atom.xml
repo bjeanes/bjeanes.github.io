@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Bo Jeanes - css</title>
+	<link href="https://bjeanes.com/tags/css/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://bjeanes.com"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2011-08-28T21:04:52+00:00</updated>
+	<id>https://bjeanes.com/tags/css/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Iterative HTML5 - Turning a comma-separated list into a semantic list</title>
+		<published>2009-11-12T06:42:00+00:00</published>
+		<updated>2011-08-28T21:04:52+00:00</updated>
+		<link rel="alternate" href="https://bjeanes.com/posts/iterative-html5-turning-a-comma-separated-list-into-a-semantic-list/" type="text/html"/>
+		<id>https://bjeanes.com/posts/iterative-html5-turning-a-comma-separated-list-into-a-semantic-list/</id>
+		<content type="html">&lt;p&gt;In the process of going through the redesign of our company website, I keep finding better ways to make the HTML more
+semantic.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;chen.do&quot;&gt;Jack Chen&lt;&#x2F;a&gt; and I have been turning the design into HTML over the last few days and we’ve been
+striving to be as semantic as possible by taking advantage of new HTML5 elements and by separating the content further
+from the design code with all the new CSS3 selectors.&lt;&#x2F;p&gt;
+&lt;p&gt;Here’s an example of something we just did to make the HTML cleaner and more meaningful, whilst still maintaining the
+look and style.&lt;&#x2F;p&gt;
+&lt;p&gt;Usually your HTML (or HAML in this case) would look something like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;haml&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-haml &quot;&gt;&lt;code class=&quot;language-haml&quot; data-lang=&quot;haml&quot;&gt;&lt;span&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;footer
+&lt;&#x2F;span&gt;&lt;span&gt;  %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;aside
+&lt;&#x2F;span&gt;&lt;span&gt;    = link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Dr Nic Williams&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;github.com&#x2F;drnic&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    ,
+&lt;&#x2F;span&gt;&lt;span&gt;    = link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Bo Jeanes&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;http:&#x2F;&#x2F;bjeanes.com&#x2F;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    ,
+&lt;&#x2F;span&gt;&lt;span&gt;    = link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Jack Chen&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;chen.do&#x2F;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    ,
+&lt;&#x2F;span&gt;&lt;span&gt;    = link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Ryan Bigg&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;ryanbigg.com&#x2F;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;However, we can make this &lt;strong&gt;list&lt;&#x2F;strong&gt; of people more semantic by using an &lt;code&gt;&amp;lt;ul&amp;gt;&lt;&#x2F;code&gt; element and some CSS magic.&lt;&#x2F;p&gt;
+&lt;p&gt;Here’s what the new HTML (HAML here) would look like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;haml&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-haml &quot;&gt;&lt;code class=&quot;language-haml&quot; data-lang=&quot;haml&quot;&gt;&lt;span&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;footer
+&lt;&#x2F;span&gt;&lt;span&gt;  %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;aside
+&lt;&#x2F;span&gt;&lt;span&gt;    %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;ul
+&lt;&#x2F;span&gt;&lt;span&gt;      %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;li&lt;&#x2F;span&gt;&lt;span&gt;= link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Dr Nic Williams&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;github.com&#x2F;drnic&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;      %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;li&lt;&#x2F;span&gt;&lt;span&gt;= link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Bo Jeanes&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;bjeanes.com&#x2F;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;      %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;li&lt;&#x2F;span&gt;&lt;span&gt;= link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Jack Chen&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;chen.do&#x2F;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;      %&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;li&lt;&#x2F;span&gt;&lt;span&gt;= link_to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;Ryan Bigg&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;ryanbigg.com&#x2F;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And the CSS (Sass here):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sass&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-sass &quot;&gt;&lt;code class=&quot;language-sass&quot; data-lang=&quot;sass&quot;&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;body
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;footer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;aside
+&lt;&#x2F;span&gt;&lt;span&gt;      padding-top: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;px
+&lt;&#x2F;span&gt;&lt;span&gt;      float: left
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;ul
+&lt;&#x2F;span&gt;&lt;span&gt;        list-style: none
+&lt;&#x2F;span&gt;&lt;span&gt;        margin: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span&gt;        padding: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;li
+&lt;&#x2F;span&gt;&lt;span&gt;          display: inline
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;          &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;after
+&lt;&#x2F;span&gt;&lt;span&gt;            content: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;,&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;          &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;last-child&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;after
+&lt;&#x2F;span&gt;&lt;span&gt;            content: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+	</entry>
+</feed>
