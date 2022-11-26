@@ -154,83 +154,83 @@
 <a href="http://www.kyngchaos.com/software:frameworks">here</a></p>
 <h3 id="postgres">Postgres</h3>
 <h4 id="download-and-compile">Download and Compile</h4>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">http://ftp2.au.postgresql.org/pub/postgresql/source/v8.4.1/postgresql-8.4.1.tar.bz2 </span><span>| </span><span style="color:#bf616a;">tar</span><span> xjf -
-</span><span style="color:#96b5b4;">cd</span><span> postgresql-8.4.1
-</span><span style="color:#bf616a;">./configure
-</span><span style="color:#bf616a;">make </span><span>&amp;&amp; </span><span style="color:#bf616a;">sudo</span><span> make install
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">http://ftp2.au.postgresql.org/pub/postgresql/source/v8.4.1/postgresql-8.4.1.tar.bz2 </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">tar</span><span> xjf -
+</span><span style="color:#61afef;">cd</span><span> postgresql-8.4.1
+</span><span style="color:#e06c75;">./configure
+</span><span style="color:#e06c75;">make </span><span style="color:#c678dd;">&amp;&amp; </span><span style="color:#e06c75;">sudo</span><span> make install
 </span></code></pre>
 <p>The files are now all installed in the right places, onwards to making
 them usable!</p>
 <h4 id="create-a-postgres-user-and-group">Create a <code>postgres</code> User and Group</h4>
 <p>This is adjusted from the instructions in the comments
 <a href="http://www.postgresql.org/docs/8.3/interactive/postgres-user.html">here</a>).</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Find unused Group ID and User ID:
-</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GROUPID</span><span>=`</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -list</span><span> /Groups PrimaryGroupID | </span><span style="color:#bf616a;">ruby -e </span><span>&#39;</span><span style="color:#a3be8c;">puts STDIN.read.scan(/\d+/m).map{|i|i.to_i}.uniq.sort.last.succ</span><span>&#39;`
-</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">USERID</span><span>=`</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -list</span><span> /Users UniqueID | </span><span style="color:#bf616a;">ruby -e </span><span>&#39;</span><span style="color:#a3be8c;">puts STDIN.read.scan(/\d+/m).map{|i|i.to_i}.uniq.sort.last.succ</span><span>&#39;`
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#5c6370;"># Find unused Group ID and User ID:
+</span><span style="color:#c678dd;">export </span><span style="color:#e06c75;">GROUPID</span><span style="color:#c678dd;">=</span><span>`</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -list</span><span> /Groups PrimaryGroupID </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">ruby -e </span><span style="color:#98c379;">&#39;puts STDIN.read.scan(/\d+/m).map{|i|i.to_i}.uniq.sort.last.succ&#39;</span><span>`
+</span><span style="color:#c678dd;">export </span><span style="color:#e06c75;">USERID</span><span style="color:#c678dd;">=</span><span>`</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -list</span><span> /Users UniqueID </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">ruby -e </span><span style="color:#98c379;">&#39;puts STDIN.read.scan(/\d+/m).map{|i|i.to_i}.uniq.sort.last.succ&#39;</span><span>`
 </span><span>
-</span><span style="color:#65737e;"># Create group:
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Groups/_postgres
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Groups/_postgres PrimaryGroupID $</span><span style="color:#bf616a;">GROUPID
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -append</span><span> /Groups/_postgres RecordName postgres
+</span><span style="color:#5c6370;"># Create group:
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Groups/_postgres
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Groups/_postgres PrimaryGroupID $</span><span style="color:#e06c75;">GROUPID
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -append</span><span> /Groups/_postgres RecordName postgres
 </span><span>
-</span><span style="color:#65737e;"># Create user:
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Users/_postgres
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Users/_postgres UniqueID $</span><span style="color:#bf616a;">USERID
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Users/_postgres PrimaryGroupID $</span><span style="color:#bf616a;">GROUPID
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Users/_postgres UserShell /bin/bash
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Users/_postgres RealName &quot;</span><span style="color:#a3be8c;">PostgreSQL Server</span><span>&quot;
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -create</span><span> /Users/_postgres NFSHomeDirectory /usr/local/pgsql
-</span><span style="color:#bf616a;">sudo</span><span> dscl .</span><span style="color:#bf616a;"> -append</span><span> /Users/_postgres RecordName postgres
+</span><span style="color:#5c6370;"># Create user:
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Users/_postgres
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Users/_postgres UniqueID $</span><span style="color:#e06c75;">USERID
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Users/_postgres PrimaryGroupID $</span><span style="color:#e06c75;">GROUPID
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Users/_postgres UserShell /bin/bash
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Users/_postgres RealName </span><span style="color:#98c379;">&quot;PostgreSQL Server&quot;
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -create</span><span> /Users/_postgres NFSHomeDirectory /usr/local/pgsql
+</span><span style="color:#e06c75;">sudo</span><span> dscl .</span><span style="color:#e06c75;"> -append</span><span> /Users/_postgres RecordName postgres
 </span></code></pre>
 <p>That’s the clean way of making a user (so it doesn’t show up in your
 Accounts preference pane, etc.</p>
 <h4 id="clean-up">Clean up</h4>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> touch /var/log/psql.log
-</span><span style="color:#bf616a;">sudo</span><span> mkdir /usr/local/pgsql/data
-</span><span style="color:#bf616a;">sudo</span><span> chown</span><span style="color:#bf616a;"> -R</span><span> postgres:postgres /usr/local/pgsql/data /var/log/psql.log
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">sudo</span><span> touch /var/log/psql.log
+</span><span style="color:#e06c75;">sudo</span><span> mkdir /usr/local/pgsql/data
+</span><span style="color:#e06c75;">sudo</span><span> chown</span><span style="color:#e06c75;"> -R</span><span> postgres:postgres /usr/local/pgsql/data /var/log/psql.log
 </span><span>
-</span><span style="color:#65737e;"># Put Postgres in your path
-</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">$PATH</span><span>=&quot;</span><span style="color:#a3be8c;">/usr/local/pgsql/bin:</span><span>$</span><span style="color:#bf616a;">PATH</span><span>&quot;
-</span><span style="color:#bf616a;">sudo</span><span> sh</span><span style="color:#bf616a;"> -c </span><span>&#39;</span><span style="color:#a3be8c;">echo /usr/local/pgsql/bin &gt; /etc/paths.d/pgsql</span><span>&#39;
+</span><span style="color:#5c6370;"># Put Postgres in your path
+</span><span style="color:#c678dd;">export </span><span style="color:#e06c75;">$PATH</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;/usr/local/pgsql/bin:$</span><span style="color:#e06c75;">PATH</span><span style="color:#98c379;">&quot;
+</span><span style="color:#e06c75;">sudo</span><span> sh</span><span style="color:#e06c75;"> -c </span><span style="color:#98c379;">&#39;echo /usr/local/pgsql/bin &gt; /etc/paths.d/pgsql&#39;
 </span></code></pre>
 <p>Thanks to Apple we have a nice way of setting the PATH across the entire
 system so every app should now know how to find the Postgres binaries
 and the data directory is now set up to store the database files — now,
 we just need to create them.</p>
 <h4 id="initialise-the-database">Initialise the Database</h4>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Become the postgres user
-</span><span style="color:#bf616a;">sudo</span><span> su - postgres
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#5c6370;"># Become the postgres user
+</span><span style="color:#e06c75;">sudo</span><span> su - postgres
 </span><span>
-</span><span style="color:#65737e;"># If this throws next commant throws an error about shared memory, 
-</span><span style="color:#65737e;"># try putting &quot;these lines&quot;:http://gist.github.com/224815 into 
-</span><span style="color:#65737e;"># /etc/sysctl.conf, rebooting, and trying again:
-</span><span style="color:#bf616a;">initdb -D</span><span> /usr/local/pgsql/data</span><span style="color:#bf616a;"> -E</span><span> UTF8
+</span><span style="color:#5c6370;"># If this throws next commant throws an error about shared memory, 
+</span><span style="color:#5c6370;"># try putting &quot;these lines&quot;:http://gist.github.com/224815 into 
+</span><span style="color:#5c6370;"># /etc/sysctl.conf, rebooting, and trying again:
+</span><span style="color:#e06c75;">initdb -D</span><span> /usr/local/pgsql/data</span><span style="color:#e06c75;"> -E</span><span> UTF8
 </span><span>
-</span><span style="color:#65737e;"># Start the database
-</span><span style="color:#bf616a;">postgres -D</span><span> /usr/local/pgsql/data &gt;/var/log/psql.log </span><span style="color:#d08770;">2</span><span>&gt;&amp;</span><span style="color:#d08770;">1 </span><span>&amp;
+</span><span style="color:#5c6370;"># Start the database
+</span><span style="color:#e06c75;">postgres -D</span><span> /usr/local/pgsql/data </span><span style="color:#c678dd;">&gt;</span><span>/var/log/psql.log </span><span style="color:#e5c07b;">2</span><span style="color:#c678dd;">&gt;&amp;</span><span style="color:#e5c07b;">1 </span><span style="color:#c678dd;">&amp;
 </span><span>
-</span><span style="color:#65737e;"># Create a test database and check you can connect to it
-</span><span style="color:#bf616a;">createdb</span><span> test
-</span><span style="color:#bf616a;">psql</span><span> test
+</span><span style="color:#5c6370;"># Create a test database and check you can connect to it
+</span><span style="color:#e06c75;">createdb</span><span> test
+</span><span style="color:#e06c75;">psql</span><span> test
 </span><span>
-</span><span style="color:#65737e;"># Just create a superuser for general dev tasks
-</span><span style="color:#bf616a;">createuser</span><span> postgres
+</span><span style="color:#5c6370;"># Just create a superuser for general dev tasks
+</span><span style="color:#e06c75;">createuser</span><span> postgres
 </span><span>
-</span><span style="color:#65737e;"># we don&#39;t want to be the postgres user anymore
-</span><span style="color:#96b5b4;">exit
+</span><span style="color:#5c6370;"># we don&#39;t want to be the postgres user anymore
+</span><span style="color:#61afef;">exit
 </span></code></pre>
 <p>Your done with the Postgres setup now!</p>
 <h3 id="postgis">PostGIS</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl</span><span> http://postgis.refractions.net/download/postgis-1.3.7SVN.tar.gz | </span><span style="color:#bf616a;">tar</span><span> xzf -
-</span><span style="color:#96b5b4;">cd</span><span> postgis-1.3.7SVN
-</span><span style="color:#bf616a;">./configure --with-geosconfig</span><span>=/Library/Frameworks/GEOS.framework/unix/bin/geos-config</span><span style="color:#bf616a;"> --with-projdir</span><span>=/Library/Frameworks/PROJ.framework/unix
-</span><span style="color:#bf616a;">make </span><span>&amp;&amp; </span><span style="color:#bf616a;">sudo</span><span> make install
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">curl</span><span> http://postgis.refractions.net/download/postgis-1.3.7SVN.tar.gz </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">tar</span><span> xzf -
+</span><span style="color:#61afef;">cd</span><span> postgis-1.3.7SVN
+</span><span style="color:#e06c75;">./configure --with-geosconfig</span><span style="color:#c678dd;">=</span><span>/Library/Frameworks/GEOS.framework/unix/bin/geos-config</span><span style="color:#e06c75;"> --with-projdir</span><span style="color:#c678dd;">=</span><span>/Library/Frameworks/PROJ.framework/unix
+</span><span style="color:#e06c75;">make </span><span style="color:#c678dd;">&amp;&amp; </span><span style="color:#e06c75;">sudo</span><span> make install
 </span></code></pre>
 <p>Phew! That one was easy.</p>
 <h3 id="postgres-ruby-gem">Postgres Ruby Gem</h3>
 <p>This is the part that everyone cares about the most. If this works your
 Rails apps should start working like a charm.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> env ARCHFLAGS=&#39;</span><span style="color:#a3be8c;">-arch x86_64</span><span>&#39; gem install pg
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">sudo</span><span> env ARCHFLAGS=</span><span style="color:#98c379;">&#39;-arch x86_64&#39;</span><span> gem install pg
 </span></code></pre>
 
 	</div>

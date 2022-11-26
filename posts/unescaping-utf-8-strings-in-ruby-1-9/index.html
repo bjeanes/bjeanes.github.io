@@ -155,27 +155,27 @@ params needed to be unescaped. We spent some trying to force strings
 into UTF-8 encoding but for some reason while the encoding was UTF–8,
 the actual contents of the strings were getting massacred.</p>
 <p>Long story short:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;"># In Ruby 1.9
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;"># In Ruby 1.9
 </span><span>
-</span><span style="color:#65737e;"># Broken
-</span><span style="color:#96b5b4;">puts </span><span style="color:#ebcb8b;">URI</span><span>::unescape(&quot;</span><span style="color:#a3be8c;">Baden-W</span><span style="color:#d08770;">%C</span><span style="color:#a3be8c;">3</span><span style="color:#d08770;">%B</span><span style="color:#a3be8c;">Crttemberg</span><span>&quot;) </span><span style="color:#65737e;"># =&gt; &quot;Baden-WÃ¼rttemberg&quot;
+</span><span style="color:#5c6370;"># Broken
+</span><span style="color:#61afef;">puts </span><span style="color:#e5c07b;">URI</span><span>::unescape(</span><span style="color:#98c379;">&quot;Baden-W</span><span style="color:#e5c07b;">%C</span><span style="color:#98c379;">3</span><span style="color:#e5c07b;">%B</span><span style="color:#98c379;">Crttemberg&quot;</span><span>) </span><span style="color:#5c6370;"># =&gt; &quot;Baden-WÃ¼rttemberg&quot;
 </span><span>
-</span><span style="color:#65737e;"># Working
-</span><span style="color:#96b5b4;">puts </span><span style="color:#ebcb8b;">CGI</span><span>::unescape(&quot;</span><span style="color:#a3be8c;">Baden-W</span><span style="color:#d08770;">%C</span><span style="color:#a3be8c;">3</span><span style="color:#d08770;">%B</span><span style="color:#a3be8c;">Crttemberg</span><span>&quot;) </span><span style="color:#65737e;"># =&gt; &quot;Baden-Württemberg&quot;
+</span><span style="color:#5c6370;"># Working
+</span><span style="color:#61afef;">puts </span><span style="color:#e5c07b;">CGI</span><span>::unescape(</span><span style="color:#98c379;">&quot;Baden-W</span><span style="color:#e5c07b;">%C</span><span style="color:#98c379;">3</span><span style="color:#e5c07b;">%B</span><span style="color:#98c379;">Crttemberg&quot;</span><span>) </span><span style="color:#5c6370;"># =&gt; &quot;Baden-Württemberg&quot;
 </span></code></pre>
 <p>Another lesson we learnt on our adventures today is the following:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>m1 = &quot;</span><span style="color:#a3be8c;">Munich</span><span>&quot;
-</span><span style="color:#96b5b4;">puts </span><span>= m1.encoding  </span><span style="color:#65737e;"># let&#39;s suppose it is something other than UTF-8, such as ASCII-8Bit
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>m1 </span><span style="color:#c678dd;">= </span><span style="color:#98c379;">&quot;Munich&quot;
+</span><span style="color:#61afef;">puts </span><span style="color:#c678dd;">=</span><span> m1.encoding  </span><span style="color:#5c6370;"># let&#39;s suppose it is something other than UTF-8, such as ASCII-8Bit
 </span><span>
-</span><span>m2 = &quot;</span><span style="color:#a3be8c;">München</span><span>&quot;
-</span><span style="color:#96b5b4;">puts </span><span>= m2.encoding  </span><span style="color:#65737e;"># let&#39;s suppose we have a UTF-8 encoded string
+</span><span>m2 </span><span style="color:#c678dd;">= </span><span style="color:#98c379;">&quot;München&quot;
+</span><span style="color:#61afef;">puts </span><span style="color:#c678dd;">=</span><span> m2.encoding  </span><span style="color:#5c6370;"># let&#39;s suppose we have a UTF-8 encoded string
 </span><span>
 </span><span>
-</span><span style="color:#65737e;"># The following will raise an exception about mismatched encodings
-</span><span>m3 = m1 &lt;&lt; m2
+</span><span style="color:#5c6370;"># The following will raise an exception about mismatched encodings
+</span><span>m3 </span><span style="color:#c678dd;">=</span><span> m1 </span><span style="color:#c678dd;">&lt;&lt;</span><span> m2
 </span><span>
-</span><span style="color:#65737e;"># The easiest way to get around this is to do the concatenation like so:
-</span><span>m3 = m3 = m1 &lt;&lt; m2.force_encoding(&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;)
+</span><span style="color:#5c6370;"># The easiest way to get around this is to do the concatenation like so:
+</span><span>m3 </span><span style="color:#c678dd;">=</span><span> m3 </span><span style="color:#c678dd;">=</span><span> m1 </span><span style="color:#c678dd;">&lt;&lt;</span><span> m2.force_encoding(</span><span style="color:#98c379;">&quot;UTF-8&quot;</span><span>)
 </span></code></pre>
 
 	</div>

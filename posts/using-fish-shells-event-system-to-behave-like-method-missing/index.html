@@ -161,7 +161,7 @@ non-existant command into the prompt.</p>
 <p>With this in mind, you can trigger certain commands to run by matching
 what fish couldn’t manage to run automatically by catching this event.</p>
 <p>For instance:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">__fish_method_missing --on-event fish_command_not_found
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#c678dd;">function </span><span style="color:#61afef;">__fish_method_missing --on-event fish_command_not_found
 </span><span>  method_missing $argv
 </span><span>end
 </span><span>
@@ -173,33 +173,33 @@ your Fish terminal), I can now create a command called
 <code>__fish_method_missing</code>) and place it somewhere in your <code>$PATH</code> — I like
 <code>~/.config/fish/bin</code>.</p>
 <p>My <code>method_missing</code> binary is simply something like this:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;">#!/usr/bin/env ruby
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;">#!/usr/bin/env ruby
 </span><span>
-</span><span>command = </span><span style="color:#ebcb8b;">ARGV</span><span>.shift
+</span><span>command </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">ARGV</span><span>.shift
 </span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">run</span><span>(</span><span style="color:#bf616a;">cmd</span><span>)
-</span><span>  </span><span style="color:#96b5b4;">puts </span><span>&quot;</span><span style="color:#a3be8c;">Running </span><span>#{cmd.</span><span style="color:#96b5b4;">inspect</span><span>}</span><span style="color:#a3be8c;"> instead</span><span>&quot;
-</span><span>  </span><span style="color:#96b5b4;">system</span><span>(cmd)
-</span><span style="color:#b48ead;">end
+</span><span style="color:#c678dd;">def </span><span style="color:#61afef;">run</span><span>(</span><span style="color:#e06c75;">cmd</span><span>)
+</span><span>  </span><span style="color:#61afef;">puts </span><span style="color:#98c379;">&quot;Running </span><span>#{cmd.</span><span style="color:#61afef;">inspect</span><span>}</span><span style="color:#98c379;"> instead&quot;
+</span><span>  </span><span style="color:#61afef;">system</span><span>(cmd)
+</span><span style="color:#c678dd;">end
 </span><span>
-</span><span style="color:#b48ead;">case</span><span> command
-</span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">^git(@|:\/\/).*\.git$</span><span>/
-</span><span>  run(&quot;</span><span style="color:#a3be8c;">git clone </span><span>#{command.</span><span style="color:#96b5b4;">inspect</span><span>}&quot;)
-</span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">^(?:ftp|https?):\/\/.+\.t(?:ar\.)?gz$</span><span>/
-</span><span>  run(&quot;</span><span style="color:#a3be8c;">curl </span><span>#{command.</span><span style="color:#96b5b4;">inspect</span><span>}</span><span style="color:#a3be8c;"> | tar xzv</span><span>&quot;)
-</span><span style="color:#b48ead;">else
-</span><span>  $</span><span style="color:#bf616a;">stderr</span><span>.</span><span style="color:#96b5b4;">puts </span><span>&quot;</span><span style="color:#a3be8c;">No default action defined in </span><span>#{</span><span style="color:#bf616a;">__FILE__</span><span>.</span><span style="color:#96b5b4;">inspect</span><span>}&quot;
-</span><span>  </span><span style="color:#96b5b4;">abort
-</span><span style="color:#b48ead;">end
+</span><span style="color:#c678dd;">case</span><span> command
+</span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/^git(@|:</span><span style="color:#56b6c2;">\/\/</span><span style="color:#98c379;">).*</span><span style="color:#56b6c2;">\.</span><span style="color:#98c379;">git$/
+</span><span>  run(</span><span style="color:#98c379;">&quot;git clone </span><span>#{command.</span><span style="color:#61afef;">inspect</span><span>}</span><span style="color:#98c379;">&quot;</span><span>)
+</span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/^(?:ftp|https?):</span><span style="color:#56b6c2;">\/\/</span><span style="color:#98c379;">.+</span><span style="color:#56b6c2;">\.</span><span style="color:#98c379;">t(?:ar</span><span style="color:#56b6c2;">\.</span><span style="color:#98c379;">)?gz$/
+</span><span>  run(</span><span style="color:#98c379;">&quot;curl </span><span>#{command.</span><span style="color:#61afef;">inspect</span><span>}</span><span style="color:#98c379;"> | tar xzv&quot;</span><span>)
+</span><span style="color:#c678dd;">else
+</span><span>  </span><span style="color:#e06c75;">$stderr</span><span>.</span><span style="color:#61afef;">puts </span><span style="color:#98c379;">&quot;No default action defined in </span><span>#{</span><span style="color:#e06c75;">__FILE__</span><span>.</span><span style="color:#61afef;">inspect</span><span>}</span><span style="color:#98c379;">&quot;
+</span><span>  </span><span style="color:#61afef;">abort
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>Each command you want to register just becomes a new <code>when</code>
 statement. For instance, to implement the functionality Dr Nic was
 trying to achieve, I simply modify the <code>case</code> block as such:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">case</span><span> command
-</span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">^[a-z0-9_\-\/]+\.feature(:\d+)?$</span><span>/
-</span><span>  run(&quot;</span><span style="color:#a3be8c;">cucumber </span><span>#{command}&quot;)
-</span><span style="color:#65737e;"># ... 
-</span><span style="color:#b48ead;">end
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">case</span><span> command
+</span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/^[a-z0-9_</span><span style="color:#56b6c2;">\-\/</span><span style="color:#98c379;">]+</span><span style="color:#56b6c2;">\.</span><span style="color:#98c379;">feature(:</span><span style="color:#56b6c2;">\d</span><span style="color:#98c379;">+)?$/
+</span><span>  run(</span><span style="color:#98c379;">&quot;cucumber </span><span>#{command}</span><span style="color:#98c379;">&quot;</span><span>)
+</span><span style="color:#5c6370;"># ... 
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>The existing entries I have in my <code>method_missing</code> command will
 auto-clone the repository of a pasted Git URL and download and expand a

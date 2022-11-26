@@ -151,44 +151,44 @@
         
 	  <p>In Clojure, I didn't see a nice way to simply call a function on a timer (e.g. to poll for changes in another service). </p>
 <p>I didn't find something in <code>clojure.core</code> to achieve this readily (but <code>clojure.core</code> is quite big, so I may have missed something obvious — let me know), so I whipped up the following to put in my project's <code>util.clj</code> file:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#b48ead;">defn </span><span style="color:#8fa1b3;">tick
-</span><span>  &quot;</span><span style="color:#a3be8c;">Call f with args every ms. First call will be after ms</span><span>&quot;
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#c678dd;">defn </span><span style="color:#61afef;">tick
+</span><span>  </span><span style="color:#98c379;">&quot;Call f with args every ms. First call will be after ms&quot;
 </span><span>  [ms f &amp; args]
 </span><span>
-</span><span>  (</span><span style="color:#bf616a;">future
-</span><span>    (</span><span style="color:#bf616a;">doseq </span><span>[f (</span><span style="color:#bf616a;">repeatedly </span><span>#(</span><span style="color:#bf616a;">apply</span><span> f args))]
-</span><span>      (</span><span style="color:#bf616a;">Thread/sleep</span><span> ms)
-</span><span>      (</span><span style="color:#bf616a;">f</span><span>))))
+</span><span>  (</span><span style="color:#e06c75;">future
+</span><span>    (</span><span style="color:#e06c75;">doseq </span><span>[f (</span><span style="color:#e06c75;">repeatedly </span><span style="color:#c678dd;">#</span><span>(</span><span style="color:#e06c75;">apply</span><span> f args))]
+</span><span>      (</span><span style="color:#e06c75;">Thread/sleep</span><span> ms)
+</span><span>      (</span><span style="color:#e06c75;">f</span><span>))))
 </span><span>
-</span><span>(</span><span style="color:#b48ead;">defn </span><span style="color:#8fa1b3;">tick-now
-</span><span>  &quot;</span><span style="color:#a3be8c;">Call f with args every ms. First call will be immediately (and blocking)</span><span>&quot;
+</span><span>(</span><span style="color:#c678dd;">defn </span><span style="color:#61afef;">tick-now
+</span><span>  </span><span style="color:#98c379;">&quot;Call f with args every ms. First call will be immediately (and blocking)&quot;
 </span><span>  [ms f &amp; args]
 </span><span>
-</span><span>  (</span><span style="color:#bf616a;">apply</span><span> f args)
-</span><span>  (</span><span style="color:#bf616a;">apply</span><span> tick ms f args)
+</span><span>  (</span><span style="color:#e06c75;">apply</span><span> f args)
+</span><span>  (</span><span style="color:#e06c75;">apply</span><span> tick ms f args)
 </span></code></pre>
 <p>There are two variants. <code>tick</code> waits <code>ms</code> milliseconds and then calls <code>f</code> with <code>args</code> and repeats indefinitely. <code>tick-now</code> does the same thing except it calls <code>f</code> with <code>args</code> <em>before</em> starting the timer.</p>
 <p>They are simple to use:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>user=&gt; (</span><span style="color:#bf616a;">tick </span><span style="color:#d08770;">500 </span><span>#(</span><span style="color:#bf616a;">println </span><span>&quot;</span><span style="color:#a3be8c;">hi</span><span>&quot;))
-</span><span style="color:#65737e;">; 500ms delay
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>user=&gt; (</span><span style="color:#e06c75;">tick </span><span style="color:#e5c07b;">500 </span><span style="color:#c678dd;">#</span><span>(</span><span style="color:#e06c75;">println </span><span style="color:#98c379;">&quot;hi&quot;</span><span>))
+</span><span style="color:#5c6370;">; 500ms delay
 </span><span>hi
-</span><span style="color:#65737e;">; 500ms delay
+</span><span style="color:#5c6370;">; 500ms delay
 </span><span>hi
-</span><span style="color:#65737e;">; 500ms delay
+</span><span style="color:#5c6370;">; 500ms delay
 </span><span>hi
 </span><span>...
 </span></code></pre>
 <p>In my project, I'm using them like so:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#b48ead;">defn </span><span style="color:#8fa1b3;">start-fetchers
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#c678dd;">defn </span><span style="color:#61afef;">start-fetchers
 </span><span>  [api-token]
 </span><span>
-</span><span>  (</span><span style="color:#bf616a;">future
-</span><span>    (</span><span style="color:#bf616a;">let </span><span>[minutes (</span><span style="color:#bf616a;">partial</span><span> * </span><span style="color:#d08770;">60 1000</span><span>)]
-</span><span>      (</span><span style="color:#bf616a;">tick-now </span><span>(</span><span style="color:#bf616a;">minutes </span><span style="color:#d08770;">60</span><span>)
+</span><span>  (</span><span style="color:#e06c75;">future
+</span><span>    (</span><span style="color:#e06c75;">let </span><span>[minutes (</span><span style="color:#e06c75;">partial</span><span> * </span><span style="color:#e5c07b;">60 1000</span><span>)]
+</span><span>      (</span><span style="color:#e06c75;">tick-now </span><span>(</span><span style="color:#e06c75;">minutes </span><span style="color:#e5c07b;">60</span><span>)
 </span><span>                update-project-list!
 </span><span>                api-token)
 </span><span>
-</span><span>      (</span><span style="color:#bf616a;">tick-now </span><span>(</span><span style="color:#bf616a;">minutes </span><span style="color:#d08770;">5</span><span>)
+</span><span>      (</span><span style="color:#e06c75;">tick-now </span><span>(</span><span style="color:#e06c75;">minutes </span><span style="color:#e5c07b;">5</span><span>)
 </span><span>                fetch-milestones!
 </span><span>                api-token
 </span><span>                projects-to-fetch

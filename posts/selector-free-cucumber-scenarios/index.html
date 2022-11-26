@@ -168,9 +168,9 @@ web application after a lot of functionality has been developed is a
 fantastic way to break all your integration tests.</p>
 <p>This is particularly true if you have scenarios like the following
 contrived one:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#bf616a;">When I</span><span> fill </span><span style="color:#b48ead;">in </span><span>&quot;</span><span style="color:#a3be8c;">Username</span><span>&quot; with &quot;</span><span style="color:#a3be8c;">bjeanes</span><span>&quot; within &quot;</span><span style="color:#a3be8c;">.main-panel form#signup-form</span><span>&quot;
-</span><span style="color:#bf616a;">And I</span><span> press &quot;</span><span style="color:#a3be8c;">Sign up!</span><span>&quot; within &quot;</span><span style="color:#a3be8c;">.main-panel form#signup-form</span><span>&quot;
-</span><span style="color:#bf616a;">Then I</span><span> should see &quot;</span><span style="color:#a3be8c;">You have successfully signed up</span><span>&quot; within &quot;</span><span style="color:#a3be8c;">.flash.notice</span><span>&quot;
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#e06c75;">When I</span><span> fill </span><span style="color:#c678dd;">in </span><span style="color:#98c379;">&quot;Username&quot;</span><span> with </span><span style="color:#98c379;">&quot;bjeanes&quot;</span><span> within </span><span style="color:#98c379;">&quot;.main-panel form#signup-form&quot;
+</span><span style="color:#e06c75;">And I</span><span> press </span><span style="color:#98c379;">&quot;Sign up!&quot;</span><span> within </span><span style="color:#98c379;">&quot;.main-panel form#signup-form&quot;
+</span><span style="color:#e06c75;">Then I</span><span> should see </span><span style="color:#98c379;">&quot;You have successfully signed up&quot;</span><span> within </span><span style="color:#98c379;">&quot;.flash.notice&quot;
 </span></code></pre>
 <p>The problem is, of course, that designers might change the HTML that
 used to be <code>.main-panel form#signup-form</code> into something sexier and more
@@ -183,55 +183,55 @@ respectively.</p>
 <p>So why not apply the same formula that <code>paths.rb</code> uses for removing URLs
 from scenarios to our situation with selectors?</p>
 <p>Here’s what I add to all new projects:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;"># I&#39;m in features/step_definitions/web_ext_steps.rb
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;"># I&#39;m in features/step_definitions/web_ext_steps.rb
 </span><span>
-</span><span style="color:#bf616a;">When </span><span>/</span><span style="color:#96b5b4;">^(.*) within ([^:&quot;]+)$</span><span>/ </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">step</span><span>, </span><span style="color:#bf616a;">scope</span><span>|
-</span><span>  with_scope(selector_for(scope)) </span><span style="color:#b48ead;">do
-</span><span>    </span><span style="color:#bf616a;">When</span><span> step
-</span><span>  </span><span style="color:#b48ead;">end
-</span><span style="color:#b48ead;">end
+</span><span style="color:#e06c75;">When </span><span style="color:#98c379;">/^(.*) within ([^:&quot;]+)$/ </span><span style="color:#c678dd;">do </span><span>|</span><span style="color:#e06c75;">step</span><span>, </span><span style="color:#e06c75;">scope</span><span>|
+</span><span>  with_scope(selector_for(scope)) </span><span style="color:#c678dd;">do
+</span><span>    </span><span style="color:#e06c75;">When</span><span> step
+</span><span>  </span><span style="color:#c678dd;">end
+</span><span style="color:#c678dd;">end
 </span><span>
-</span><span style="color:#65737e;"># Multi-line version of above
-</span><span style="color:#bf616a;">When </span><span>/</span><span style="color:#96b5b4;">^(.*) within ([^:&quot;]+):$</span><span>/ </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">step</span><span>, </span><span style="color:#bf616a;">scope</span><span>, </span><span style="color:#bf616a;">table_or_string</span><span>|
-</span><span>  with_scope(selector_for(scope)) </span><span style="color:#b48ead;">do
-</span><span>    </span><span style="color:#bf616a;">When </span><span>&quot;#{step}</span><span style="color:#a3be8c;">:</span><span>&quot;, table_or_string
-</span><span>  </span><span style="color:#b48ead;">end
-</span><span style="color:#b48ead;">end
+</span><span style="color:#5c6370;"># Multi-line version of above
+</span><span style="color:#e06c75;">When </span><span style="color:#98c379;">/^(.*) within ([^:&quot;]+):$/ </span><span style="color:#c678dd;">do </span><span>|</span><span style="color:#e06c75;">step</span><span>, </span><span style="color:#e06c75;">scope</span><span>, </span><span style="color:#e06c75;">table_or_string</span><span>|
+</span><span>  with_scope(selector_for(scope)) </span><span style="color:#c678dd;">do
+</span><span>    </span><span style="color:#e06c75;">When </span><span style="color:#98c379;">&quot;</span><span>#{step}</span><span style="color:#98c379;">:&quot;</span><span>, table_or_string
+</span><span>  </span><span style="color:#c678dd;">end
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>And:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;"># I&#39;m in features/support/selectors.rb
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;"># I&#39;m in features/support/selectors.rb
 </span><span>
-</span><span style="color:#b48ead;">module </span><span>HtmlSelectorsHelper
-</span><span>  </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">selector_for</span><span>(</span><span style="color:#bf616a;">scope</span><span>)
-</span><span>    </span><span style="color:#b48ead;">case</span><span> scope
-</span><span>    </span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">the body</span><span>/
-</span><span>      &quot;</span><span style="color:#a3be8c;">html &gt; body</span><span>&quot;
-</span><span>    </span><span style="color:#b48ead;">else
-</span><span>      </span><span style="color:#8fa1b3;">raise </span><span>&quot;</span><span style="color:#a3be8c;">Can&#39;t find mapping from </span><span style="color:#96b5b4;">\&quot;</span><span>#{scope}</span><span style="color:#96b5b4;">\&quot;</span><span style="color:#a3be8c;"> to a selector.</span><span style="color:#96b5b4;">\n</span><span>&quot; +
-</span><span>        &quot;</span><span style="color:#a3be8c;">Now, go and add a mapping in </span><span>#{</span><span style="color:#bf616a;">__FILE__</span><span>}&quot;
-</span><span>    </span><span style="color:#b48ead;">end
-</span><span>  </span><span style="color:#b48ead;">end
-</span><span style="color:#b48ead;">end
+</span><span style="color:#c678dd;">module </span><span>HtmlSelectorsHelper
+</span><span>  </span><span style="color:#c678dd;">def </span><span style="color:#61afef;">selector_for</span><span>(</span><span style="color:#e06c75;">scope</span><span>)
+</span><span>    </span><span style="color:#c678dd;">case</span><span> scope
+</span><span>    </span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/the body/
+</span><span>      </span><span style="color:#98c379;">&quot;html &gt; body&quot;
+</span><span>    </span><span style="color:#c678dd;">else
+</span><span>      </span><span style="color:#61afef;">raise </span><span style="color:#98c379;">&quot;Can&#39;t find mapping from </span><span style="color:#56b6c2;">\&quot;</span><span>#{scope}</span><span style="color:#56b6c2;">\&quot;</span><span style="color:#98c379;"> to a selector.</span><span style="color:#56b6c2;">\n</span><span style="color:#98c379;">&quot; </span><span style="color:#c678dd;">+
+</span><span>        </span><span style="color:#98c379;">&quot;Now, go and add a mapping in </span><span>#{</span><span style="color:#e06c75;">__FILE__</span><span>}</span><span style="color:#98c379;">&quot;
+</span><span>    </span><span style="color:#c678dd;">end
+</span><span>  </span><span style="color:#c678dd;">end
+</span><span style="color:#c678dd;">end
 </span><span>
-</span><span style="color:#bf616a;">World</span><span>(</span><span style="color:#bf616a;">HtmlSelectorsHelper</span><span>)
+</span><span style="color:#e06c75;">World</span><span>(</span><span style="color:#e06c75;">HtmlSelectorsHelper</span><span>)
 </span></code></pre>
 <h2 id="applying-the-solution">Applying the Solution</h2>
 <p>My previous example of the flawed Cucumber scenario now becomes:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#bf616a;">When I</span><span> fill </span><span style="color:#b48ead;">in </span><span>&quot;</span><span style="color:#a3be8c;">Username</span><span>&quot; with &quot;</span><span style="color:#a3be8c;">bjeanes</span><span>&quot; within the sign up form
-</span><span style="color:#bf616a;">And I</span><span> press &quot;</span><span style="color:#a3be8c;">Sign up!</span><span>&quot; within the sign up form
-</span><span style="color:#bf616a;">Then I</span><span> should see &quot;</span><span style="color:#a3be8c;">You have successfully signed up</span><span>&quot; within the notice flash
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#e06c75;">When I</span><span> fill </span><span style="color:#c678dd;">in </span><span style="color:#98c379;">&quot;Username&quot;</span><span> with </span><span style="color:#98c379;">&quot;bjeanes&quot;</span><span> within the sign up form
+</span><span style="color:#e06c75;">And I</span><span> press </span><span style="color:#98c379;">&quot;Sign up!&quot;</span><span> within the sign up form
+</span><span style="color:#e06c75;">Then I</span><span> should see </span><span style="color:#98c379;">&quot;You have successfully signed up&quot;</span><span> within the notice flash
 </span></code></pre>
 <p>And the <code>selectors.rb</code> case statement gets the following additions:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">case
-</span><span>  </span><span style="color:#65737e;"># ...
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">case
+</span><span>  </span><span style="color:#5c6370;"># ...
 </span><span>
-</span><span>  </span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">the sign up form</span><span>/
-</span><span>    &quot;</span><span style="color:#a3be8c;">.main-panel form#signup-form</span><span>&quot;
-</span><span>  </span><span style="color:#b48ead;">when </span><span>/</span><span style="color:#96b5b4;">the (notice|error|info) flash</span><span>/
-</span><span>    &quot;</span><span style="color:#a3be8c;">.flash.</span><span>#{$</span><span style="color:#bf616a;">1</span><span>}&quot;
+</span><span>  </span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/the sign up form/
+</span><span>    </span><span style="color:#98c379;">&quot;.main-panel form#signup-form&quot;
+</span><span>  </span><span style="color:#c678dd;">when </span><span style="color:#98c379;">/the (notice|error|info) flash/
+</span><span>    </span><span style="color:#98c379;">&quot;.flash.</span><span>#{</span><span style="color:#e06c75;">$1</span><span>}</span><span style="color:#98c379;">&quot;
 </span><span>
-</span><span>  </span><span style="color:#65737e;"># ...
-</span><span style="color:#b48ead;">end
+</span><span>  </span><span style="color:#5c6370;"># ...
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>Notice how the scenario now identifies things on our page by their
 semantic identifiers, not by brittle CSS or XPath locations which are

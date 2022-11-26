@@ -152,15 +152,15 @@
 	  <p>I came across an interesting dilemma today in Rails 2.3 whilst trying to
 use <code>accepts_nested_attributes_for</code>.</p>
 <p>The models I have were:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Organization </span><span style="color:#eff1f5;">&lt; </span><span style="color:#a3be8c;">ActiveRecord::Base
-</span><span>  has_many </span><span style="color:#a3be8c;">:users
-</span><span>  accepts_nested_attributes_for </span><span style="color:#a3be8c;">:users
-</span><span style="color:#b48ead;">end
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">class </span><span style="color:#e5c07b;">Organization &lt; ActiveRecord::Base
+</span><span>  has_many </span><span style="color:#e5c07b;">:users
+</span><span>  accepts_nested_attributes_for </span><span style="color:#e5c07b;">:users
+</span><span style="color:#c678dd;">end
 </span><span>
-</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">User </span><span style="color:#eff1f5;">&lt; </span><span style="color:#a3be8c;">ActiveRecord::Base
-</span><span>  belongs_to </span><span style="color:#a3be8c;">:organization
-</span><span>  validates_presence_of </span><span style="color:#a3be8c;">:organization
-</span><span style="color:#b48ead;">end
+</span><span style="color:#c678dd;">class </span><span style="color:#e5c07b;">User &lt; ActiveRecord::Base
+</span><span>  belongs_to </span><span style="color:#e5c07b;">:organization
+</span><span>  validates_presence_of </span><span style="color:#e5c07b;">:organization
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>I had an “Organization” creation form which allowed an administrator to
 create an Organization and an initial user for it. However, even though
@@ -169,12 +169,12 @@ constantly getting the following error: <code>Organization can not be blank</cod
 <p>Digging deeper I found that when an object is added to an association
 via the <code>association.build</code> method, the parent object
 isn’t actually set:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>&gt;&gt; o = </span><span style="color:#ebcb8b;">Organization</span><span>.</span><span style="color:#8fa1b3;">new</span><span>(</span><span style="color:#a3be8c;">:name </span><span>=&gt; &quot;</span><span style="color:#a3be8c;">Test</span><span>&quot;)
-</span><span>=&gt; </span><span style="color:#65737e;">#&lt;Organization id: nil, name: &quot;Test&quot;&gt;
-</span><span>&gt;&gt; u = o.users.build(</span><span style="color:#a3be8c;">:name </span><span>=&gt; &quot;</span><span style="color:#a3be8c;">Test User</span><span>&quot;)
-</span><span>=&gt; </span><span style="color:#65737e;">#&lt;User id: nil, organization_id: nil, name: &quot;Test User&quot;&gt;
-</span><span>&gt;&gt; u.organization
-</span><span>=&gt; </span><span style="color:#d08770;">nil
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">&gt;&gt;</span><span> o </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">Organization</span><span>.</span><span style="color:#61afef;">new</span><span>(</span><span style="color:#e5c07b;">:name </span><span>=&gt; </span><span style="color:#98c379;">&quot;Test&quot;</span><span>)
+</span><span>=&gt; </span><span style="color:#5c6370;">#&lt;Organization id: nil, name: &quot;Test&quot;&gt;
+</span><span style="color:#c678dd;">&gt;&gt;</span><span> u </span><span style="color:#c678dd;">=</span><span> o.users.build(</span><span style="color:#e5c07b;">:name </span><span>=&gt; </span><span style="color:#98c379;">&quot;Test User&quot;</span><span>)
+</span><span>=&gt; </span><span style="color:#5c6370;">#&lt;User id: nil, organization_id: nil, name: &quot;Test User&quot;&gt;
+</span><span style="color:#c678dd;">&gt;&gt;</span><span> u.organization
+</span><span>=&gt; </span><span style="color:#e5c07b;">nil
 </span></code></pre>
 <p>Apparently this flaw also applies to
 <code>accepts_nested_attributes_for</code>. When I send through the
@@ -186,16 +186,16 @@ as you’d expect, but raises a validation error because the
 <code>Organization</code></p>
 <p>My quick 5 minute fix was to modify the <code>Organization</code>
 model thusly:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Organization </span><span style="color:#eff1f5;">&lt; </span><span style="color:#a3be8c;">ActiveRecord::Base
-</span><span>  has_many </span><span style="color:#a3be8c;">:users
-</span><span>  accepts_nested_attributes_for </span><span style="color:#a3be8c;">:users
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">class </span><span style="color:#e5c07b;">Organization &lt; ActiveRecord::Base
+</span><span>  has_many </span><span style="color:#e5c07b;">:users
+</span><span>  accepts_nested_attributes_for </span><span style="color:#e5c07b;">:users
 </span><span>
-</span><span>  </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">users_attributes_with_self_assignment=</span><span>(</span><span style="color:#bf616a;">attributes</span><span>)
-</span><span>    </span><span style="color:#bf616a;">self</span><span>.users_attributes_without_self_assignment = attributes
-</span><span>    users.each { |</span><span style="color:#bf616a;">u</span><span>| u.organization = </span><span style="color:#bf616a;">self </span><span>}
-</span><span>  </span><span style="color:#b48ead;">end
-</span><span>  alias_method_chain </span><span style="color:#a3be8c;">:users_attributes=</span><span>, </span><span style="color:#a3be8c;">:self_assignment
-</span><span style="color:#b48ead;">end
+</span><span>  </span><span style="color:#c678dd;">def </span><span style="color:#61afef;">users_attributes_with_self_assignment=</span><span>(</span><span style="color:#e06c75;">attributes</span><span>)
+</span><span>    </span><span style="color:#e06c75;">self</span><span>.users_attributes_without_self_assignment </span><span style="color:#c678dd;">=</span><span> attributes
+</span><span>    users.each { |</span><span style="color:#e06c75;">u</span><span>| u.organization </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">self </span><span>}
+</span><span>  </span><span style="color:#c678dd;">end
+</span><span>  alias_method_chain </span><span style="color:#e5c07b;">:users_attributes=</span><span>, </span><span style="color:#e5c07b;">:self_assignment
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>Related Rails bugs seem to be
 <a href="https://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/1943">here</a>

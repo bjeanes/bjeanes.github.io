@@ -155,8 +155,8 @@ find it useful also.</p>
 trying to get authentication working with a new database. By looking
 through the Deprec source code, I pulled out these two lines of code and
 so far they haven’t failed me:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">su</span><span> - postgres</span><span style="color:#bf616a;"> -c </span><span>&quot;</span><span style="color:#a3be8c;">createuser -P -D -A -E </span><span>$</span><span style="color:#bf616a;">DBUSER</span><span>&quot;
-</span><span style="color:#bf616a;">su</span><span> - postgres</span><span style="color:#bf616a;"> -c </span><span>&quot;</span><span style="color:#a3be8c;">createdb -O </span><span>$</span><span style="color:#bf616a;">DBUSER </span><span>$</span><span style="color:#bf616a;">DBNAME</span><span>&quot;
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">su</span><span> - postgres</span><span style="color:#e06c75;"> -c </span><span style="color:#98c379;">&quot;createuser -P -D -A -E $</span><span style="color:#e06c75;">DBUSER</span><span style="color:#98c379;">&quot;
+</span><span style="color:#e06c75;">su</span><span> - postgres</span><span style="color:#e06c75;"> -c </span><span style="color:#98c379;">&quot;createdb -O $</span><span style="color:#e06c75;">DBUSER </span><span style="color:#98c379;">$</span><span style="color:#e06c75;">DBNAME</span><span style="color:#98c379;">&quot;
 </span></code></pre>
 <p>Of course, replace <code>$DBUSER</code> and
 <code>$DBNAME</code> with your desired username and database

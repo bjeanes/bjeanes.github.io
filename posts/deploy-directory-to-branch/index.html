@@ -198,7 +198,7 @@ how that commit relates to the rest of the repository's history.</p>
 <code>git-write-tree</code>. This allows us to create a tree object rooted at an arbitrary
 directory!</p>
 <p>For example, compare the following:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>$ git show $(git write-tree)
+<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>$ git show $(git write-tree)
 </span><span>tree c97ce6b80599da62e34a684a245dec5df1228b8d
 </span><span>
 </span><span>.buildkite/
@@ -231,32 +231,32 @@ duration of the commit building. <strong>NOTE</strong>, because I am deploying t
 branch, I configured the repository's default branch to be <code>source</code> and the
 <code>bin/deploy</code> script lived there, along with all the Jekyll source files.</p>
 <p>Here's a simplified version of the script:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/usr/bin/env bash
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#5c6370;">#!/usr/bin/env bash
 </span><span>
-</span><span style="color:#bf616a;">branch</span><span>=&quot;</span><span style="color:#a3be8c;">main</span><span>&quot;
-</span><span style="color:#bf616a;">build_dir</span><span>=&quot;</span><span style="color:#a3be8c;">dist</span><span>&quot;
+</span><span style="color:#e06c75;">branch</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;main&quot;
+</span><span style="color:#e06c75;">build_dir</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;dist&quot;
 </span><span>
-</span><span style="color:#65737e;"># This can be substituted for any command which builds artifacts to a
-</span><span style="color:#65737e;"># specific directory
-</span><span style="color:#bf616a;">bundle</span><span> exec jekyll build</span><span style="color:#bf616a;"> --destination </span><span>$</span><span style="color:#bf616a;">build_dir
+</span><span style="color:#5c6370;"># This can be substituted for any command which builds artifacts to a
+</span><span style="color:#5c6370;"># specific directory
+</span><span style="color:#e06c75;">bundle</span><span> exec jekyll build</span><span style="color:#e06c75;"> --destination </span><span>$</span><span style="color:#e06c75;">build_dir
 </span><span>
-</span><span style="color:#65737e;"># Force the files to be added, regardless of .gitignore
-</span><span style="color:#bf616a;">git</span><span> add</span><span style="color:#bf616a;"> -f </span><span>$</span><span style="color:#bf616a;">build_dir
+</span><span style="color:#5c6370;"># Force the files to be added, regardless of .gitignore
+</span><span style="color:#e06c75;">git</span><span> add</span><span style="color:#e06c75;"> -f </span><span>$</span><span style="color:#e06c75;">build_dir
 </span><span>
-</span><span style="color:#65737e;"># Write tree to an object
-</span><span style="color:#bf616a;">tree</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> write-tree</span><span style="color:#bf616a;"> --prefix</span><span>=$</span><span style="color:#bf616a;">build_dir</span><span style="color:#a3be8c;">)
+</span><span style="color:#5c6370;"># Write tree to an object
+</span><span style="color:#e06c75;">tree</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> write-tree</span><span style="color:#e06c75;"> --prefix</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">build_dir</span><span style="color:#98c379;">)
 </span><span>
-</span><span style="color:#65737e;"># Un-stage the build so it is back to being ignored
-</span><span style="color:#bf616a;">git</span><span> reset -- $</span><span style="color:#bf616a;">build_dir
+</span><span style="color:#5c6370;"># Un-stage the build so it is back to being ignored
+</span><span style="color:#e06c75;">git</span><span> reset</span><span style="color:#c678dd;"> -- </span><span>$</span><span style="color:#e06c75;">build_dir
 </span><span>
-</span><span style="color:#65737e;"># Create a new commit for that tree as a child of target branch&#39;s commit
-</span><span style="color:#bf616a;">commit</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> commit-tree</span><span style="color:#bf616a;"> -p </span><span>$</span><span style="color:#bf616a;">branch -m </span><span>&quot;</span><span style="color:#a3be8c;">Deploy</span><span>&quot; $</span><span style="color:#bf616a;">tree</span><span style="color:#a3be8c;">)
+</span><span style="color:#5c6370;"># Create a new commit for that tree as a child of target branch&#39;s commit
+</span><span style="color:#e06c75;">commit</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> commit-tree</span><span style="color:#e06c75;"> -p </span><span style="color:#98c379;">$</span><span style="color:#e06c75;">branch -m </span><span style="color:#98c379;">&quot;Deploy&quot; $</span><span style="color:#e06c75;">tree</span><span style="color:#98c379;">)
 </span><span>
-</span><span style="color:#65737e;"># Update the GitHub Pages&#39; branch to the new commit
-</span><span style="color:#bf616a;">git</span><span> update-ref refs/heads/$</span><span style="color:#bf616a;">branch </span><span>$</span><span style="color:#bf616a;">commit
+</span><span style="color:#5c6370;"># Update the GitHub Pages&#39; branch to the new commit
+</span><span style="color:#e06c75;">git</span><span> update-ref refs/heads/$</span><span style="color:#e06c75;">branch </span><span>$</span><span style="color:#e06c75;">commit
 </span><span>
-</span><span style="color:#65737e;"># Push the compiled branch to GitHub
-</span><span style="color:#bf616a;">git</span><span> push origin $</span><span style="color:#bf616a;">branch
+</span><span style="color:#5c6370;"># Push the compiled branch to GitHub
+</span><span style="color:#e06c75;">git</span><span> push origin $</span><span style="color:#e06c75;">branch
 </span></code></pre>
 <h3 id="automated-builds">Automated builds</h3>
 <p>I used our existing <a href="https://buildkite.com">Buildkite</a> CI setup to quickly add
@@ -270,12 +270,12 @@ changes if I were committing directly to <code>main</code>/<code>gh-pages</code>
 make it clear whose latest change is deployed. To handle this, the
 <code>bin/deploy</code> script takes these details from the commit being built and sets
 some env vars before we generate the deploy commit:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_AUTHOR_NAME</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> show</span><span style="color:#bf616a;"> -s --format</span><span>=&#39;</span><span style="color:#a3be8c;">%an</span><span>&#39;</span><span style="color:#a3be8c;"> HEAD)
-</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_COMMITTER_NAME</span><span>=&quot;$</span><span style="color:#bf616a;">GIT_AUTHOR_NAME</span><span>&quot;
-</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_AUTHOR_EMAIL</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> show</span><span style="color:#bf616a;"> -s --format</span><span>=&#39;</span><span style="color:#a3be8c;">%ae</span><span>&#39;</span><span style="color:#a3be8c;"> HEAD)
-</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">GIT_COMMITTER_EMAIL</span><span>=&quot;$</span><span style="color:#bf616a;">GIT_AUTHOR_EMAIL</span><span>&quot;
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#c678dd;">export </span><span style="color:#e06c75;">GIT_AUTHOR_NAME</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> show</span><span style="color:#e06c75;"> -s --format</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&#39;%an&#39; HEAD)
+</span><span style="color:#c678dd;">export </span><span style="color:#e06c75;">GIT_COMMITTER_NAME</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">GIT_AUTHOR_NAME</span><span style="color:#98c379;">&quot;
+</span><span style="color:#c678dd;">export </span><span style="color:#e06c75;">GIT_AUTHOR_EMAIL</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> show</span><span style="color:#e06c75;"> -s --format</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&#39;%ae&#39; HEAD)
+</span><span style="color:#c678dd;">export </span><span style="color:#e06c75;">GIT_COMMITTER_EMAIL</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">GIT_AUTHOR_EMAIL</span><span style="color:#98c379;">&quot;
 </span><span>
-</span><span style="color:#bf616a;">commit</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> commit-tree</span><span style="color:#bf616a;"> -p </span><span>$</span><span style="color:#bf616a;">branch -m </span><span>&quot;</span><span style="color:#a3be8c;">Deploy</span><span>&quot; $</span><span style="color:#bf616a;">tree</span><span style="color:#a3be8c;">)
+</span><span style="color:#e06c75;">commit</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> commit-tree</span><span style="color:#e06c75;"> -p </span><span style="color:#98c379;">$</span><span style="color:#e06c75;">branch -m </span><span style="color:#98c379;">&quot;Deploy&quot; $</span><span style="color:#e06c75;">tree</span><span style="color:#98c379;">)
 </span></code></pre>
 </li>
 <li>
@@ -283,20 +283,20 @@ some env vars before we generate the deploy commit:</p>
 commit creation step to record a description of the source commit in the commit
 message, including whether or not the working directory had uncommitted
 changes:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">identifier</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> describe</span><span style="color:#bf616a;"> --dirty --always</span><span style="color:#a3be8c;">) </span><span style="color:#65737e;"># e.g. &quot;213c9af&quot;, &quot;213c9a-dirty&quot;
-</span><span style="color:#bf616a;">commit</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> commit-tree</span><span style="color:#bf616a;"> -p </span><span>$</span><span style="color:#bf616a;">branch -m </span><span>&quot;</span><span style="color:#a3be8c;">Deploy </span><span>$</span><span style="color:#bf616a;">identifier</span><span>&quot; $</span><span style="color:#bf616a;">tree</span><span style="color:#a3be8c;">)
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">identifier</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> describe</span><span style="color:#e06c75;"> --dirty --always</span><span style="color:#98c379;">) </span><span style="color:#5c6370;"># e.g. &quot;213c9af&quot;, &quot;213c9a-dirty&quot;
+</span><span style="color:#e06c75;">commit</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> commit-tree</span><span style="color:#e06c75;"> -p </span><span style="color:#98c379;">$</span><span style="color:#e06c75;">branch -m </span><span style="color:#98c379;">&quot;Deploy $</span><span style="color:#e06c75;">identifier</span><span style="color:#98c379;">&quot; $</span><span style="color:#e06c75;">tree</span><span style="color:#98c379;">)
 </span></code></pre>
 </li>
 <li>
 <p>For maximum re-usability, I have the script detect the target branch based on
 the type of repository (project or user/org):</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Determine which branch GitHub pages is built from, for this repository
-</span><span style="color:#bf616a;">remote</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">git</span><span style="color:#a3be8c;"> config remote.origin.url)
-</span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[[ </span><span>$</span><span style="color:#bf616a;">remote </span><span>= *.github.io </span><span style="color:#96b5b4;">]] </span><span>|| </span><span style="color:#96b5b4;">[[ </span><span>$</span><span style="color:#bf616a;">remote </span><span>= *.github.io.git </span><span style="color:#96b5b4;">]]</span><span>; </span><span style="color:#b48ead;">then
-</span><span>  </span><span style="color:#bf616a;">branch</span><span>=</span><span style="color:#a3be8c;">main
-</span><span style="color:#b48ead;">else
-</span><span>  </span><span style="color:#bf616a;">branch</span><span>=</span><span style="color:#a3be8c;">gh-pages
-</span><span style="color:#b48ead;">fi
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#5c6370;"># Determine which branch GitHub pages is built from, for this repository
+</span><span style="color:#e06c75;">remote</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">git</span><span style="color:#98c379;"> config remote.origin.url)
+</span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[[ </span><span>$</span><span style="color:#e06c75;">remote </span><span style="color:#c678dd;">= *</span><span>.github.io </span><span style="color:#61afef;">]] </span><span style="color:#c678dd;">|| </span><span style="color:#61afef;">[[ </span><span>$</span><span style="color:#e06c75;">remote </span><span style="color:#c678dd;">= *</span><span>.github.io.git </span><span style="color:#61afef;">]]</span><span style="color:#c678dd;">; then
+</span><span>  </span><span style="color:#e06c75;">branch</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">main
+</span><span style="color:#c678dd;">else
+</span><span>  </span><span style="color:#e06c75;">branch</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">gh-pages
+</span><span style="color:#c678dd;">fi
 </span></code></pre>
 </li>
 <li>

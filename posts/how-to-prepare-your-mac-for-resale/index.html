@@ -169,30 +169,30 @@ black screen — looks real nerdy and sci-fi).</p>
 <p>NOTE: If you didn’t use <code>temp</code> as your username you created in the setup
 assistant, make sure you replace <strong>all</strong> instances of <code>temp</code> with your
 actual username.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Mount the file system so we can modify it
-</span><span style="color:#bf616a;">/sbin/fsck -fy
-</span><span style="color:#bf616a;">/sbin/mount -uw</span><span> /
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#5c6370;"># Mount the file system so we can modify it
+</span><span style="color:#e06c75;">/sbin/fsck -fy
+</span><span style="color:#e06c75;">/sbin/mount -uw</span><span> /
 </span><span>
-</span><span style="color:#65737e;"># Activate directory services
-</span><span style="color:#bf616a;">/bin/launchctl</span><span> load /System/Library/LaunchDaemons/com.apple.DirectoryServices.plist &amp;
+</span><span style="color:#5c6370;"># Activate directory services
+</span><span style="color:#e06c75;">/bin/launchctl</span><span> load /System/Library/LaunchDaemons/com.apple.DirectoryServices.plist </span><span style="color:#c678dd;">&amp;
 </span><span>
-</span><span style="color:#65737e;"># Delete all traces of the temporary account
-</span><span style="color:#bf616a;">/usr/bin/dscl</span><span> .</span><span style="color:#bf616a;"> -delete</span><span> /Users/temp
-</span><span style="color:#bf616a;">/usr/bin/dscl</span><span> .</span><span style="color:#bf616a;"> -delete</span><span> /Groups/admin GroupMembership temp
-</span><span style="color:#bf616a;">/bin/rm -rf</span><span> /Users/temp
+</span><span style="color:#5c6370;"># Delete all traces of the temporary account
+</span><span style="color:#e06c75;">/usr/bin/dscl</span><span> .</span><span style="color:#e06c75;"> -delete</span><span> /Users/temp
+</span><span style="color:#e06c75;">/usr/bin/dscl</span><span> .</span><span style="color:#e06c75;"> -delete</span><span> /Groups/admin GroupMembership temp
+</span><span style="color:#e06c75;">/bin/rm -rf</span><span> /Users/temp
 </span><span>
-</span><span style="color:#65737e;"># Get rid of a few other files
-</span><span style="color:#bf616a;">/bin/rm -R</span><span> /Library/Preferences
-</span><span style="color:#bf616a;">/bin/rm -f</span><span> /root/.bash_history
+</span><span style="color:#5c6370;"># Get rid of a few other files
+</span><span style="color:#e06c75;">/bin/rm -R</span><span> /Library/Preferences
+</span><span style="color:#e06c75;">/bin/rm -f</span><span> /root/.bash_history
 </span><span>
-</span><span style="color:#65737e;"># Now we make it appear as though the initial setup assistant
-</span><span style="color:#65737e;"># still needs to run
-</span><span style="color:#bf616a;">/bin/rm</span><span> /var/db/.AppleSetupDone
+</span><span style="color:#5c6370;"># Now we make it appear as though the initial setup assistant
+</span><span style="color:#5c6370;"># still needs to run
+</span><span style="color:#e06c75;">/bin/rm</span><span> /var/db/.AppleSetupDone
 </span><span>
-</span><span style="color:#65737e;"># Reboot and check that it seems like
-</span><span style="color:#65737e;"># it is a new mac, then turn off your computer
-</span><span style="color:#65737e;"># and sell it!
-</span><span style="color:#bf616a;">/sbin/reboot
+</span><span style="color:#5c6370;"># Reboot and check that it seems like
+</span><span style="color:#5c6370;"># it is a new mac, then turn off your computer
+</span><span style="color:#5c6370;"># and sell it!
+</span><span style="color:#e06c75;">/sbin/reboot
 </span></code></pre>
 
 	</div>

@@ -151,7 +151,7 @@
         
 	  <p>I recently was setting up a new VPS on Linode and I got the following
 error when trying to create a new database:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>ERROR: new encoding is incompatible with the encoding of the template database
+<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>ERROR: new encoding is incompatible with the encoding of the template database
 </span><span>HINT: Use the same encoding as in the template database, or use template0 as template.
 </span></code></pre>
 <p>This error is related to the locale of the system when Postgres was
@@ -161,8 +161,8 @@ Postgres, you should avoid these errors altogether.</p>
 <p>If Postgres has already been installed, however, you can run the
 following commands (assuming Postgres version 8.4) to reinitialise the
 database with the correct encoding:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pg_dropcluster --stop</span><span> 8.4 main
-</span><span style="color:#bf616a;">pg_createcluster --start -e</span><span> UTF-8 8.4 main
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">pg_dropcluster --stop</span><span> 8.4 main
+</span><span style="color:#e06c75;">pg_createcluster --start -e</span><span> UTF-8 8.4 main
 </span></code></pre>
 <p>Note: this will erase all databases and reset your postgres
 configuration so it is only really useful when you are first setting up

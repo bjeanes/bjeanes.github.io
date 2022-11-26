@@ -156,41 +156,41 @@
 <p>I want to talk about a neat little thing I did in my project to get a nice little performance boost on top of this laziness, without having to think about any low-level concurrency concerns.</p>
 <h3 id="laziness">Laziness</h3>
 <p>Here’s a piece of code that provides an “infinite” lazy sequence. In this case, it is of tweets:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#bf616a;">require </span><span>&#39;[clj-http.client </span><span style="color:#d08770;">:as</span><span> http])
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#e06c75;">require </span><span style="color:#c678dd;">&#39;</span><span>[clj-http.client </span><span style="color:#e5c07b;">:as</span><span> http])
 </span><span>
-</span><span>(</span><span style="color:#b48ead;">defn </span><span style="color:#8fa1b3;">tweets-for
-</span><span>  ([user] (</span><span style="color:#bf616a;">tweets-for</span><span> user </span><span style="color:#d08770;">nil</span><span>))
+</span><span>(</span><span style="color:#c678dd;">defn </span><span style="color:#61afef;">tweets-for
+</span><span>  ([user] (</span><span style="color:#e06c75;">tweets-for</span><span> user </span><span style="color:#e5c07b;">nil</span><span>))
 </span><span>  ([user last-tweet-id]
-</span><span>     (</span><span style="color:#bf616a;">lazy-seq
-</span><span>      (</span><span style="color:#bf616a;">let </span><span>[url &quot;</span><span style="color:#a3be8c;">http://api.twitter.com/1/statuses/user_timeline.json</span><span>&quot;
-</span><span>            params {</span><span style="color:#d08770;">:limit 10 :screen_name</span><span> user}
-</span><span>            params (</span><span style="color:#bf616a;">if</span><span> last-tweet-id (</span><span style="color:#bf616a;">assoc</span><span> params </span><span style="color:#d08770;">:max_id</span><span> last-tweet-id) params)
-</span><span>            response (</span><span style="color:#bf616a;">http/get</span><span> url {</span><span style="color:#d08770;">:query-params</span><span> params </span><span style="color:#d08770;">:as :json</span><span>})
-</span><span>            tweets (</span><span style="color:#d08770;">:body</span><span> response)]
+</span><span>     (</span><span style="color:#e06c75;">lazy-seq
+</span><span>      (</span><span style="color:#e06c75;">let </span><span>[url </span><span style="color:#98c379;">&quot;http://api.twitter.com/1/statuses/user_timeline.json&quot;
+</span><span>            params {</span><span style="color:#e5c07b;">:limit 10 :screen_name</span><span> user}
+</span><span>            params (</span><span style="color:#e06c75;">if</span><span> last-tweet-id (</span><span style="color:#e06c75;">assoc</span><span> params </span><span style="color:#e5c07b;">:max_id</span><span> last-tweet-id) params)
+</span><span>            response (</span><span style="color:#e06c75;">http/get</span><span> url {</span><span style="color:#e5c07b;">:query-params</span><span> params </span><span style="color:#e5c07b;">:as :json</span><span>})
+</span><span>            tweets (</span><span style="color:#e5c07b;">:body</span><span> response)]
 </span><span>
-</span><span>        (</span><span style="color:#bf616a;">when </span><span>(</span><span style="color:#bf616a;">not-empty</span><span> tweets)
-</span><span>          (</span><span style="color:#bf616a;">concat</span><span> tweets
-</span><span>                  (</span><span style="color:#bf616a;">tweets-for</span><span> user (</span><span style="color:#d08770;">:id </span><span>(</span><span style="color:#bf616a;">last</span><span> tweets)))))))))
+</span><span>        (</span><span style="color:#e06c75;">when </span><span>(</span><span style="color:#e06c75;">not-empty</span><span> tweets)
+</span><span>          (</span><span style="color:#e06c75;">concat</span><span> tweets
+</span><span>                  (</span><span style="color:#e06c75;">tweets-for</span><span> user (</span><span style="color:#e5c07b;">:id </span><span>(</span><span style="color:#e06c75;">last</span><span> tweets)))))))))
 </span></code></pre>
 <p>So that’s cool. Now, note the following performance characteristics when contemplating the next section:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">my-tweets </span><span>(</span><span style="color:#bf616a;">tweets-for </span><span>&quot;</span><span style="color:#a3be8c;">bjeanes</span><span>&quot;))
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#c678dd;">def </span><span style="color:#61afef;">my-tweets </span><span>(</span><span style="color:#e06c75;">tweets-for </span><span style="color:#98c379;">&quot;bjeanes&quot;</span><span>))
 </span><span>
-</span><span style="color:#65737e;">;; The following returns after a delay while we fetch the first page:
-</span><span>(</span><span style="color:#bf616a;">first</span><span> my-tweets) </span><span style="color:#65737e;">;=&gt; {:text &quot;Tweet 0&quot; ...}
+</span><span style="color:#5c6370;">;; The following returns after a delay while we fetch the first page:
+</span><span>(</span><span style="color:#e06c75;">first</span><span> my-tweets) </span><span style="color:#5c6370;">;=&gt; {:text &quot;Tweet 0&quot; ...}
 </span><span>
-</span><span style="color:#65737e;">;; This returns instantly because our `tweets-for` function fetches 10 tweets per page:
-</span><span>(</span><span style="color:#bf616a;">nth</span><span> my-tweets </span><span style="color:#d08770;">9</span><span>) </span><span style="color:#65737e;">;=&gt; {:text &quot;Tweet 9&quot; ...}
+</span><span style="color:#5c6370;">;; This returns instantly because our `tweets-for` function fetches 10 tweets per page:
+</span><span>(</span><span style="color:#e06c75;">nth</span><span> my-tweets </span><span style="color:#e5c07b;">9</span><span>) </span><span style="color:#5c6370;">;=&gt; {:text &quot;Tweet 9&quot; ...}
 </span><span>
-</span><span style="color:#65737e;">;; This returns after a delay because this tweet is on the next (still lazily unfetched) page:
-</span><span>(</span><span style="color:#bf616a;">nth</span><span> my-tweets </span><span style="color:#d08770;">10</span><span>) </span><span style="color:#65737e;">;=&gt; {:text &quot;Tweet 10&quot; ...}
+</span><span style="color:#5c6370;">;; This returns after a delay because this tweet is on the next (still lazily unfetched) page:
+</span><span>(</span><span style="color:#e06c75;">nth</span><span> my-tweets </span><span style="color:#e5c07b;">10</span><span>) </span><span style="color:#5c6370;">;=&gt; {:text &quot;Tweet 10&quot; ...}
 </span></code></pre>
 <h3 id="motivation">Motivation</h3>
 <p>So laziness is pretty cool. But, sometimes, things can improve if you are ever so slightly less lazy. What if we could remove that little pause between the 9th and the 10th items in the list where we are just waiting around for the network request to Twitter to complete? We could be using our time to do more CPU-melting tweet crunching! Well, it turns out we can easily do it.</p>
 <p>Assume for a moment that we have some calculation (<code>process</code>) that takes a considerable amount of CPU time to process:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#b48ead;">defn </span><span style="color:#8fa1b3;">process
-</span><span>  &quot;</span><span style="color:#a3be8c;">Do some really hard work with our tweets</span><span>&quot;
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#c678dd;">defn </span><span style="color:#61afef;">process
+</span><span>  </span><span style="color:#98c379;">&quot;Do some really hard work with our tweets&quot;
 </span><span>  [tweets]
-</span><span>  (</span><span style="color:#bf616a;">map </span><span>#(</span><span style="color:#bf616a;">Thread/sleep </span><span style="color:#d08770;">100</span><span>) tweets))
+</span><span>  (</span><span style="color:#e06c75;">map </span><span style="color:#c678dd;">#</span><span>(</span><span style="color:#e06c75;">Thread/sleep </span><span style="color:#e5c07b;">100</span><span>) tweets))
 </span></code></pre>
 <p>If we know we will be consuming a substantial amount of the lazy sequence, we could encourage the sequence to go ahead and start realizing the next chunk of our sequence.</p>
 <p>This would mean that instead of processing 10 tweets, waiting, processing 10 tweets, waiting, etc.:</p>
@@ -198,19 +198,19 @@
 <p>... we would be able to process tweets continuously back-to-back:</p>
 <p><img src="https://bjeanes.com/posts/motivate-your-lazy-sequences/motivated.png" alt="Diagram showing the &quot;motivated&quot; sequencing" /></p>
 <p>Wouldn't also be great if we didn't have to think about the parallelism at all? To this end, I present <code>motivate</code>:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#b48ead;">defn </span><span style="color:#8fa1b3;">motivate
-</span><span>  &quot;</span><span style="color:#a3be8c;">Motivate a lazy sequence to seek slightly ahead of the sequence consumer&#39;s position.</span><span>&quot;
-</span><span>  ([coll] (</span><span style="color:#bf616a;">motivate</span><span> coll </span><span style="color:#d08770;">1</span><span>))
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#c678dd;">defn </span><span style="color:#61afef;">motivate
+</span><span>  </span><span style="color:#98c379;">&quot;Motivate a lazy sequence to seek slightly ahead of the sequence consumer&#39;s position.&quot;
+</span><span>  ([coll] (</span><span style="color:#e06c75;">motivate</span><span> coll </span><span style="color:#e5c07b;">1</span><span>))
 </span><span>  ([coll motivation]
-</span><span>     (</span><span style="color:#bf616a;">lazy-seq
-</span><span>      (</span><span style="color:#bf616a;">future </span><span>(</span><span style="color:#bf616a;">nth</span><span> coll motivation))
-</span><span>      (</span><span style="color:#bf616a;">cons </span><span>(</span><span style="color:#bf616a;">first</span><span> coll) (</span><span style="color:#bf616a;">motivate </span><span>(</span><span style="color:#bf616a;">rest</span><span> coll) motivation)))))
+</span><span>     (</span><span style="color:#e06c75;">lazy-seq
+</span><span>      (</span><span style="color:#e06c75;">future </span><span>(</span><span style="color:#e06c75;">nth</span><span> coll motivation))
+</span><span>      (</span><span style="color:#e06c75;">cons </span><span>(</span><span style="color:#e06c75;">first</span><span> coll) (</span><span style="color:#e06c75;">motivate </span><span>(</span><span style="color:#e06c75;">rest</span><span> coll) motivation)))))
 </span></code></pre>
 <p>Let’s compare:</p>
-<pre data-lang="clojure" style="background-color:#2b303b;color:#c0c5ce;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#bf616a;">time </span><span>(</span><span style="color:#bf616a;">process </span><span>(</span><span style="color:#bf616a;">take </span><span style="color:#d08770;">100 </span><span>(</span><span style="color:#bf616a;">tweets-for </span><span>&quot;</span><span style="color:#a3be8c;">riblah</span><span>&quot;))))
-</span><span style="color:#65737e;">;=&gt; “Elapsed time: 11545.011 msecs&quot;
-</span><span>(</span><span style="color:#bf616a;">time </span><span>(</span><span style="color:#bf616a;">process </span><span>(</span><span style="color:#bf616a;">take </span><span style="color:#d08770;">100 </span><span>(</span><span style="color:#bf616a;">motivate </span><span>(</span><span style="color:#bf616a;">tweets-for </span><span>&quot;</span><span style="color:#a3be8c;">riblah</span><span>&quot;) </span><span style="color:#d08770;">5</span><span>))))
-</span><span style="color:#65737e;">;=&gt; &quot;Elapsed time: 10394.769 msecs&quot;
+<pre data-lang="clojure" style="background-color:#282c34;color:#dcdfe4;" class="language-clojure "><code class="language-clojure" data-lang="clojure"><span>(</span><span style="color:#e06c75;">time </span><span>(</span><span style="color:#e06c75;">process </span><span>(</span><span style="color:#e06c75;">take </span><span style="color:#e5c07b;">100 </span><span>(</span><span style="color:#e06c75;">tweets-for </span><span style="color:#98c379;">&quot;riblah&quot;</span><span>))))
+</span><span style="color:#5c6370;">;=&gt; “Elapsed time: 11545.011 msecs&quot;
+</span><span>(</span><span style="color:#e06c75;">time </span><span>(</span><span style="color:#e06c75;">process </span><span>(</span><span style="color:#e06c75;">take </span><span style="color:#e5c07b;">100 </span><span>(</span><span style="color:#e06c75;">motivate </span><span>(</span><span style="color:#e06c75;">tweets-for </span><span style="color:#98c379;">&quot;riblah&quot;</span><span>) </span><span style="color:#e5c07b;">5</span><span>))))
+</span><span style="color:#5c6370;">;=&gt; &quot;Elapsed time: 10394.769 msecs&quot;
 </span></code></pre>
 <p>The speed difference is noticeable even when processing only a 100 tweets. If we were doing more than 100 milliseconds/tweet of processing, fetching a lot more data, or dealing with a slow upstream dependency, the speed improvements would be even clearer.</p>
 <p>The last (optional) parameter to <code>motivate</code> is the “motivation factor”. If your CPU-bound work is long-running, this number can be smaller without a noticeable difference. The ideal number depends on how long each IO operation takes and much processing you do with each chunk.</p>

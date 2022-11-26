@@ -174,36 +174,36 @@ result, a few other people requested support for other unix systems and
 Ghost to fall back to processing and editing the <code>/etc/hosts</code> file when
 not on Leopard.</p>
 <h3 id="usage">Usage</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span> ghost add mydevsite.local
-</span><span>  </span><span style="color:#bf616a;">[Adding]</span><span> mydevsite.local -&gt; </span><span style="color:#d08770;">127</span><span>.0.0.1
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">$</span><span> ghost add mydevsite.local
+</span><span>  </span><span style="color:#e06c75;">[Adding]</span><span> mydevsite.local -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">127</span><span>.0.0.1
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost add staging-server.local 67.207.136.164
-</span><span>  </span><span style="color:#bf616a;">[Adding]</span><span> staging-server.local -&gt; </span><span style="color:#d08770;">67</span><span>.207.136.164
+</span><span style="color:#e06c75;">$</span><span> ghost add staging-server.local 67.207.136.164
+</span><span>  </span><span style="color:#e06c75;">[Adding]</span><span> staging-server.local -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">67</span><span>.207.136.164
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost list
-</span><span style="color:#bf616a;">Listing</span><span> 2 host(s)</span><span style="color:#96b5b4;">:
-</span><span>  </span><span style="color:#bf616a;">mydevsite.local</span><span>      -&gt; </span><span style="color:#d08770;">127</span><span>.0.0.1
-</span><span>  </span><span style="color:#bf616a;">staging-server.local</span><span> -&gt; </span><span style="color:#d08770;">67</span><span>.207.136.164
+</span><span style="color:#e06c75;">$</span><span> ghost list
+</span><span style="color:#e06c75;">Listing</span><span> 2 host(s)</span><span style="color:#61afef;">:
+</span><span>  </span><span style="color:#e06c75;">mydevsite.local</span><span>      -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">127</span><span>.0.0.1
+</span><span>  </span><span style="color:#e06c75;">staging-server.local</span><span> -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">67</span><span>.207.136.164
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost delete mydevsite.local
-</span><span>  </span><span style="color:#bf616a;">[Deleting]</span><span> mydevsite.local
+</span><span style="color:#e06c75;">$</span><span> ghost delete mydevsite.local
+</span><span>  </span><span style="color:#e06c75;">[Deleting]</span><span> mydevsite.local
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost list
-</span><span style="color:#bf616a;">Listing</span><span> 1 host(s)</span><span style="color:#96b5b4;">:
-</span><span>  </span><span style="color:#bf616a;">staging-server.local</span><span> -&gt; </span><span style="color:#d08770;">67</span><span>.207.136.164
+</span><span style="color:#e06c75;">$</span><span> ghost list
+</span><span style="color:#e06c75;">Listing</span><span> 1 host(s)</span><span style="color:#61afef;">:
+</span><span>  </span><span style="color:#e06c75;">staging-server.local</span><span> -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">67</span><span>.207.136.164
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost modify staging-server.local 64.233.167.99
-</span><span>  </span><span style="color:#bf616a;">[Modifying]</span><span> staging-server.local -&gt; </span><span style="color:#d08770;">64</span><span>.233.167.99
+</span><span style="color:#e06c75;">$</span><span> ghost modify staging-server.local 64.233.167.99
+</span><span>  </span><span style="color:#e06c75;">[Modifying]</span><span> staging-server.local -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">64</span><span>.233.167.99
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost list
-</span><span style="color:#bf616a;">Listing</span><span> 1 host(s)</span><span style="color:#96b5b4;">:
-</span><span>  </span><span style="color:#bf616a;">staging-server.local</span><span> -&gt; </span><span style="color:#d08770;">64</span><span>.233.167.99
+</span><span style="color:#e06c75;">$</span><span> ghost list
+</span><span style="color:#e06c75;">Listing</span><span> 1 host(s)</span><span style="color:#61afef;">:
+</span><span>  </span><span style="color:#e06c75;">staging-server.local</span><span> -</span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">64</span><span>.233.167.99
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost empty
-</span><span>  </span><span style="color:#bf616a;">[Emptying]</span><span> Done.
+</span><span style="color:#e06c75;">$</span><span> ghost empty
+</span><span>  </span><span style="color:#e06c75;">[Emptying]</span><span> Done.
 </span><span>
-</span><span style="color:#bf616a;">$</span><span> ghost list
-</span><span style="color:#bf616a;">Listing</span><span> 0 host(s)</span><span style="color:#96b5b4;">:
+</span><span style="color:#e06c75;">$</span><span> ghost list
+</span><span style="color:#e06c75;">Listing</span><span> 0 host(s)</span><span style="color:#61afef;">:
 </span></code></pre>
 <h3 id="other">Other</h3>
 <p>Since creating Ghost I’ve used the Ruby library to add an initializer to

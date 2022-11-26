@@ -222,104 +222,104 @@ something slightly different:</p>
 </ol>
 <h4 id="code">Code</h4>
 <p>Here's the actual script we use, more-or-less un-changed:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/usr/bin/env bash
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#5c6370;">#!/usr/bin/env bash
 </span><span>
-</span><span style="color:#96b5b4;">set </span><span style="color:#bf616a;">-ex
+</span><span style="color:#61afef;">set </span><span style="color:#e06c75;">-ex
 </span><span>
-</span><span style="color:#65737e;"># Pass in Heroku API token
-</span><span style="color:#bf616a;">token</span><span>=$</span><span style="color:#bf616a;">1
+</span><span style="color:#5c6370;"># Pass in Heroku API token
+</span><span style="color:#e06c75;">token</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">1
 </span><span>
-</span><span style="color:#65737e;"># We run this script in a stateless Docker image, so to make the script a bit
-</span><span style="color:#65737e;"># cleaner, we just write out the credentials to a file that the Heroku Toolbelt
-</span><span style="color:#65737e;"># knows to read.
-</span><span style="color:#b48ead;">if </span><span>! </span><span style="color:#bf616a;">grep -lq</span><span> api.heroku.com </span><span style="color:#bf616a;">~</span><span>/.netrc </span><span style="color:#d08770;">2</span><span>&gt;/dev/null; </span><span style="color:#b48ead;">then
-</span><span>  </span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">machine api.heroku.com</span><span>&quot; &gt; </span><span style="color:#bf616a;">~</span><span>/.netrc
-</span><span>  </span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">  login dev+heroku@covidence.org</span><span>&quot; &gt;&gt; </span><span style="color:#bf616a;">~</span><span>/.netrc
-</span><span>  </span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">  password </span><span>$</span><span style="color:#bf616a;">token</span><span>&quot; &gt;&gt; </span><span style="color:#bf616a;">~</span><span>/.netrc
+</span><span style="color:#5c6370;"># We run this script in a stateless Docker image, so to make the script a bit
+</span><span style="color:#5c6370;"># cleaner, we just write out the credentials to a file that the Heroku Toolbelt
+</span><span style="color:#5c6370;"># knows to read.
+</span><span style="color:#c678dd;">if ! </span><span style="color:#e06c75;">grep -lq</span><span> api.heroku.com </span><span style="color:#e06c75;">~</span><span>/.netrc </span><span style="color:#e5c07b;">2</span><span style="color:#c678dd;">&gt;</span><span>/dev/null</span><span style="color:#c678dd;">; then
+</span><span>  </span><span style="color:#61afef;">echo </span><span style="color:#98c379;">&quot;machine api.heroku.com&quot; </span><span style="color:#c678dd;">&gt; </span><span style="color:#e06c75;">~</span><span>/.netrc
+</span><span>  </span><span style="color:#61afef;">echo </span><span style="color:#98c379;">&quot;  login dev+heroku@covidence.org&quot; </span><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#e06c75;">~</span><span>/.netrc
+</span><span>  </span><span style="color:#61afef;">echo </span><span style="color:#98c379;">&quot;  password $</span><span style="color:#e06c75;">token</span><span style="color:#98c379;">&quot; </span><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#e06c75;">~</span><span>/.netrc
 </span><span>
-</span><span>  </span><span style="color:#bf616a;">chmod</span><span> 0600 </span><span style="color:#bf616a;">~</span><span>/.netrc
-</span><span style="color:#b48ead;">fi
+</span><span>  </span><span style="color:#e06c75;">chmod</span><span> 0600 </span><span style="color:#e06c75;">~</span><span>/.netrc
+</span><span style="color:#c678dd;">fi
 </span><span>
-</span><span style="color:#65737e;"># Helper function for calling Heroku API
-</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">hapi </span><span>{
-</span><span>  </span><span style="color:#bf616a;">curl </span><span>\
-</span><span style="color:#bf616a;">    --fail </span><span>\
-</span><span style="color:#bf616a;">    --silent </span><span>\
-</span><span style="color:#bf616a;">    --netrc </span><span>\
-</span><span style="color:#bf616a;">    --header </span><span>&#39;</span><span style="color:#a3be8c;">Accept: application/vnd.heroku+json; version=3</span><span>&#39; \
-</span><span>    https://api.heroku.com$</span><span style="color:#bf616a;">*
+</span><span style="color:#5c6370;"># Helper function for calling Heroku API
+</span><span style="color:#c678dd;">function </span><span style="color:#61afef;">hapi </span><span>{
+</span><span>  </span><span style="color:#e06c75;">curl </span><span>\
+</span><span style="color:#e06c75;">    --fail </span><span>\
+</span><span style="color:#e06c75;">    --silent </span><span>\
+</span><span style="color:#e06c75;">    --netrc </span><span>\
+</span><span style="color:#e06c75;">    --header </span><span style="color:#98c379;">&#39;Accept: application/vnd.heroku+json; version=3&#39; </span><span>\
+</span><span>    https://api.heroku.com$</span><span style="color:#e06c75;">*
 </span><span>}
 </span><span>
-</span><span style="color:#65737e;"># Routine to wait for DB to be caught up, then promote it and de-provision the
-</span><span style="color:#65737e;"># old instance.
-</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">promote </span><span>{
-</span><span>  </span><span style="color:#bf616a;">app</span><span>=$</span><span style="color:#bf616a;">1
+</span><span style="color:#5c6370;"># Routine to wait for DB to be caught up, then promote it and de-provision the
+</span><span style="color:#5c6370;"># old instance.
+</span><span style="color:#c678dd;">function </span><span style="color:#61afef;">promote </span><span>{
+</span><span>  </span><span style="color:#e06c75;">app</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">1
 </span><span>
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:wait</span><span style="color:#bf616a;"> --wait-interval</span><span> 10</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:unfollow</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app --confirm </span><span>$</span><span style="color:#bf616a;">app </span><span>$</span><span style="color:#bf616a;">app</span><span>::NEW_DATABASE || </span><span style="color:#bf616a;">true
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> addons:attach</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app </span><span>$</span><span style="color:#bf616a;">app</span><span>::DATABASE</span><span style="color:#bf616a;"> --as</span><span> OLD_DATABASE
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:promote</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> NEW_DATABASE
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> addons:detach</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> NEW_DATABASE
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> addons:destroy</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app --confirm </span><span>$</span><span style="color:#bf616a;">app</span><span> OLD_DATABASE
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> run:detached</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> rails runner &#39;</span><span style="color:#a3be8c;">Ops::Staging::Search.massacre!</span><span>&#39;
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> pg:wait</span><span style="color:#e06c75;"> --wait-interval</span><span> 10</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> pg:unfollow</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app --confirm </span><span>$</span><span style="color:#e06c75;">app </span><span>$</span><span style="color:#e06c75;">app</span><span>::NEW_DATABASE </span><span style="color:#c678dd;">|| </span><span style="color:#e06c75;">true
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> addons:attach</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app </span><span>$</span><span style="color:#e06c75;">app</span><span>::DATABASE</span><span style="color:#e06c75;"> --as</span><span> OLD_DATABASE
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> pg:promote</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app</span><span> NEW_DATABASE
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> addons:detach</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app</span><span> NEW_DATABASE
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> addons:destroy</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app --confirm </span><span>$</span><span style="color:#e06c75;">app</span><span> OLD_DATABASE
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> run:detached</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app</span><span> rails runner </span><span style="color:#98c379;">&#39;Ops::Staging::Search.massacre!&#39;
 </span><span>}
 </span><span>
-</span><span style="color:#65737e;"># Routine to create a new DB with a deterministic name so that we can more
-</span><span style="color:#65737e;"># easily promote it later.
-</span><span style="color:#65737e;">#
-</span><span style="color:#65737e;"># There is also some logic here to recover from a build which got interrupted
-</span><span style="color:#65737e;"># mid-way so that we don&#39;t accumulate orphaned DBs that we have to pay for.
-</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">create </span><span>{
-</span><span>  </span><span style="color:#bf616a;">app</span><span>=$</span><span style="color:#bf616a;">1
-</span><span>  </span><span style="color:#bf616a;">plan</span><span>=$</span><span style="color:#bf616a;">2
+</span><span style="color:#5c6370;"># Routine to create a new DB with a deterministic name so that we can more
+</span><span style="color:#5c6370;"># easily promote it later.
+</span><span style="color:#5c6370;">#
+</span><span style="color:#5c6370;"># There is also some logic here to recover from a build which got interrupted
+</span><span style="color:#5c6370;"># mid-way so that we don&#39;t accumulate orphaned DBs that we have to pay for.
+</span><span style="color:#c678dd;">function </span><span style="color:#61afef;">create </span><span>{
+</span><span>  </span><span style="color:#e06c75;">app</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">1
+</span><span>  </span><span style="color:#e06c75;">plan</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">2
 </span><span>
-</span><span>  </span><span style="color:#96b5b4;">shift</span><span> 2
+</span><span>  </span><span style="color:#61afef;">shift</span><span> 2
 </span><span>
-</span><span>  </span><span style="color:#bf616a;">existing</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">hapi</span><span style="color:#a3be8c;"> /addons/</span><span>$</span><span style="color:#bf616a;">app</span><span style="color:#a3be8c;">::DATABASE </span><span>| </span><span style="color:#bf616a;">jq -Mr</span><span style="color:#a3be8c;"> .name)
-</span><span>  </span><span style="color:#bf616a;">new</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">hapi</span><span style="color:#a3be8c;"> /addons/</span><span>$</span><span style="color:#bf616a;">app</span><span style="color:#a3be8c;">::NEW_DATABASE </span><span>| </span><span style="color:#bf616a;">jq -Mr</span><span style="color:#a3be8c;"> .name </span><span>|| </span><span style="color:#bf616a;">true</span><span style="color:#a3be8c;">)
+</span><span>  </span><span style="color:#e06c75;">existing</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">hapi</span><span style="color:#98c379;"> /addons/$</span><span style="color:#e06c75;">app</span><span style="color:#98c379;">::DATABASE </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">jq -Mr</span><span style="color:#98c379;"> .name)
+</span><span>  </span><span style="color:#e06c75;">new</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$(</span><span style="color:#e06c75;">hapi</span><span style="color:#98c379;"> /addons/$</span><span style="color:#e06c75;">app</span><span style="color:#98c379;">::NEW_DATABASE </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">jq -Mr</span><span style="color:#98c379;"> .name </span><span style="color:#c678dd;">|| </span><span style="color:#e06c75;">true</span><span style="color:#98c379;">)
 </span><span>
-</span><span>  </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-z </span><span>&quot;$</span><span style="color:#bf616a;">new</span><span>&quot; </span><span style="color:#96b5b4;">]</span><span>; </span><span style="color:#b48ead;">then
-</span><span>    </span><span style="color:#bf616a;">heroku</span><span> addons:create \
-</span><span style="color:#bf616a;">      -a </span><span>$</span><span style="color:#bf616a;">app</span><span> heroku-postgresql:$</span><span style="color:#bf616a;">plan </span><span>\
-</span><span style="color:#bf616a;">      --as</span><span> NEW_DATABASE \
-</span><span>      $</span><span style="color:#bf616a;">*
-</span><span>  </span><span style="color:#b48ead;">else
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span>&quot;$</span><span style="color:#bf616a;">new</span><span>&quot; == &quot;$</span><span style="color:#bf616a;">existing</span><span>&quot; </span><span style="color:#96b5b4;">]</span><span>; </span><span style="color:#b48ead;">then
-</span><span>      </span><span style="color:#bf616a;">heroku</span><span> addons:detach</span><span style="color:#bf616a;"> -a </span><span>$</span><span style="color:#bf616a;">app</span><span> NEW_DATABASE
-</span><span>      </span><span style="color:#bf616a;">create </span><span>$</span><span style="color:#bf616a;">app </span><span>$</span><span style="color:#bf616a;">plan
-</span><span>    </span><span style="color:#b48ead;">else
-</span><span>      </span><span style="color:#bf616a;">true </span><span style="color:#65737e;"># already got a new one in waiting
-</span><span>    </span><span style="color:#b48ead;">fi
-</span><span>  </span><span style="color:#b48ead;">fi
+</span><span>  </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-z </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">new</span><span style="color:#98c379;">&quot; </span><span style="color:#61afef;">]</span><span style="color:#c678dd;">; then
+</span><span>    </span><span style="color:#e06c75;">heroku</span><span> addons:create \
+</span><span style="color:#e06c75;">      -a </span><span>$</span><span style="color:#e06c75;">app</span><span> heroku-postgresql:$</span><span style="color:#e06c75;">plan </span><span>\
+</span><span style="color:#e06c75;">      --as</span><span> NEW_DATABASE \
+</span><span>      $</span><span style="color:#e06c75;">*
+</span><span>  </span><span style="color:#c678dd;">else
+</span><span>    </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">new</span><span style="color:#98c379;">&quot; </span><span style="color:#c678dd;">== </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">existing</span><span style="color:#98c379;">&quot; </span><span style="color:#61afef;">]</span><span style="color:#c678dd;">; then
+</span><span>      </span><span style="color:#e06c75;">heroku</span><span> addons:detach</span><span style="color:#e06c75;"> -a </span><span>$</span><span style="color:#e06c75;">app</span><span> NEW_DATABASE
+</span><span>      </span><span style="color:#e06c75;">create </span><span>$</span><span style="color:#e06c75;">app </span><span>$</span><span style="color:#e06c75;">plan
+</span><span>    </span><span style="color:#c678dd;">else
+</span><span>      </span><span style="color:#e06c75;">true </span><span style="color:#5c6370;"># already got a new one in waiting
+</span><span>    </span><span style="color:#c678dd;">fi
+</span><span>  </span><span style="color:#c678dd;">fi
 </span><span>}
 </span><span>
-</span><span style="color:#65737e;"># Takes a snapshot and copies it. This takes longer, breaks the destination
-</span><span style="color:#65737e;"># DB until it has completed, so is only used for demo to demo-staging, which
-</span><span style="color:#65737e;"># use Hobby DBs which cannot be followed/forked.
-</span><span style="color:#65737e;">#
-</span><span style="color:#65737e;"># One benefit of this which might be worth applying to staging/dev is that the
-</span><span style="color:#65737e;"># destination data sizes (tables+indexes) are much smaller, which suits the
-</span><span style="color:#65737e;"># smaller instance sizes used there.
-</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">copy </span><span>{
-</span><span>  </span><span style="color:#bf616a;">src</span><span>=$</span><span style="color:#bf616a;">1
-</span><span>  </span><span style="color:#bf616a;">dst</span><span>=$</span><span style="color:#bf616a;">2
+</span><span style="color:#5c6370;"># Takes a snapshot and copies it. This takes longer, breaks the destination
+</span><span style="color:#5c6370;"># DB until it has completed, so is only used for demo to demo-staging, which
+</span><span style="color:#5c6370;"># use Hobby DBs which cannot be followed/forked.
+</span><span style="color:#5c6370;">#
+</span><span style="color:#5c6370;"># One benefit of this which might be worth applying to staging/dev is that the
+</span><span style="color:#5c6370;"># destination data sizes (tables+indexes) are much smaller, which suits the
+</span><span style="color:#5c6370;"># smaller instance sizes used there.
+</span><span style="color:#c678dd;">function </span><span style="color:#61afef;">copy </span><span>{
+</span><span>  </span><span style="color:#e06c75;">src</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">1
+</span><span>  </span><span style="color:#e06c75;">dst</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">2
 </span><span>
-</span><span>  </span><span style="color:#bf616a;">heroku</span><span> pg:copy $</span><span style="color:#bf616a;">src</span><span>::DATABASE NEW_DATABASE \
-</span><span style="color:#bf616a;">    --wait-interval</span><span> 10 \
-</span><span style="color:#bf616a;">    --app </span><span>$</span><span style="color:#bf616a;">dst </span><span>\
-</span><span style="color:#bf616a;">    --confirm </span><span>$</span><span style="color:#bf616a;">dst
+</span><span>  </span><span style="color:#e06c75;">heroku</span><span> pg:copy $</span><span style="color:#e06c75;">src</span><span>::DATABASE NEW_DATABASE \
+</span><span style="color:#e06c75;">    --wait-interval</span><span> 10 \
+</span><span style="color:#e06c75;">    --app </span><span>$</span><span style="color:#e06c75;">dst </span><span>\
+</span><span style="color:#e06c75;">    --confirm </span><span>$</span><span style="color:#e06c75;">dst
 </span><span>}
 </span><span>
-</span><span style="color:#65737e;"># Create new DBs and trigger loading of data
-</span><span style="color:#bf616a;">create</span><span> covidence-dev     premium-0</span><span style="color:#bf616a;"> --fork</span><span> covidence-production::DATABASE</span><span style="color:#bf616a;"> --fast
-</span><span style="color:#bf616a;">create</span><span> covidence-staging premium-2</span><span style="color:#bf616a;"> --fork</span><span> covidence-production::DATABASE</span><span style="color:#bf616a;"> --fast
-</span><span style="color:#bf616a;">create</span><span> covidence-demo-staging hobby-basic
-</span><span style="color:#bf616a;">copy</span><span> covidence-demo covidence-demo-staging
+</span><span style="color:#5c6370;"># Create new DBs and trigger loading of data
+</span><span style="color:#e06c75;">create</span><span> covidence-dev     premium-0</span><span style="color:#e06c75;"> --fork</span><span> covidence-production::DATABASE</span><span style="color:#e06c75;"> --fast
+</span><span style="color:#e06c75;">create</span><span> covidence-staging premium-2</span><span style="color:#e06c75;"> --fork</span><span> covidence-production::DATABASE</span><span style="color:#e06c75;"> --fast
+</span><span style="color:#e06c75;">create</span><span> covidence-demo-staging hobby-basic
+</span><span style="color:#e06c75;">copy</span><span> covidence-demo covidence-demo-staging
 </span><span>
-</span><span style="color:#65737e;"># Promote DBs (these steps block until each DB to be ready for promotion)
-</span><span style="color:#bf616a;">promote</span><span> covidence-dev
-</span><span style="color:#bf616a;">promote</span><span> covidence-staging
-</span><span style="color:#bf616a;">promote</span><span> covidence-demo-staging
+</span><span style="color:#5c6370;"># Promote DBs (these steps block until each DB to be ready for promotion)
+</span><span style="color:#e06c75;">promote</span><span> covidence-dev
+</span><span style="color:#e06c75;">promote</span><span> covidence-staging
+</span><span style="color:#e06c75;">promote</span><span> covidence-demo-staging
 </span></code></pre>
 
 	</div>

@@ -157,55 +157,55 @@ scripting fu is pretty weak but as far as I can tell it works great and
 I am now using it in my shell.</p>
 <p>Here is the Fish function (I’ve kept the function name the same as the
 bash one):</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">__git_ps1
-</span><span>  set -l g (</span><span style="color:#bf616a;">git</span><span> rev-parse</span><span style="color:#bf616a;"> --git-dir</span><span> ^/dev/null)
-</span><span>  </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-n </span><span>&quot;$</span><span style="color:#bf616a;">g</span><span>&quot; </span><span style="color:#96b5b4;">]
-</span><span>    </span><span style="color:#96b5b4;">set</span><span> -l r &quot;&quot;
-</span><span>    </span><span style="color:#96b5b4;">set</span><span> -l b &quot;&quot;
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#c678dd;">function </span><span style="color:#61afef;">__git_ps1
+</span><span>  set -l g (</span><span style="color:#e06c75;">git</span><span> rev-parse</span><span style="color:#e06c75;"> --git-dir</span><span> ^/dev/null)
+</span><span>  </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-n </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">&quot; </span><span style="color:#61afef;">]
+</span><span>    </span><span style="color:#61afef;">set</span><span> -l r </span><span style="color:#98c379;">&quot;&quot;
+</span><span>    </span><span style="color:#61afef;">set</span><span> -l b </span><span style="color:#98c379;">&quot;&quot;
 </span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-d </span><span>&quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/../.dotest</span><span>&quot; </span><span style="color:#96b5b4;">]
-</span><span>      </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-f </span><span>&quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/../.dotest/rebasing</span><span>&quot; </span><span style="color:#96b5b4;">]
-</span><span>        </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|REBASE</span><span>&quot;
-</span><span>      </span><span style="color:#bf616a;">elseif </span><span style="color:#b48ead;">[ </span><span>-f &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/../.dotest/applying</span><span>&quot; </span><span style="color:#b48ead;">]
-</span><span>        </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|AM</span><span>&quot;
-</span><span>      </span><span style="color:#b48ead;">else
-</span><span>        </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|AM/REBASE</span><span>&quot;
-</span><span>      </span><span style="color:#bf616a;">end
+</span><span>    </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-d </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/../.dotest&quot; </span><span style="color:#61afef;">]
+</span><span>      </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-f </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/../.dotest/rebasing&quot; </span><span style="color:#61afef;">]
+</span><span>        </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|REBASE&quot;
+</span><span>      </span><span style="color:#e06c75;">elseif </span><span style="color:#c678dd;">[ -</span><span>f </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/../.dotest/applying&quot; </span><span style="color:#c678dd;">]
+</span><span>        </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|AM&quot;
+</span><span>      </span><span style="color:#c678dd;">else
+</span><span>        </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|AM/REBASE&quot;
+</span><span>      </span><span style="color:#e06c75;">end
 </span><span>      
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> b (git symbolic-ref HEAD ^/dev/null)
-</span><span>    </span><span style="color:#bf616a;">elseif </span><span style="color:#b48ead;">[ </span><span>-f &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/.dotest-merge/interactive</span><span>&quot; </span><span style="color:#b48ead;">]
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|REBASE-i</span><span>&quot;
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> b (cat &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/.dotest-merge/head-name</span><span>&quot;)
-</span><span>    </span><span style="color:#bf616a;">elseif </span><span style="color:#b48ead;">[ </span><span>-d &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/.dotest-merge</span><span>&quot; </span><span style="color:#b48ead;">]
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|REBASE-m</span><span>&quot;
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> b (cat &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/.dotest-merge/head-name</span><span>&quot;)
-</span><span>    </span><span style="color:#bf616a;">elseif </span><span style="color:#b48ead;">[ </span><span>-f &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/MERGE_HEAD</span><span>&quot; </span><span style="color:#b48ead;">]
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|MERGING</span><span>&quot;
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> b (git symbolic-ref HEAD ^/dev/null)
-</span><span>    </span><span style="color:#b48ead;">else
-</span><span>      </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-f </span><span>&quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/BISECT_LOG</span><span>&quot; </span><span style="color:#96b5b4;">]
-</span><span>        </span><span style="color:#96b5b4;">set</span><span> r &quot;</span><span style="color:#a3be8c;">|BISECTING</span><span>&quot;
-</span><span>      </span><span style="color:#bf616a;">end
+</span><span>      </span><span style="color:#61afef;">set</span><span> b (git symbolic-ref HEAD ^/dev/null)
+</span><span>    </span><span style="color:#e06c75;">elseif </span><span style="color:#c678dd;">[ -</span><span>f </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/.dotest-merge/interactive&quot; </span><span style="color:#c678dd;">]
+</span><span>      </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|REBASE-i&quot;
+</span><span>      </span><span style="color:#61afef;">set</span><span> b (cat </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/.dotest-merge/head-name&quot;</span><span>)
+</span><span>    </span><span style="color:#e06c75;">elseif </span><span style="color:#c678dd;">[ -</span><span>d </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/.dotest-merge&quot; </span><span style="color:#c678dd;">]
+</span><span>      </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|REBASE-m&quot;
+</span><span>      </span><span style="color:#61afef;">set</span><span> b (cat </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/.dotest-merge/head-name&quot;</span><span>)
+</span><span>    </span><span style="color:#e06c75;">elseif </span><span style="color:#c678dd;">[ -</span><span>f </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/MERGE_HEAD&quot; </span><span style="color:#c678dd;">]
+</span><span>      </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|MERGING&quot;
+</span><span>      </span><span style="color:#61afef;">set</span><span> b (git symbolic-ref HEAD ^/dev/null)
+</span><span>    </span><span style="color:#c678dd;">else
+</span><span>      </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-f </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/BISECT_LOG&quot; </span><span style="color:#61afef;">]
+</span><span>        </span><span style="color:#61afef;">set</span><span> r </span><span style="color:#98c379;">&quot;|BISECTING&quot;
+</span><span>      </span><span style="color:#e06c75;">end
 </span><span>      
-</span><span>      </span><span style="color:#96b5b4;">set</span><span> b (git symbolic-ref HEAD ^/dev/null)
-</span><span>      </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-z </span><span>$</span><span style="color:#bf616a;">b </span><span style="color:#96b5b4;">]
-</span><span>        </span><span style="color:#96b5b4;">set</span><span> b (git describe --exact-match HEAD ^/dev/null)
-</span><span>        </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span style="color:#bf616a;">-z </span><span>$</span><span style="color:#bf616a;">b </span><span style="color:#96b5b4;">]
-</span><span>          </span><span style="color:#96b5b4;">set</span><span> b (cut -c1-7 &quot;$</span><span style="color:#bf616a;">g</span><span style="color:#a3be8c;">/HEAD</span><span>&quot;)
-</span><span>          </span><span style="color:#96b5b4;">set</span><span> b &quot;$</span><span style="color:#bf616a;">b</span><span style="color:#a3be8c;">...</span><span>&quot;
-</span><span>        </span><span style="color:#bf616a;">end
-</span><span>      </span><span style="color:#bf616a;">end
-</span><span>    </span><span style="color:#bf616a;">end
+</span><span>      </span><span style="color:#61afef;">set</span><span> b (git symbolic-ref HEAD ^/dev/null)
+</span><span>      </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-z </span><span>$</span><span style="color:#e06c75;">b </span><span style="color:#61afef;">]
+</span><span>        </span><span style="color:#61afef;">set</span><span> b (git describe --exact-match HEAD ^/dev/null)
+</span><span>        </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">[ </span><span style="color:#e06c75;">-z </span><span>$</span><span style="color:#e06c75;">b </span><span style="color:#61afef;">]
+</span><span>          </span><span style="color:#61afef;">set</span><span> b (cut -c1-7 </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">g</span><span style="color:#98c379;">/HEAD&quot;</span><span>)
+</span><span>          </span><span style="color:#61afef;">set</span><span> b </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">b</span><span style="color:#98c379;">...&quot;
+</span><span>        </span><span style="color:#e06c75;">end
+</span><span>      </span><span style="color:#e06c75;">end
+</span><span>    </span><span style="color:#e06c75;">end
 </span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#bf616a;">not</span><span> test $</span><span style="color:#bf616a;">argv
-</span><span>  		</span><span style="color:#96b5b4;">set</span><span> argv &quot;</span><span style="color:#a3be8c;"> (%s)</span><span>&quot;
-</span><span>  	</span><span style="color:#bf616a;">end
+</span><span>    </span><span style="color:#c678dd;">if </span><span style="color:#e06c75;">not</span><span> test $</span><span style="color:#e06c75;">argv
+</span><span>  		</span><span style="color:#61afef;">set</span><span> argv </span><span style="color:#98c379;">&quot; (%s)&quot;
+</span><span>  	</span><span style="color:#e06c75;">end
 </span><span>  	
-</span><span>  	</span><span style="color:#96b5b4;">set</span><span> b (echo $</span><span style="color:#bf616a;">b </span><span>| </span><span style="color:#bf616a;">sed -e </span><span>&#39;</span><span style="color:#a3be8c;">s|^refs/heads/||</span><span>&#39;)
+</span><span>  	</span><span style="color:#61afef;">set</span><span> b (echo $</span><span style="color:#e06c75;">b </span><span style="color:#c678dd;">| </span><span style="color:#e06c75;">sed -e </span><span style="color:#98c379;">&#39;s|^refs/heads/||&#39;</span><span>)
 </span><span>  	
-</span><span>    </span><span style="color:#96b5b4;">printf </span><span>$</span><span style="color:#bf616a;">argv </span><span>&quot;$</span><span style="color:#bf616a;">b</span><span>$</span><span style="color:#bf616a;">r</span><span>&quot; ^/dev/null
-</span><span>  </span><span style="color:#bf616a;">end
-</span><span style="color:#bf616a;">end
+</span><span>    </span><span style="color:#61afef;">printf </span><span>$</span><span style="color:#e06c75;">argv </span><span style="color:#98c379;">&quot;$</span><span style="color:#e06c75;">b</span><span style="color:#98c379;">$</span><span style="color:#e06c75;">r</span><span style="color:#98c379;">&quot;</span><span> ^/dev/null
+</span><span>  </span><span style="color:#e06c75;">end
+</span><span style="color:#e06c75;">end
 </span></code></pre>
 <p>I have also pushed it to my <code>dot-files</code> repository
 <a href="http://github.com/bjeanes/dot-files/blob/master/fish/functions/__git_ps1.fish">here</a>.</p>

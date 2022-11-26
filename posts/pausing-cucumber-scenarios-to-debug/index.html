@@ -154,10 +154,10 @@ light</a>,
 I’ve got another tip for developing productively when using Cucumber.</p>
 <p>I’m going to show you a simple way to pause cucumber stories in order to
 investigate the current state of your application at that point.</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#bf616a;">AfterStep</span><span>(&#39;</span><span style="color:#a3be8c;">@pause</span><span>&#39;) </span><span style="color:#b48ead;">do
-</span><span>  </span><span style="color:#96b5b4;">print </span><span>&quot;</span><span style="color:#a3be8c;">Press Return to continue</span><span>&quot;
-</span><span>  </span><span style="color:#ebcb8b;">STDIN</span><span>.getc
-</span><span style="color:#b48ead;">end
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#e06c75;">AfterStep</span><span>(</span><span style="color:#98c379;">&#39;@pause&#39;</span><span>) </span><span style="color:#c678dd;">do
+</span><span>  </span><span style="color:#61afef;">print </span><span style="color:#98c379;">&quot;Press Return to continue&quot;
+</span><span>  </span><span style="color:#e5c07b;">STDIN</span><span>.getc
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 <p>Then just tag any Cucumber feature or scenario with <code>@pause</code>. After the
 first step is run, the scenario will stop running and you can do

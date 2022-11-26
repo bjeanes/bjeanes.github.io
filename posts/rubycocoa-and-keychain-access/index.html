@@ -166,21 +166,21 @@ Here’s how:</p>
 <ol>
 <li>
 <p>Run the following commands (first one will take some time):</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">gen_bridge_metadata -f</span><span> Security</span><span style="color:#bf616a;"> -o</span><span> Security.bridgesupport
-</span><span style="color:#bf616a;">mkdir -p</span><span> /Library/BridgeSupport
-</span><span style="color:#bf616a;">mv</span><span> Security.bridgesupport /Library/BridgeSupport
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">gen_bridge_metadata -f</span><span> Security</span><span style="color:#e06c75;"> -o</span><span> Security.bridgesupport
+</span><span style="color:#e06c75;">mkdir -p</span><span> /Library/BridgeSupport
+</span><span style="color:#e06c75;">mv</span><span> Security.bridgesupport /Library/BridgeSupport
 </span></code></pre>
 </li>
 <li>
 <p>Open an IRB session to test it:</p>
 </li>
 </ol>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>&gt;&gt; </span><span style="color:#8fa1b3;">require </span><span>&#39;</span><span style="color:#a3be8c;">osx/cocoa</span><span>&#39;
-</span><span>=&gt; </span><span style="color:#d08770;">true
-</span><span>&gt;&gt; </span><span style="color:#ebcb8b;">OSX</span><span>.require_framework &#39;</span><span style="color:#a3be8c;">Security</span><span>&#39;
-</span><span>=&gt; </span><span style="color:#d08770;">true
-</span><span>&gt;&gt; </span><span style="color:#b48ead;">defined? </span><span style="color:#ebcb8b;">OSX</span><span>::SecKeychainAddGenericPassword()
-</span><span>=&gt; &quot;</span><span style="color:#a3be8c;">method</span><span>&quot;
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#61afef;">require </span><span style="color:#98c379;">&#39;osx/cocoa&#39;
+</span><span>=&gt; </span><span style="color:#e5c07b;">true
+</span><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#e5c07b;">OSX</span><span>.require_framework </span><span style="color:#98c379;">&#39;Security&#39;
+</span><span>=&gt; </span><span style="color:#e5c07b;">true
+</span><span style="color:#c678dd;">&gt;&gt; defined? </span><span style="color:#e5c07b;">OSX</span><span>::SecKeychainAddGenericPassword()
+</span><span>=&gt; </span><span style="color:#98c379;">&quot;method&quot;
 </span></code></pre>
 <p>Hoorah! Two steps! Well, one because the second one was just testing…
 Now go make password-able RubyCocoa application! I am not sure how to
@@ -190,45 +190,45 @@ Security.bridgesupport file doesn’t exist. Note: I have not tested
 either of those scenarios, but I would guess the latter would be more
 reliable for cross-version development (i.e. Tiger + Leopard)</p>
 <h3 id="how-to-use-these-methods">How to use these methods</h3>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#65737e;"># Require needed libraries
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#5c6370;"># Require needed libraries
 </span><span>
-</span><span style="color:#8fa1b3;">require </span><span>&#39;</span><span style="color:#a3be8c;">osx/cocoa</span><span>&#39;
-</span><span style="color:#8fa1b3;">include </span><span style="color:#bf616a;">OSX
-</span><span>require_framework &#39;</span><span style="color:#a3be8c;">Security</span><span>&#39;
+</span><span style="color:#61afef;">require </span><span style="color:#98c379;">&#39;osx/cocoa&#39;
+</span><span style="color:#61afef;">include </span><span style="color:#e06c75;">OSX
+</span><span>require_framework </span><span style="color:#98c379;">&#39;Security&#39;
 </span><span>
-</span><span style="color:#65737e;"># Set up some relevant variables
+</span><span style="color:#5c6370;"># Set up some relevant variables
 </span><span>
-</span><span>service = &quot;</span><span style="color:#a3be8c;">Test Service</span><span>&quot;
-</span><span>account = &quot;</span><span style="color:#a3be8c;">MyUsername</span><span>&quot;
-</span><span>password = &quot;</span><span style="color:#a3be8c;">MyPassword</span><span>&quot;
+</span><span>service </span><span style="color:#c678dd;">= </span><span style="color:#98c379;">&quot;Test Service&quot;
+</span><span>account </span><span style="color:#c678dd;">= </span><span style="color:#98c379;">&quot;MyUsername&quot;
+</span><span>password </span><span style="color:#c678dd;">= </span><span style="color:#98c379;">&quot;MyPassword&quot;
 </span><span>
-</span><span style="color:#65737e;"># Add password to default keychain (first param)
+</span><span style="color:#5c6370;"># Add password to default keychain (first param)
 </span><span>
-</span><span style="color:#bf616a;">SecKeychainAddGenericPassword</span><span>(</span><span style="color:#d08770;">nil</span><span>, service.length, service, account.length, account, password.length, password, </span><span style="color:#d08770;">nil</span><span>)
+</span><span style="color:#e06c75;">SecKeychainAddGenericPassword</span><span>(</span><span style="color:#e5c07b;">nil</span><span>, service.length, service, account.length, account, password.length, password, </span><span style="color:#e5c07b;">nil</span><span>)
 </span><span>
-</span><span style="color:#65737e;"># Finding a password in default keychain (first param)
+</span><span style="color:#5c6370;"># Finding a password in default keychain (first param)
 </span><span>
-</span><span>status, *password = </span><span style="color:#bf616a;">SecKeychainFindGenericPassword</span><span>(</span><span style="color:#d08770;">nil</span><span>, service.length, service, account.length, account)
+</span><span>status, </span><span style="color:#c678dd;">*</span><span>password </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">SecKeychainFindGenericPassword</span><span>(</span><span style="color:#e5c07b;">nil</span><span>, service.length, service, account.length, account)
 </span><span>
-</span><span style="color:#65737e;"># Password-related data
-</span><span>password_length = password.shift </span><span style="color:#65737e;"># =&gt; 10
-</span><span>password_data = password.shift </span><span style="color:#65737e;"># OSX::ObjcPtr object
-</span><span>password = password_data.bytestr(password_length)
+</span><span style="color:#5c6370;"># Password-related data
+</span><span>password_length </span><span style="color:#c678dd;">=</span><span> password.shift </span><span style="color:#5c6370;"># =&gt; 10
+</span><span>password_data </span><span style="color:#c678dd;">=</span><span> password.shift </span><span style="color:#5c6370;"># OSX::ObjcPtr object
+</span><span>password </span><span style="color:#c678dd;">=</span><span> password_data.bytestr(password_length)
 </span><span>
-</span><span style="color:#65737e;"># The last item is another OSX::ObjcPtr. I haven&#39;t figured
-</span><span style="color:#65737e;"># out how to cast or use this yet but will post when I&#39;ve
-</span><span style="color:#65737e;"># figured it out
-</span><span>keychain_item = password.shift
+</span><span style="color:#5c6370;"># The last item is another OSX::ObjcPtr. I haven&#39;t figured
+</span><span style="color:#5c6370;"># out how to cast or use this yet but will post when I&#39;ve
+</span><span style="color:#5c6370;"># figured it out
+</span><span>keychain_item </span><span style="color:#c678dd;">=</span><span> password.shift
 </span><span>
-</span><span style="color:#65737e;"># Yay it works! You can also check the password exists
-</span><span style="color:#65737e;"># in the Keychain Access utility. I&#39;ve confirmed that
-</span><span style="color:#65737e;"># this works
-</span><span style="color:#96b5b4;">puts</span><span> password </span><span style="color:#65737e;"># =&gt; &quot;MyPassword&quot;
+</span><span style="color:#5c6370;"># Yay it works! You can also check the password exists
+</span><span style="color:#5c6370;"># in the Keychain Access utility. I&#39;ve confirmed that
+</span><span style="color:#5c6370;"># this works
+</span><span style="color:#61afef;">puts</span><span> password </span><span style="color:#5c6370;"># =&gt; &quot;MyPassword&quot;
 </span></code></pre>
 <h3 id="update-4-8-08-below-is-a-fix-for-the-rexml-bug-some-people-have">[UPDATE 4/8/08]: Below is a fix for the REXML bug some people have</h3>
 <p>been getting (myself included)</p>
 <p>There is good news for anyone that has been getting the following error:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>undefined local variable or method `trans’ for &lt;UNDEFINED&gt; … &lt;/&gt;:REXML::Document
+<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>undefined local variable or method `trans’ for &lt;UNDEFINED&gt; … &lt;/&gt;:REXML::Document
 </span><span>Usage: gen_bridge_metadata [options] &lt;headers…&gt;
 </span><span>Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
 </span></code></pre>

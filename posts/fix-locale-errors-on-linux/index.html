@@ -151,7 +151,7 @@
         
 	  <p>Have you ever gotten error messages such as the following when running
 commands such as <code>apt-get</code>?</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>perl: warning: Setting locale failed.
+<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>perl: warning: Setting locale failed.
 </span><span>perl: warning: Please check that your locale settings:
 </span><span> LANGUAGE = ,
 </span><span> LC*ALL = ,
@@ -161,8 +161,8 @@ commands such as <code>apt-get</code>?</p>
 </span></code></pre>
 <p>I’ve had this problem quite a lot on my VPS boxes on Linode and
 SliceHost. The solution is simple, simply run the following:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">locale-gen</span><span> en_US.UTF-8
-</span><span style="color:#bf616a;">update-locale</span><span> LANG=en_US.UTF-8
+<pre data-lang="bash" style="background-color:#282c34;color:#dcdfe4;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e06c75;">locale-gen</span><span> en_US.UTF-8
+</span><span style="color:#e06c75;">update-locale</span><span> LANG=en_US.UTF-8
 </span></code></pre>
 
 	</div>

@@ -159,48 +159,48 @@ on your <code>User</code> model, your instances will have <code>#active?</code>,
 <li>It properly sets and gets the state of the row and loads it into AlterEgo.</li>
 </ol>
 <p>Here is the code:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">module </span><span>AlterEgo
-</span><span>  </span><span style="color:#b48ead;">def </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#8fa1b3;">included</span><span>(</span><span style="color:#bf616a;">base</span><span>)
-</span><span>    base.instance_eval </span><span style="color:#b48ead;">do
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">module </span><span>AlterEgo
+</span><span>  </span><span style="color:#c678dd;">def </span><span style="color:#e06c75;">self</span><span>.</span><span style="color:#61afef;">included</span><span>(</span><span style="color:#e06c75;">base</span><span>)
+</span><span>    base.instance_eval </span><span style="color:#c678dd;">do
 </span><span>      
-</span><span>      </span><span style="color:#65737e;"># This will allow us to define a question method for each state in a class
-</span><span>      </span><span style="color:#65737e;"># For instance if user has states :active and :inactive, methods active? and inactive?
-</span><span>      </span><span style="color:#65737e;"># will be defined when first called
-</span><span>      </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">method_missing_with_states</span><span>(</span><span style="color:#bf616a;">method</span><span>, *</span><span style="color:#bf616a;">args</span><span>, &amp;</span><span style="color:#bf616a;">block</span><span>)
-</span><span>        </span><span style="color:#b48ead;">begin
-</span><span>          method_missing_without_states(</span><span style="color:#96b5b4;">method</span><span>, *args, &amp;block)
-</span><span>        </span><span style="color:#b48ead;">rescue </span><span style="color:#bf616a;">NoMethodError </span><span>=&gt; e
-</span><span>          state_found = </span><span style="color:#d08770;">false
-</span><span>          result = </span><span style="color:#d08770;">nil
+</span><span>      </span><span style="color:#5c6370;"># This will allow us to define a question method for each state in a class
+</span><span>      </span><span style="color:#5c6370;"># For instance if user has states :active and :inactive, methods active? and inactive?
+</span><span>      </span><span style="color:#5c6370;"># will be defined when first called
+</span><span>      </span><span style="color:#c678dd;">def </span><span style="color:#61afef;">method_missing_with_states</span><span>(</span><span style="color:#e06c75;">method</span><span>, </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">args</span><span>, </span><span style="color:#c678dd;">&amp;</span><span style="color:#e06c75;">block</span><span>)
+</span><span>        </span><span style="color:#c678dd;">begin
+</span><span>          method_missing_without_states(</span><span style="color:#61afef;">method</span><span>, </span><span style="color:#c678dd;">*</span><span>args, </span><span style="color:#c678dd;">&amp;</span><span>block)
+</span><span>        </span><span style="color:#c678dd;">rescue </span><span style="color:#e06c75;">NoMethodError </span><span>=&gt; e
+</span><span>          state_found </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">false
+</span><span>          result </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">nil
 </span><span>          
-</span><span>          base.states.keys.each </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">state</span><span>|
-</span><span>            </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">method</span><span>.</span><span style="color:#96b5b4;">to_s </span><span>== &quot;#{state}</span><span style="color:#a3be8c;">?</span><span>&quot; &amp;&amp; !state_found
-</span><span>              </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">class</span><span>.</span><span style="color:#96b5b4;">send </span><span style="color:#a3be8c;">:define_method</span><span>, &quot;#{state}</span><span style="color:#a3be8c;">?</span><span>&quot; </span><span style="color:#b48ead;">do
-</span><span>                </span><span style="color:#bf616a;">self</span><span>.state == state
-</span><span>              </span><span style="color:#b48ead;">end
-</span><span>              state_found = </span><span style="color:#d08770;">true
-</span><span>              result = </span><span style="color:#bf616a;">self</span><span>.__send__(</span><span style="color:#96b5b4;">method</span><span>)
-</span><span>            </span><span style="color:#b48ead;">end
-</span><span>          </span><span style="color:#b48ead;">end
-</span><span>          </span><span style="color:#8fa1b3;">raise</span><span>(e) </span><span style="color:#b48ead;">unless</span><span> state_found
+</span><span>          base.states.keys.each </span><span style="color:#c678dd;">do </span><span>|</span><span style="color:#e06c75;">state</span><span>|
+</span><span>            </span><span style="color:#c678dd;">if </span><span style="color:#61afef;">method</span><span>.</span><span style="color:#61afef;">to_s </span><span style="color:#c678dd;">== </span><span style="color:#98c379;">&quot;</span><span>#{state}</span><span style="color:#98c379;">?&quot; </span><span style="color:#c678dd;">&amp;&amp; !</span><span>state_found
+</span><span>              </span><span style="color:#e06c75;">self</span><span>.</span><span style="color:#61afef;">class</span><span>.</span><span style="color:#61afef;">send </span><span style="color:#e5c07b;">:define_method</span><span>, </span><span style="color:#98c379;">&quot;</span><span>#{state}</span><span style="color:#98c379;">?&quot; </span><span style="color:#c678dd;">do
+</span><span>                </span><span style="color:#e06c75;">self</span><span>.state </span><span style="color:#c678dd;">==</span><span> state
+</span><span>              </span><span style="color:#c678dd;">end
+</span><span>              state_found </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">true
+</span><span>              result </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">self</span><span>.__send__(</span><span style="color:#61afef;">method</span><span>)
+</span><span>            </span><span style="color:#c678dd;">end
+</span><span>          </span><span style="color:#c678dd;">end
+</span><span>          </span><span style="color:#61afef;">raise</span><span>(e) </span><span style="color:#c678dd;">unless</span><span> state_found
 </span><span>          result
-</span><span>        </span><span style="color:#b48ead;">end
-</span><span>      </span><span style="color:#b48ead;">end
-</span><span>      alias_method_chain </span><span style="color:#a3be8c;">:method_missing</span><span>, </span><span style="color:#a3be8c;">:states
+</span><span>        </span><span style="color:#c678dd;">end
+</span><span>      </span><span style="color:#c678dd;">end
+</span><span>      alias_method_chain </span><span style="color:#e5c07b;">:method_missing</span><span>, </span><span style="color:#e5c07b;">:states
 </span><span>      
-</span><span>      </span><span style="color:#65737e;"># state setter to write to database
-</span><span>      </span><span style="color:#96b5b4;">define_method </span><span style="color:#a3be8c;">:state= </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">value</span><span>|
-</span><span>        write_attribute(</span><span style="color:#a3be8c;">:state</span><span>, value.</span><span style="color:#96b5b4;">to_s</span><span>)
-</span><span>      </span><span style="color:#b48ead;">end
+</span><span>      </span><span style="color:#5c6370;"># state setter to write to database
+</span><span>      </span><span style="color:#61afef;">define_method </span><span style="color:#e5c07b;">:state= </span><span style="color:#c678dd;">do </span><span>|</span><span style="color:#e06c75;">value</span><span>|
+</span><span>        write_attribute(</span><span style="color:#e5c07b;">:state</span><span>, value.</span><span style="color:#61afef;">to_s</span><span>)
+</span><span>      </span><span style="color:#c678dd;">end
 </span><span>
-</span><span>      </span><span style="color:#65737e;"># state getter to read from database
-</span><span>      </span><span style="color:#96b5b4;">define_method </span><span style="color:#a3be8c;">:state_with_active_record </span><span style="color:#b48ead;">do
-</span><span>        (read_attribute(</span><span style="color:#a3be8c;">:state</span><span>) || (</span><span style="color:#bf616a;">self</span><span>.state = state_without_active_record)).</span><span style="color:#96b5b4;">to_sym
-</span><span>      </span><span style="color:#b48ead;">end
-</span><span>      alias_method_chain </span><span style="color:#a3be8c;">:state</span><span>, </span><span style="color:#a3be8c;">:active_record
-</span><span>    </span><span style="color:#b48ead;">end
-</span><span>  </span><span style="color:#b48ead;">end
-</span><span style="color:#b48ead;">end
+</span><span>      </span><span style="color:#5c6370;"># state getter to read from database
+</span><span>      </span><span style="color:#61afef;">define_method </span><span style="color:#e5c07b;">:state_with_active_record </span><span style="color:#c678dd;">do
+</span><span>        (read_attribute(</span><span style="color:#e5c07b;">:state</span><span>) </span><span style="color:#c678dd;">|| </span><span>(</span><span style="color:#e06c75;">self</span><span>.state </span><span style="color:#c678dd;">=</span><span> state_without_active_record)).</span><span style="color:#61afef;">to_sym
+</span><span>      </span><span style="color:#c678dd;">end
+</span><span>      alias_method_chain </span><span style="color:#e5c07b;">:state</span><span>, </span><span style="color:#e5c07b;">:active_record
+</span><span>    </span><span style="color:#c678dd;">end
+</span><span>  </span><span style="color:#c678dd;">end
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 
 	</div>

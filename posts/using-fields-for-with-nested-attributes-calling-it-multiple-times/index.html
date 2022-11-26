@@ -166,17 +166,17 @@ evidently calling <code>fields_for</code> multiple times was not
 part of the original intention, and it seems resetting the index after
 each call was neglected.</p>
 <p>`chendo couldn't see a cleaner way of doing this so we added our own option to reset the index. We didn't just override the behaviour in case there is a good reason to leave it, but here is our code:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">ActionView::Helpers::FormBuilder
-</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">fields_for_with_nested_attributes_with_index_reset</span><span>(</span><span style="color:#bf616a;">association_name</span><span>, </span><span style="color:#bf616a;">args</span><span>, </span><span style="color:#bf616a;">block</span><span>)
-</span><span>    </span><span style="color:#b48ead;">if</span><span> args.last.</span><span style="color:#96b5b4;">is_a?</span><span>(</span><span style="color:#96b5b4;">Hash</span><span>) &amp;&amp; args.last[</span><span style="color:#a3be8c;">:reset_index</span><span>]
-</span><span>      @</span><span style="color:#bf616a;">nested_child_index </span><span>= </span><span style="color:#d08770;">nil
-</span><span>    </span><span style="color:#b48ead;">end
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#c678dd;">class </span><span style="color:#e5c07b;">ActionView::Helpers::FormBuilder
+</span><span style="color:#e5c07b;">  </span><span style="color:#c678dd;">def </span><span style="color:#61afef;">fields_for_with_nested_attributes_with_index_reset</span><span>(</span><span style="color:#e06c75;">association_name</span><span>, </span><span style="color:#e06c75;">args</span><span>, </span><span style="color:#e06c75;">block</span><span>)
+</span><span>    </span><span style="color:#c678dd;">if</span><span> args.last.</span><span style="color:#61afef;">is_a?</span><span>(</span><span style="color:#61afef;">Hash</span><span>) </span><span style="color:#c678dd;">&amp;&amp;</span><span> args.last[</span><span style="color:#e5c07b;">:reset_index</span><span>]
+</span><span>      </span><span style="color:#e06c75;">@nested_child_index </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">nil
+</span><span>    </span><span style="color:#c678dd;">end
 </span><span>
 </span><span>    fields_for_without_nested_attributes_without_index_reset(association_name, args, block)
-</span><span>  </span><span style="color:#b48ead;">end
+</span><span>  </span><span style="color:#c678dd;">end
 </span><span>
-</span><span>  alias_method_change </span><span style="color:#a3be8c;">:fields_for_with_nested_attributes</span><span>, </span><span style="color:#a3be8c;">:index_reset
-</span><span style="color:#b48ead;">end
+</span><span>  alias_method_change </span><span style="color:#e5c07b;">:fields_for_with_nested_attributes</span><span>, </span><span style="color:#e5c07b;">:index_reset
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 
 	</div>

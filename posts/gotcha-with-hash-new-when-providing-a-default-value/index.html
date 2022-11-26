@@ -153,10 +153,10 @@
 that returned a different default value, i.e. not <code>nil</code>.
 Specifically, I needed it to return another <code>Hash</code>, and for that
 internal <code>Hash</code>’s default value to be an <code>Array</code>, like so:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#96b5b4;">hash </span><span>= </span><span style="color:#65737e;"># ...
-</span><span style="color:#96b5b4;">p hash</span><span>.</span><span style="color:#96b5b4;">class                              </span><span style="color:#65737e;">#=&gt; Hash
-</span><span style="color:#96b5b4;">p hash</span><span>[</span><span style="color:#a3be8c;">:non_existant_key</span><span>].</span><span style="color:#96b5b4;">class           </span><span style="color:#65737e;">#=&gt; Hash
-</span><span style="color:#96b5b4;">p hash</span><span>[</span><span style="color:#a3be8c;">:another</span><span>][</span><span style="color:#a3be8c;">:non_existant_key</span><span>].</span><span style="color:#96b5b4;">class </span><span style="color:#65737e;">#=&gt; Array
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#61afef;">hash </span><span style="color:#c678dd;">= </span><span style="color:#5c6370;"># ...
+</span><span style="color:#61afef;">p hash</span><span>.</span><span style="color:#61afef;">class                              </span><span style="color:#5c6370;">#=&gt; Hash
+</span><span style="color:#61afef;">p hash</span><span>[</span><span style="color:#e5c07b;">:non_existant_key</span><span>].</span><span style="color:#61afef;">class           </span><span style="color:#5c6370;">#=&gt; Hash
+</span><span style="color:#61afef;">p hash</span><span>[</span><span style="color:#e5c07b;">:another</span><span>][</span><span style="color:#e5c07b;">:non_existant_key</span><span>].</span><span style="color:#61afef;">class </span><span style="color:#5c6370;">#=&gt; Array
 </span></code></pre>
 <p>Naïvely, I threw this into my code, and went along my merry way:
 <code>entries = Hash.new(Hash.new([]))</code>. A few days later, I came back
@@ -167,19 +167,19 @@ never looking or setting the values directly.</p>
 <p>However, eventually I saw a pattern — many of the values were the same.
 For instance, given the following assignments, I should expect
 <code>[ruby]p entries[153][:monday] #=&gt; [12.hours]</code>:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>entries[</span><span style="color:#d08770;">153</span><span>][</span><span style="color:#a3be8c;">:monday</span><span>]  &lt;&lt; </span><span style="color:#d08770;">12</span><span>.hours
-</span><span>entries[</span><span style="color:#d08770;">153</span><span>][</span><span style="color:#a3be8c;">:tuesday</span><span>] &lt;&lt; </span><span style="color:#d08770;">3</span><span>.hours
-</span><span>entries[</span><span style="color:#d08770;">87</span><span>][</span><span style="color:#a3be8c;">:monday</span><span>]   &lt;&lt; </span><span style="color:#d08770;">7</span><span>.hours
-</span><span>entries[</span><span style="color:#d08770;">87</span><span>][</span><span style="color:#a3be8c;">:tuesday</span><span>]  &lt;&lt; </span><span style="color:#d08770;">2.5</span><span>.hours
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>entries[</span><span style="color:#e5c07b;">153</span><span>][</span><span style="color:#e5c07b;">:monday</span><span>]  </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">12</span><span>.hours
+</span><span>entries[</span><span style="color:#e5c07b;">153</span><span>][</span><span style="color:#e5c07b;">:tuesday</span><span>] </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">3</span><span>.hours
+</span><span>entries[</span><span style="color:#e5c07b;">87</span><span>][</span><span style="color:#e5c07b;">:monday</span><span>]   </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">7</span><span>.hours
+</span><span>entries[</span><span style="color:#e5c07b;">87</span><span>][</span><span style="color:#e5c07b;">:tuesday</span><span>]  </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">2.5</span><span>.hours
 </span></code></pre>
 <p>However, what I found was the following:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#96b5b4;">p</span><span> entries[</span><span style="color:#d08770;">153</span><span>][</span><span style="color:#a3be8c;">:monday</span><span>]  </span><span style="color:#65737e;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
-</span><span style="color:#96b5b4;">p</span><span> entries[</span><span style="color:#d08770;">153</span><span>][</span><span style="color:#a3be8c;">:tuesday</span><span>] </span><span style="color:#65737e;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
-</span><span style="color:#96b5b4;">p</span><span> entries[</span><span style="color:#d08770;">87</span><span>][</span><span style="color:#a3be8c;">:monday</span><span>]   </span><span style="color:#65737e;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
-</span><span style="color:#96b5b4;">p</span><span> entries[</span><span style="color:#d08770;">87</span><span>][</span><span style="color:#a3be8c;">:tuesday</span><span>]  </span><span style="color:#65737e;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#61afef;">p</span><span> entries[</span><span style="color:#e5c07b;">153</span><span>][</span><span style="color:#e5c07b;">:monday</span><span>]  </span><span style="color:#5c6370;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
+</span><span style="color:#61afef;">p</span><span> entries[</span><span style="color:#e5c07b;">153</span><span>][</span><span style="color:#e5c07b;">:tuesday</span><span>] </span><span style="color:#5c6370;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
+</span><span style="color:#61afef;">p</span><span> entries[</span><span style="color:#e5c07b;">87</span><span>][</span><span style="color:#e5c07b;">:monday</span><span>]   </span><span style="color:#5c6370;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
+</span><span style="color:#61afef;">p</span><span> entries[</span><span style="color:#e5c07b;">87</span><span>][</span><span style="color:#e5c07b;">:tuesday</span><span>]  </span><span style="color:#5c6370;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
 </span><span>
-</span><span style="color:#65737e;"># And in fact:
-</span><span style="color:#96b5b4;">p</span><span> entries[</span><span style="color:#a3be8c;">:any</span><span>][</span><span style="color:#a3be8c;">:thing</span><span>]  </span><span style="color:#65737e;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
+</span><span style="color:#5c6370;"># And in fact:
+</span><span style="color:#61afef;">p</span><span> entries[</span><span style="color:#e5c07b;">:any</span><span>][</span><span style="color:#e5c07b;">:thing</span><span>]  </span><span style="color:#5c6370;">#=&gt; [12.hours, 3.hours, 7.hours, 2.5.hours]
 </span></code></pre>
 <p>Let that soak in for a second. <code>Hash.new({})</code> uses the <strong>same
 instance</strong> of the internal <code>Array</code> as the default value for each
@@ -190,13 +190,13 @@ huge.</p>
 <p>The way to get the intended effect is of course to use the block syntax
 of <code>[ruby]Hash.new</code> which, while much uglier, definitely works as
 expected:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>entries = </span><span style="color:#96b5b4;">Hash</span><span>.</span><span style="color:#8fa1b3;">new </span><span>{|</span><span style="color:#bf616a;">hash</span><span>, </span><span style="color:#bf616a;">key</span><span>| </span><span style="color:#96b5b4;">hash</span><span>[key] = </span><span style="color:#96b5b4;">Hash</span><span>.</span><span style="color:#8fa1b3;">new </span><span>{|</span><span style="color:#bf616a;">h</span><span>, </span><span style="color:#bf616a;">k</span><span>| h[k] = [] }}
-</span><span>entries[</span><span style="color:#d08770;">153</span><span>][</span><span style="color:#a3be8c;">:monday</span><span>]  &lt;&lt; </span><span style="color:#d08770;">12</span><span>.hours
-</span><span>entries[</span><span style="color:#d08770;">153</span><span>][</span><span style="color:#a3be8c;">:tuesday</span><span>] &lt;&lt; </span><span style="color:#d08770;">3</span><span>.hours
-</span><span>entries[</span><span style="color:#d08770;">87</span><span>][</span><span style="color:#a3be8c;">:monday</span><span>]   &lt;&lt; </span><span style="color:#d08770;">7</span><span>.hours
-</span><span>entries[</span><span style="color:#d08770;">87</span><span>][</span><span style="color:#a3be8c;">:tuesday</span><span>]  &lt;&lt; </span><span style="color:#d08770;">2.5</span><span>.hours
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span>entries </span><span style="color:#c678dd;">= </span><span style="color:#61afef;">Hash</span><span>.</span><span style="color:#61afef;">new </span><span>{|</span><span style="color:#e06c75;">hash</span><span>, </span><span style="color:#e06c75;">key</span><span>| </span><span style="color:#61afef;">hash</span><span>[key] </span><span style="color:#c678dd;">= </span><span style="color:#61afef;">Hash</span><span>.</span><span style="color:#61afef;">new </span><span>{|</span><span style="color:#e06c75;">h</span><span>, </span><span style="color:#e06c75;">k</span><span>| h[k] </span><span style="color:#c678dd;">= </span><span>[] }}
+</span><span>entries[</span><span style="color:#e5c07b;">153</span><span>][</span><span style="color:#e5c07b;">:monday</span><span>]  </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">12</span><span>.hours
+</span><span>entries[</span><span style="color:#e5c07b;">153</span><span>][</span><span style="color:#e5c07b;">:tuesday</span><span>] </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">3</span><span>.hours
+</span><span>entries[</span><span style="color:#e5c07b;">87</span><span>][</span><span style="color:#e5c07b;">:monday</span><span>]   </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">7</span><span>.hours
+</span><span>entries[</span><span style="color:#e5c07b;">87</span><span>][</span><span style="color:#e5c07b;">:tuesday</span><span>]  </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e5c07b;">2.5</span><span>.hours
 </span><span>
-</span><span style="color:#96b5b4;">p</span><span> entries </span><span style="color:#65737e;">#=&gt; {87=&gt;{:monday=&gt;[7.hours], :tuesday=&gt;[2.5.hours]}, 153=&gt;{:monday=&gt;[12.hours], :tuesday=&gt;[3.hours]}}
+</span><span style="color:#61afef;">p</span><span> entries </span><span style="color:#5c6370;">#=&gt; {87=&gt;{:monday=&gt;[7.hours], :tuesday=&gt;[2.5.hours]}, 153=&gt;{:monday=&gt;[12.hours], :tuesday=&gt;[3.hours]}}
 </span></code></pre>
 <p>Wow. Obvious, but good to remember. I am sure most of you have had this
 issue before, but I think it is still worthy of mention…</p>

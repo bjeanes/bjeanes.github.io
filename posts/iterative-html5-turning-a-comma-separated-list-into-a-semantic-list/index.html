@@ -160,47 +160,47 @@ more meaningful, whilst still maintaining the look and style.</p>
 <p>Here’s what we are styling:</p>
 <p><img src="http://img.skitch.com/20091112-qujhy29f4e5mkpradfd3hb9hnj.jpg" alt="image" /></p>
 <p>Usually your HTML (or HAML in this case) would look something like this:</p>
-<pre data-lang="haml" style="background-color:#2b303b;color:#c0c5ce;" class="language-haml "><code class="language-haml" data-lang="haml"><span>%</span><span style="color:#bf616a;">footer
-</span><span>  %</span><span style="color:#bf616a;">aside
-</span><span>    = link_to &#39;</span><span style="color:#a3be8c;">Dr Nic Williams</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">http://drnicwilliams.com/</span><span>&#39;
+<pre data-lang="haml" style="background-color:#282c34;color:#dcdfe4;" class="language-haml "><code class="language-haml" data-lang="haml"><span>%</span><span style="color:#e06c75;">footer
+</span><span>  %</span><span style="color:#e06c75;">aside
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Dr Nic Williams&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://drnicwilliams.com/&#39;
 </span><span>    ,
-</span><span>    = link_to &#39;</span><span style="color:#a3be8c;">Bodaniel Jeanes</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">http://bjeanes.com/</span><span>&#39;
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Bodaniel Jeanes&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://bjeanes.com/&#39;
 </span><span>    ,
-</span><span>    = link_to &#39;</span><span style="color:#a3be8c;">Jack Chen</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">http://chendo.net/</span><span>&#39;
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Jack Chen&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://chendo.net/&#39;
 </span><span>    ,                      
-</span><span>    = link_to &#39;</span><span style="color:#a3be8c;">Ryan Bigg</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">http://frozenplague.net/</span><span>&#39;
+</span><span>    = link_to </span><span style="color:#98c379;">&#39;Ryan Bigg&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://frozenplague.net/&#39;
 </span></code></pre>
 <p>However, we can make this <strong>list</strong> of people more semantic by using an
 <code>&lt;ul&gt;</code> element and some CSS magic.</p>
 <p>Here’s what the new HTML (HAML here) would look like:</p>
-<pre data-lang="haml" style="background-color:#2b303b;color:#c0c5ce;" class="language-haml "><code class="language-haml" data-lang="haml"><span>%</span><span style="color:#bf616a;">footer
-</span><span>  %</span><span style="color:#bf616a;">aside
-</span><span>    %</span><span style="color:#bf616a;">ul
-</span><span>      %</span><span style="color:#bf616a;">li</span><span>= link_to &#39;</span><span style="color:#a3be8c;">Dr Nic Williams</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">http://drnicwilliams.com/</span><span>&#39;
-</span><span>      %</span><span style="color:#bf616a;">li</span><span>= link_to &#39;</span><span style="color:#a3be8c;">Bodaniel Jeanes</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">http://bjeanes.com/</span><span>&#39;
-</span><span>      %</span><span style="color:#bf616a;">li</span><span>= link_to &#39;</span><span style="color:#a3be8c;">Jack Chen</span><span>&#39;,       &#39;</span><span style="color:#a3be8c;">http://chendo.net/</span><span>&#39;
-</span><span>      %</span><span style="color:#bf616a;">li</span><span>= link_to &#39;</span><span style="color:#a3be8c;">Ryan Bigg</span><span>&#39;,       &#39;</span><span style="color:#a3be8c;">http://frozenplague.net/</span><span>&#39;
+<pre data-lang="haml" style="background-color:#282c34;color:#dcdfe4;" class="language-haml "><code class="language-haml" data-lang="haml"><span>%</span><span style="color:#e06c75;">footer
+</span><span>  %</span><span style="color:#e06c75;">aside
+</span><span>    %</span><span style="color:#e06c75;">ul
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Dr Nic Williams&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://drnicwilliams.com/&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Bodaniel Jeanes&#39;</span><span>, </span><span style="color:#98c379;">&#39;http://bjeanes.com/&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Jack Chen&#39;</span><span>,       </span><span style="color:#98c379;">&#39;http://chendo.net/&#39;
+</span><span>      %</span><span style="color:#e06c75;">li</span><span>= link_to </span><span style="color:#98c379;">&#39;Ryan Bigg&#39;</span><span>,       </span><span style="color:#98c379;">&#39;http://frozenplague.net/&#39;
 </span></code></pre>
 <p>And the CSS (Sass here):</p>
-<pre data-lang="sass" style="background-color:#2b303b;color:#c0c5ce;" class="language-sass "><code class="language-sass" data-lang="sass"><span style="color:#bf616a;">body
-</span><span style="color:#b48ead;">  </span><span style="color:#bf616a;">footer
-</span><span style="color:#b48ead;">    </span><span style="color:#bf616a;">aside
-</span><span>      padding-top: </span><span style="color:#d08770;">6px
+<pre data-lang="sass" style="background-color:#282c34;color:#dcdfe4;" class="language-sass "><code class="language-sass" data-lang="sass"><span style="color:#e06c75;">body
+</span><span style="color:#c678dd;">  </span><span style="color:#e06c75;">footer
+</span><span style="color:#c678dd;">    </span><span style="color:#e06c75;">aside
+</span><span>      padding-top: </span><span style="color:#e5c07b;">6</span><span style="color:#c678dd;">px
 </span><span>      float: left
 </span><span>
-</span><span style="color:#b48ead;">      </span><span style="color:#bf616a;">ul
+</span><span style="color:#c678dd;">      </span><span style="color:#e06c75;">ul
 </span><span>        list-style: none
-</span><span>        margin: </span><span style="color:#d08770;">0
-</span><span>        padding: </span><span style="color:#d08770;">0
+</span><span>        margin: </span><span style="color:#e5c07b;">0
+</span><span>        padding: </span><span style="color:#e5c07b;">0
 </span><span>      
-</span><span style="color:#b48ead;">        </span><span style="color:#bf616a;">li
+</span><span style="color:#c678dd;">        </span><span style="color:#e06c75;">li
 </span><span>          display: inline
 </span><span>          
-</span><span style="color:#b48ead;">          </span><span>&amp;</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">after
-</span><span>            content: &quot;</span><span style="color:#a3be8c;">,</span><span>&quot;
+</span><span style="color:#c678dd;">          &amp;</span><span style="color:#e5c07b;">:</span><span style="color:#c678dd;">after
+</span><span>            content: </span><span style="color:#98c379;">&quot;,&quot;
 </span><span>            
-</span><span style="color:#b48ead;">          </span><span>&amp;</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">last-child</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">after
-</span><span>            content: &quot;&quot;
+</span><span style="color:#c678dd;">          &amp;</span><span style="color:#e5c07b;">:</span><span style="color:#c678dd;">last-child</span><span style="color:#e5c07b;">:</span><span style="color:#c678dd;">after
+</span><span>            content: </span><span style="color:#98c379;">&quot;&quot;
 </span></code></pre>
 
 	</div>

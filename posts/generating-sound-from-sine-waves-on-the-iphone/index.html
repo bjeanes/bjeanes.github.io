@@ -171,213 +171,213 @@ them together in what could be made to sound like a pleasant chord.</p>
 <p>Here is the relevant code:</p>
 <h2 id="code">Code</h2>
 <p><strong>TonePlayer.h</strong></p>
-<pre data-lang="objective-c" style="background-color:#2b303b;color:#c0c5ce;" class="language-objective-c "><code class="language-objective-c" data-lang="objective-c"><span style="color:#b48ead;">#import </span><span>&lt;</span><span style="color:#a3be8c;">Foundation/Foundation.h</span><span>&gt;
-</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">AudioUnit/AudioUnit.h</span><span>&gt;
-</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">math.h</span><span>&gt;
+<pre data-lang="objective-c" style="background-color:#282c34;color:#dcdfe4;" class="language-objective-c "><code class="language-objective-c" data-lang="objective-c"><span style="color:#c678dd;">#import </span><span style="color:#98c379;">&lt;Foundation/Foundation.h&gt;
+</span><span style="color:#c678dd;">#include </span><span style="color:#98c379;">&lt;AudioUnit/AudioUnit.h&gt;
+</span><span style="color:#c678dd;">#include </span><span style="color:#98c379;">&lt;math.h&gt;
 </span><span>
-</span><span style="color:#b48ead;">#define </span><span>kTonesAvailable </span><span style="color:#d08770;">16
-</span><span style="color:#b48ead;">#define </span><span>kOutputBus </span><span style="color:#d08770;">0
-</span><span style="color:#b48ead;">#define </span><span>kInputBus </span><span style="color:#d08770;">1
-</span><span style="color:#b48ead;">#define </span><span>kNumChannels </span><span style="color:#d08770;">2
+</span><span style="color:#c678dd;">#define </span><span>kTonesAvailable </span><span style="color:#e5c07b;">16
+</span><span style="color:#c678dd;">#define </span><span>kOutputBus </span><span style="color:#e5c07b;">0
+</span><span style="color:#c678dd;">#define </span><span>kInputBus </span><span style="color:#e5c07b;">1
+</span><span style="color:#c678dd;">#define </span><span>kNumChannels </span><span style="color:#e5c07b;">2
 </span><span>
-</span><span style="color:#b48ead;">@interface </span><span>TonePlayer </span><span style="color:#8fa1b3;">: </span><span style="color:#a3be8c;">NSObject </span><span>{
+</span><span style="color:#c678dd;">@interface </span><span>TonePlayer </span><span style="color:#e5c07b;">: </span><span>NSObject {
 </span><span>  AudioComponentInstance audioUnit;
 </span><span>  AudioStreamBasicDescription audioFormat;
-</span><span>  </span><span style="color:#b48ead;">float</span><span> phase[</span><span style="color:#d08770;">kTonesAvailable</span><span>];
-</span><span>  </span><span style="color:#b48ead;">float</span><span> frequencies[</span><span style="color:#d08770;">kTonesAvailable</span><span>];
+</span><span>  </span><span style="color:#c678dd;">float</span><span> phase[</span><span style="color:#e5c07b;">kTonesAvailable</span><span>];
+</span><span>  </span><span style="color:#c678dd;">float</span><span> frequencies[</span><span style="color:#e5c07b;">kTonesAvailable</span><span>];
 </span><span>}
 </span><span>
-</span><span>-(OSStatus)</span><span style="color:#8fa1b3;">start</span><span>;
-</span><span>-(OSStatus)</span><span style="color:#8fa1b3;">stop</span><span>;
-</span><span>-(</span><span style="color:#b48ead;">void</span><span>)</span><span style="color:#8fa1b3;">resetFrequencies</span><span>;
-</span><span>-(</span><span style="color:#b48ead;">void</span><span>)</span><span style="color:#8fa1b3;">cleanUp</span><span>;
-</span><span>-(</span><span style="color:#b48ead;">void</span><span>)</span><span style="color:#8fa1b3;">intialiseAudio</span><span>;
-</span><span style="color:#b48ead;">@end
+</span><span>-(OSStatus)</span><span style="color:#61afef;">start</span><span>;
+</span><span>-(OSStatus)</span><span style="color:#61afef;">stop</span><span>;
+</span><span>-(</span><span style="color:#c678dd;">void</span><span>)</span><span style="color:#61afef;">resetFrequencies</span><span>;
+</span><span>-(</span><span style="color:#c678dd;">void</span><span>)</span><span style="color:#61afef;">cleanUp</span><span>;
+</span><span>-(</span><span style="color:#c678dd;">void</span><span>)</span><span style="color:#61afef;">intialiseAudio</span><span>;
+</span><span style="color:#c678dd;">@end
 </span><span>
-</span><span style="color:#65737e;">// Some C function headers to get arount compile errors while I refactor to be more readable
-</span><span style="color:#b48ead;">float </span><span style="color:#8fa1b3;">phaseOffsetFromFrequency</span><span>(</span><span style="color:#bf616a;">float</span><span>);
-</span><span>OSStatus </span><span style="color:#8fa1b3;">RenderCallback</span><span>(</span><span style="color:#b48ead;">void</span><span>*, AudioUnitRenderActionFlags*, </span><span style="color:#b48ead;">const</span><span> AudioTimeStamp*, </span><span style="color:#bf616a;">UInt32</span><span>, </span><span style="color:#bf616a;">UInt32</span><span>, AudioBufferList*);
+</span><span style="color:#5c6370;">// Some C function headers to get arount compile errors while I refactor to be more readable
+</span><span style="color:#c678dd;">float </span><span style="color:#61afef;">phaseOffsetFromFrequency</span><span>(</span><span style="color:#e06c75;">float</span><span>);
+</span><span>OSStatus </span><span style="color:#61afef;">RenderCallback</span><span>(</span><span style="color:#c678dd;">void*</span><span>, AudioUnitRenderActionFlags</span><span style="color:#c678dd;">*</span><span>, </span><span style="color:#c678dd;">const</span><span> AudioTimeStamp</span><span style="color:#c678dd;">*</span><span>, </span><span style="color:#e06c75;">UInt32</span><span>, </span><span style="color:#e06c75;">UInt32</span><span>, AudioBufferList</span><span style="color:#c678dd;">*</span><span>);
 </span></code></pre>
 <p><strong>TonePlayer.m</strong></p>
-<pre data-lang="objective-c" style="background-color:#2b303b;color:#c0c5ce;" class="language-objective-c "><code class="language-objective-c" data-lang="objective-c"><span style="color:#b48ead;">#import </span><span>&quot;</span><span style="color:#a3be8c;">TonePlayer.h</span><span>&quot;
+<pre data-lang="objective-c" style="background-color:#282c34;color:#dcdfe4;" class="language-objective-c "><code class="language-objective-c" data-lang="objective-c"><span style="color:#c678dd;">#import </span><span style="color:#98c379;">&quot;TonePlayer.h&quot;
 </span><span>
-</span><span style="color:#b48ead;">typedef struct </span><span>{
-</span><span>  </span><span style="color:#b48ead;">@defs</span><span>(TonePlayer);
+</span><span style="color:#c678dd;">typedef struct </span><span>{
+</span><span>  </span><span style="color:#c678dd;">@defs</span><span>(TonePlayer);
 </span><span>} SinewaveDef;
 </span><span>
-</span><span style="color:#b48ead;">@implementation </span><span>TonePlayer
+</span><span style="color:#c678dd;">@implementation </span><span>TonePlayer
 </span><span>
-</span><span style="color:#b48ead;">static float </span><span style="color:#bf616a;">gSampleRate </span><span>= </span><span style="color:#d08770;">44100.</span><span>;
-</span><span style="color:#b48ead;">static float</span><span> notes[</span><span style="color:#d08770;">111</span><span>]  = {
-</span><span>      </span><span style="color:#d08770;">8.1758</span><span>, </span><span style="color:#d08770;">8.6620</span><span>, </span><span style="color:#d08770;">9.1770</span><span>, </span><span style="color:#d08770;">9.7227</span><span>, </span><span style="color:#d08770;">10.3009</span><span>, </span><span style="color:#d08770;">10.9134</span><span>, </span><span style="color:#d08770;">11.5623</span><span>, </span><span style="color:#d08770;">12.2499</span><span>, 
-</span><span>      </span><span style="color:#d08770;">12.9783</span><span>, </span><span style="color:#d08770;">13.7500</span><span>, </span><span style="color:#d08770;">14.5676</span><span>, </span><span style="color:#d08770;">15.4339</span><span>, </span><span style="color:#d08770;">16.3516</span><span>, </span><span style="color:#d08770;">17.3239</span><span>, </span><span style="color:#d08770;">18.3540</span><span>, </span><span style="color:#d08770;">19.4454</span><span>,
-</span><span>      </span><span style="color:#d08770;">20.6017</span><span>, </span><span style="color:#d08770;">21.8268</span><span>, </span><span style="color:#d08770;">23.1247</span><span>, </span><span style="color:#d08770;">24.4997</span><span>, </span><span style="color:#d08770;">25.9565</span><span>, </span><span style="color:#d08770;">27.5000</span><span>, </span><span style="color:#d08770;">29.1352</span><span>, </span><span style="color:#d08770;">30.8677</span><span>, 
-</span><span>      </span><span style="color:#d08770;">32.7032</span><span>, </span><span style="color:#d08770;">34.6478</span><span>, </span><span style="color:#d08770;">36.7081</span><span>, </span><span style="color:#d08770;">38.8909</span><span>, </span><span style="color:#d08770;">41.2034</span><span>, </span><span style="color:#d08770;">43.6535</span><span>, </span><span style="color:#d08770;">46.2493</span><span>, </span><span style="color:#d08770;">48.9994</span><span>, 
-</span><span>      </span><span style="color:#d08770;">51.9131</span><span>, </span><span style="color:#d08770;">55.0000</span><span>, </span><span style="color:#d08770;">58.2705</span><span>, </span><span style="color:#d08770;">61.7354</span><span>, </span><span style="color:#d08770;">65.4064</span><span>, </span><span style="color:#d08770;">69.2957</span><span>, </span><span style="color:#d08770;">73.4162</span><span>, </span><span style="color:#d08770;">77.7817</span><span>, 
-</span><span>      </span><span style="color:#d08770;">82.4069</span><span>, </span><span style="color:#d08770;">87.3071</span><span>, </span><span style="color:#d08770;">92.4986</span><span>, </span><span style="color:#d08770;">97.9989</span><span>, </span><span style="color:#d08770;">103.8262</span><span>, </span><span style="color:#d08770;">110.0000</span><span>, </span><span style="color:#d08770;">116.5409</span><span>, </span><span style="color:#d08770;">123.4708</span><span>,
-</span><span>      </span><span style="color:#d08770;">130.8128</span><span>, </span><span style="color:#d08770;">138.5913</span><span>, </span><span style="color:#d08770;">146.8324</span><span>, </span><span style="color:#d08770;">155.5635</span><span>, </span><span style="color:#d08770;">164.8138</span><span>, </span><span style="color:#d08770;">174.6141</span><span>, </span><span style="color:#d08770;">184.9972</span><span>, 
-</span><span>      </span><span style="color:#d08770;">195.9977</span><span>, </span><span style="color:#d08770;">207.6523</span><span>, </span><span style="color:#d08770;">220.0000</span><span>, </span><span style="color:#d08770;">233.0819</span><span>, </span><span style="color:#d08770;">246.9417</span><span>, </span><span style="color:#d08770;">261.6256</span><span>, </span><span style="color:#d08770;">277.1826</span><span>, 
-</span><span>      </span><span style="color:#d08770;">293.6648</span><span>, </span><span style="color:#d08770;">311.1270</span><span>, </span><span style="color:#d08770;">329.6276</span><span>, </span><span style="color:#d08770;">349.2282</span><span>, </span><span style="color:#d08770;">369.9944</span><span>, </span><span style="color:#d08770;">391.9954</span><span>, </span><span style="color:#d08770;">415.3047</span><span>, 
-</span><span>      </span><span style="color:#d08770;">440.0000</span><span>, </span><span style="color:#d08770;">466.1638</span><span>, </span><span style="color:#d08770;">493.8833</span><span>, </span><span style="color:#d08770;">523.2511</span><span>, </span><span style="color:#d08770;">554.3653</span><span>, </span><span style="color:#d08770;">587.3295</span><span>, </span><span style="color:#d08770;">622.2540</span><span>, 
-</span><span>      </span><span style="color:#d08770;">659.2551</span><span>, </span><span style="color:#d08770;">698.4565</span><span>, </span><span style="color:#d08770;">739.9888</span><span>, </span><span style="color:#d08770;">783.9909</span><span>, </span><span style="color:#d08770;">830.6094</span><span>, </span><span style="color:#d08770;">880.0000</span><span>, </span><span style="color:#d08770;">932.3275</span><span>, 
-</span><span>      </span><span style="color:#d08770;">987.7666</span><span>, </span><span style="color:#d08770;">1046.5023</span><span>, </span><span style="color:#d08770;">1108.7305</span><span>, </span><span style="color:#d08770;">1174.6591</span><span>, </span><span style="color:#d08770;">1244.5079</span><span>, </span><span style="color:#d08770;">1318.5102</span><span>, </span><span style="color:#d08770;">1396.9129</span><span>, 
-</span><span>      </span><span style="color:#d08770;">1479.9777</span><span>, </span><span style="color:#d08770;">1567.9817</span><span>, </span><span style="color:#d08770;">1661.2188</span><span>, </span><span style="color:#d08770;">1760.0000</span><span>, </span><span style="color:#d08770;">1864.6550</span><span>, </span><span style="color:#d08770;">1975.5332</span><span>, </span><span style="color:#d08770;">2093.0045</span><span>, 
-</span><span>      </span><span style="color:#d08770;">2217.4610</span><span>, </span><span style="color:#d08770;">2349.3181</span><span>, </span><span style="color:#d08770;">2489.0159</span><span>, </span><span style="color:#d08770;">2637.0205</span><span>, </span><span style="color:#d08770;">2793.8259</span><span>, </span><span style="color:#d08770;">2959.9554</span><span>, </span><span style="color:#d08770;">3135.9635</span><span>, 
-</span><span>      </span><span style="color:#d08770;">3322.4376</span><span>, </span><span style="color:#d08770;">3520.0000</span><span>, </span><span style="color:#d08770;">3729.3101</span><span>, </span><span style="color:#d08770;">3951.0664</span><span>, </span><span style="color:#d08770;">4186.0090</span><span>, </span><span style="color:#d08770;">4434.9221</span><span>, </span><span style="color:#d08770;">4698.6363
+</span><span style="color:#c678dd;">static float </span><span style="color:#e06c75;">gSampleRate </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">44100.</span><span>;
+</span><span style="color:#c678dd;">static float</span><span> notes[</span><span style="color:#e5c07b;">111</span><span>]  </span><span style="color:#c678dd;">= </span><span>{
+</span><span>      </span><span style="color:#e5c07b;">8.1758</span><span>, </span><span style="color:#e5c07b;">8.6620</span><span>, </span><span style="color:#e5c07b;">9.1770</span><span>, </span><span style="color:#e5c07b;">9.7227</span><span>, </span><span style="color:#e5c07b;">10.3009</span><span>, </span><span style="color:#e5c07b;">10.9134</span><span>, </span><span style="color:#e5c07b;">11.5623</span><span>, </span><span style="color:#e5c07b;">12.2499</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">12.9783</span><span>, </span><span style="color:#e5c07b;">13.7500</span><span>, </span><span style="color:#e5c07b;">14.5676</span><span>, </span><span style="color:#e5c07b;">15.4339</span><span>, </span><span style="color:#e5c07b;">16.3516</span><span>, </span><span style="color:#e5c07b;">17.3239</span><span>, </span><span style="color:#e5c07b;">18.3540</span><span>, </span><span style="color:#e5c07b;">19.4454</span><span>,
+</span><span>      </span><span style="color:#e5c07b;">20.6017</span><span>, </span><span style="color:#e5c07b;">21.8268</span><span>, </span><span style="color:#e5c07b;">23.1247</span><span>, </span><span style="color:#e5c07b;">24.4997</span><span>, </span><span style="color:#e5c07b;">25.9565</span><span>, </span><span style="color:#e5c07b;">27.5000</span><span>, </span><span style="color:#e5c07b;">29.1352</span><span>, </span><span style="color:#e5c07b;">30.8677</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">32.7032</span><span>, </span><span style="color:#e5c07b;">34.6478</span><span>, </span><span style="color:#e5c07b;">36.7081</span><span>, </span><span style="color:#e5c07b;">38.8909</span><span>, </span><span style="color:#e5c07b;">41.2034</span><span>, </span><span style="color:#e5c07b;">43.6535</span><span>, </span><span style="color:#e5c07b;">46.2493</span><span>, </span><span style="color:#e5c07b;">48.9994</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">51.9131</span><span>, </span><span style="color:#e5c07b;">55.0000</span><span>, </span><span style="color:#e5c07b;">58.2705</span><span>, </span><span style="color:#e5c07b;">61.7354</span><span>, </span><span style="color:#e5c07b;">65.4064</span><span>, </span><span style="color:#e5c07b;">69.2957</span><span>, </span><span style="color:#e5c07b;">73.4162</span><span>, </span><span style="color:#e5c07b;">77.7817</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">82.4069</span><span>, </span><span style="color:#e5c07b;">87.3071</span><span>, </span><span style="color:#e5c07b;">92.4986</span><span>, </span><span style="color:#e5c07b;">97.9989</span><span>, </span><span style="color:#e5c07b;">103.8262</span><span>, </span><span style="color:#e5c07b;">110.0000</span><span>, </span><span style="color:#e5c07b;">116.5409</span><span>, </span><span style="color:#e5c07b;">123.4708</span><span>,
+</span><span>      </span><span style="color:#e5c07b;">130.8128</span><span>, </span><span style="color:#e5c07b;">138.5913</span><span>, </span><span style="color:#e5c07b;">146.8324</span><span>, </span><span style="color:#e5c07b;">155.5635</span><span>, </span><span style="color:#e5c07b;">164.8138</span><span>, </span><span style="color:#e5c07b;">174.6141</span><span>, </span><span style="color:#e5c07b;">184.9972</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">195.9977</span><span>, </span><span style="color:#e5c07b;">207.6523</span><span>, </span><span style="color:#e5c07b;">220.0000</span><span>, </span><span style="color:#e5c07b;">233.0819</span><span>, </span><span style="color:#e5c07b;">246.9417</span><span>, </span><span style="color:#e5c07b;">261.6256</span><span>, </span><span style="color:#e5c07b;">277.1826</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">293.6648</span><span>, </span><span style="color:#e5c07b;">311.1270</span><span>, </span><span style="color:#e5c07b;">329.6276</span><span>, </span><span style="color:#e5c07b;">349.2282</span><span>, </span><span style="color:#e5c07b;">369.9944</span><span>, </span><span style="color:#e5c07b;">391.9954</span><span>, </span><span style="color:#e5c07b;">415.3047</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">440.0000</span><span>, </span><span style="color:#e5c07b;">466.1638</span><span>, </span><span style="color:#e5c07b;">493.8833</span><span>, </span><span style="color:#e5c07b;">523.2511</span><span>, </span><span style="color:#e5c07b;">554.3653</span><span>, </span><span style="color:#e5c07b;">587.3295</span><span>, </span><span style="color:#e5c07b;">622.2540</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">659.2551</span><span>, </span><span style="color:#e5c07b;">698.4565</span><span>, </span><span style="color:#e5c07b;">739.9888</span><span>, </span><span style="color:#e5c07b;">783.9909</span><span>, </span><span style="color:#e5c07b;">830.6094</span><span>, </span><span style="color:#e5c07b;">880.0000</span><span>, </span><span style="color:#e5c07b;">932.3275</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">987.7666</span><span>, </span><span style="color:#e5c07b;">1046.5023</span><span>, </span><span style="color:#e5c07b;">1108.7305</span><span>, </span><span style="color:#e5c07b;">1174.6591</span><span>, </span><span style="color:#e5c07b;">1244.5079</span><span>, </span><span style="color:#e5c07b;">1318.5102</span><span>, </span><span style="color:#e5c07b;">1396.9129</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">1479.9777</span><span>, </span><span style="color:#e5c07b;">1567.9817</span><span>, </span><span style="color:#e5c07b;">1661.2188</span><span>, </span><span style="color:#e5c07b;">1760.0000</span><span>, </span><span style="color:#e5c07b;">1864.6550</span><span>, </span><span style="color:#e5c07b;">1975.5332</span><span>, </span><span style="color:#e5c07b;">2093.0045</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">2217.4610</span><span>, </span><span style="color:#e5c07b;">2349.3181</span><span>, </span><span style="color:#e5c07b;">2489.0159</span><span>, </span><span style="color:#e5c07b;">2637.0205</span><span>, </span><span style="color:#e5c07b;">2793.8259</span><span>, </span><span style="color:#e5c07b;">2959.9554</span><span>, </span><span style="color:#e5c07b;">3135.9635</span><span>, 
+</span><span>      </span><span style="color:#e5c07b;">3322.4376</span><span>, </span><span style="color:#e5c07b;">3520.0000</span><span>, </span><span style="color:#e5c07b;">3729.3101</span><span>, </span><span style="color:#e5c07b;">3951.0664</span><span>, </span><span style="color:#e5c07b;">4186.0090</span><span>, </span><span style="color:#e5c07b;">4434.9221</span><span>, </span><span style="color:#e5c07b;">4698.6363
 </span><span>  };
 </span><span>
-</span><span>OSStatus    </span><span style="color:#bf616a;">RenderCallback</span><span>(</span><span style="color:#b48ead;">void                          </span><span>*inRefCon,
-</span><span>                           AudioUnitRenderActionFlags    *ioActionFlags,
-</span><span>                           </span><span style="color:#b48ead;">const</span><span> AudioTimeStamp          *inTimeStamp,
+</span><span>OSStatus    </span><span style="color:#e06c75;">RenderCallback</span><span>(</span><span style="color:#c678dd;">void                          *</span><span>inRefCon,
+</span><span>                           AudioUnitRenderActionFlags    </span><span style="color:#c678dd;">*</span><span>ioActionFlags,
+</span><span>                           </span><span style="color:#c678dd;">const</span><span> AudioTimeStamp          </span><span style="color:#c678dd;">*</span><span>inTimeStamp,
 </span><span>                           UInt32                        inBusNumber,
 </span><span>                           UInt32                        inNumberFrames,
-</span><span>                           AudioBufferList               *ioData)
+</span><span>                           AudioBufferList               </span><span style="color:#c678dd;">*</span><span>ioData)
 </span><span>{
-</span><span>  SinewaveDef* def = inRefCon;
+</span><span>  SinewaveDef</span><span style="color:#c678dd;">*</span><span> def </span><span style="color:#c678dd;">=</span><span> inRefCon;
 </span><span>  
-</span><span>  </span><span style="color:#b48ead;">float </span><span>*outL = ioData-&gt;mBuffers[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">mData</span><span>;
-</span><span>  </span><span style="color:#b48ead;">float </span><span>*outR = ioData-&gt;mBuffers[</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">mData</span><span>;
+</span><span>  </span><span style="color:#c678dd;">float *</span><span>outL </span><span style="color:#c678dd;">=</span><span> ioData-&gt;mBuffers[</span><span style="color:#e5c07b;">0</span><span>].</span><span style="color:#e06c75;">mData</span><span>;
+</span><span>  </span><span style="color:#c678dd;">float *</span><span>outR </span><span style="color:#c678dd;">=</span><span> ioData-&gt;mBuffers[</span><span style="color:#e5c07b;">1</span><span>].</span><span style="color:#e06c75;">mData</span><span>;
 </span><span>
-</span><span>  </span><span style="color:#b48ead;">float</span><span> wave, j;
-</span><span>  </span><span style="color:#b48ead;">float</span><span> freqs[</span><span style="color:#d08770;">kTonesAvailable</span><span>];
+</span><span>  </span><span style="color:#c678dd;">float</span><span> wave, j;
+</span><span>  </span><span style="color:#c678dd;">float</span><span> freqs[</span><span style="color:#e5c07b;">kTonesAvailable</span><span>];
 </span><span>  
-</span><span>  </span><span style="color:#96b5b4;">memset</span><span>(freqs, </span><span style="color:#d08770;">0.0</span><span style="color:#b48ead;">f</span><span>, sizeof(freqs));
+</span><span>  </span><span style="color:#61afef;">memset</span><span>(freqs, </span><span style="color:#e5c07b;">0.0</span><span style="color:#c678dd;">f</span><span>, </span><span style="color:#c678dd;">sizeof</span><span>(freqs));
 </span><span>  
-</span><span>  </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i=</span><span style="color:#d08770;">0</span><span>; i&lt; inNumberFrames; i++){
-</span><span>    wave = </span><span style="color:#d08770;">0.0</span><span style="color:#b48ead;">f</span><span>;
-</span><span>    j = </span><span style="color:#d08770;">0.0</span><span style="color:#b48ead;">f</span><span>;
+</span><span>  </span><span style="color:#c678dd;">for </span><span>(</span><span style="color:#c678dd;">int</span><span> i</span><span style="color:#c678dd;">=</span><span style="color:#e5c07b;">0</span><span>; i</span><span style="color:#c678dd;">&lt;</span><span> inNumberFrames; i</span><span style="color:#c678dd;">++</span><span>){
+</span><span>    wave </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0.0</span><span style="color:#c678dd;">f</span><span>;
+</span><span>    j </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0.0</span><span style="color:#c678dd;">f</span><span>;
 </span><span>    
-</span><span>    </span><span style="color:#b48ead;">for</span><span>(</span><span style="color:#b48ead;">int</span><span> m = </span><span style="color:#d08770;">0</span><span>; m &lt; </span><span style="color:#d08770;">kTonesAvailable</span><span>; ++m) {
-</span><span>      </span><span style="color:#b48ead;">if</span><span>(def-&gt;frequencies[m] != </span><span style="color:#d08770;">0</span><span>) {
-</span><span>        </span><span style="color:#b48ead;">if</span><span>(freqs[m] == </span><span style="color:#d08770;">0</span><span>) freqs[m] = </span><span style="color:#bf616a;">phaseOffsetFromFrequency</span><span>(def-&gt;frequencies[m]);
+</span><span>    </span><span style="color:#c678dd;">for</span><span>(</span><span style="color:#c678dd;">int</span><span> m </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0</span><span>; m </span><span style="color:#c678dd;">&lt; </span><span style="color:#e5c07b;">kTonesAvailable</span><span>; </span><span style="color:#c678dd;">++</span><span>m) {
+</span><span>      </span><span style="color:#c678dd;">if</span><span>(def-&gt;frequencies[m] </span><span style="color:#c678dd;">!= </span><span style="color:#e5c07b;">0</span><span>) {
+</span><span>        </span><span style="color:#c678dd;">if</span><span>(freqs[m] </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) freqs[m] </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">phaseOffsetFromFrequency</span><span>(def-&gt;frequencies[m]);
 </span><span>
-</span><span>        wave += </span><span style="color:#d08770;">0.5 </span><span>* </span><span style="color:#96b5b4;">sinf</span><span>(def-&gt;phase[m]);
-</span><span>        def-&gt;phase[m] += freqs[m];
+</span><span>        wave </span><span style="color:#c678dd;">+= </span><span style="color:#e5c07b;">0.5 </span><span style="color:#c678dd;">* </span><span style="color:#61afef;">sinf</span><span>(def-&gt;phase[m]);
+</span><span>        def-&gt;phase[m] </span><span style="color:#c678dd;">+=</span><span> freqs[m];
 </span><span>        
-</span><span>        ++j;
+</span><span>        </span><span style="color:#c678dd;">++</span><span>j;
 </span><span>      }
 </span><span>    }
 </span><span>    
-</span><span>    wave /= j;
+</span><span>    wave </span><span style="color:#c678dd;">/=</span><span> j;
 </span><span>    
-</span><span>    *outL++ = wave;
-</span><span>    *outR++ = wave;
+</span><span>    </span><span style="color:#c678dd;">*</span><span>outL</span><span style="color:#c678dd;">++ =</span><span> wave;
+</span><span>    </span><span style="color:#c678dd;">*</span><span>outR</span><span style="color:#c678dd;">++ =</span><span> wave;
 </span><span>  }
 </span><span>
-</span><span>  </span><span style="color:#b48ead;">return </span><span>noErr;
+</span><span>  </span><span style="color:#c678dd;">return </span><span>noErr;
 </span><span>}
 </span><span>
-</span><span style="color:#b48ead;">float </span><span style="color:#bf616a;">phaseOffsetFromFrequency</span><span>(</span><span style="color:#b48ead;">float</span><span> frequency) {
-</span><span>  </span><span style="color:#b48ead;">return </span><span>(</span><span style="color:#b48ead;">float</span><span>)(frequency * </span><span style="color:#d08770;">2.0 </span><span>* M_PI / </span><span style="color:#bf616a;">gSampleRate</span><span>);
+</span><span style="color:#c678dd;">float </span><span style="color:#e06c75;">phaseOffsetFromFrequency</span><span>(</span><span style="color:#c678dd;">float</span><span> frequency) {
+</span><span>  </span><span style="color:#c678dd;">return </span><span>(</span><span style="color:#c678dd;">float</span><span>)(frequency </span><span style="color:#c678dd;">* </span><span style="color:#e5c07b;">2.0 </span><span style="color:#c678dd;">*</span><span> M_PI </span><span style="color:#c678dd;">/ </span><span style="color:#e06c75;">gSampleRate</span><span>);
 </span><span>}
 </span><span>
-</span><span>-(</span><span style="color:#b48ead;">void</span><span>)</span><span style="color:#8fa1b3;">resetFrequencies</span><span>{
-</span><span>  </span><span style="color:#96b5b4;">memset</span><span>(frequencies, </span><span style="color:#d08770;">0.0</span><span style="color:#b48ead;">f</span><span>, sizeof(frequencies));
-</span><span>  </span><span style="color:#96b5b4;">memset</span><span>(phase, </span><span style="color:#d08770;">0.0</span><span style="color:#b48ead;">f</span><span>, sizeof(phase));
+</span><span>-(</span><span style="color:#c678dd;">void</span><span>)</span><span style="color:#61afef;">resetFrequencies</span><span>{
+</span><span>  </span><span style="color:#61afef;">memset</span><span>(frequencies, </span><span style="color:#e5c07b;">0.0</span><span style="color:#c678dd;">f</span><span>, </span><span style="color:#c678dd;">sizeof</span><span>(frequencies));
+</span><span>  </span><span style="color:#61afef;">memset</span><span>(phase, </span><span style="color:#e5c07b;">0.0</span><span style="color:#c678dd;">f</span><span>, </span><span style="color:#c678dd;">sizeof</span><span>(phase));
 </span><span>}
 </span><span>
-</span><span>-(OSStatus)</span><span style="color:#8fa1b3;">start</span><span>{
-</span><span>  [</span><span style="color:#bf616a;">self </span><span style="color:#8fa1b3;">resetFrequencies</span><span>];
-</span><span>  OSStatus status = </span><span style="color:#bf616a;">AudioOutputUnitStart</span><span>(audioUnit);
+</span><span>-(OSStatus)</span><span style="color:#61afef;">start</span><span>{
+</span><span>  [</span><span style="color:#e06c75;">self </span><span style="color:#61afef;">resetFrequencies</span><span>];
+</span><span>  OSStatus status </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioOutputUnitStart</span><span>(audioUnit);
 </span><span>  
-</span><span>  </span><span style="color:#65737e;">// See http://www.phys.unsw.edu.au/jw/notes.html for note numbers
-</span><span>  frequencies[</span><span style="color:#d08770;">0</span><span>] = notes[</span><span style="color:#d08770;">60</span><span>]; </span><span style="color:#65737e;">// C
-</span><span>  frequencies[</span><span style="color:#d08770;">1</span><span>] = notes[</span><span style="color:#d08770;">64</span><span>]; </span><span style="color:#65737e;">// E
-</span><span>  frequencies[</span><span style="color:#d08770;">2</span><span>] = notes[</span><span style="color:#d08770;">67</span><span>]; </span><span style="color:#65737e;">// G
+</span><span>  </span><span style="color:#5c6370;">// See http://www.phys.unsw.edu.au/jw/notes.html for note numbers
+</span><span>  frequencies[</span><span style="color:#e5c07b;">0</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">60</span><span>]; </span><span style="color:#5c6370;">// C
+</span><span>  frequencies[</span><span style="color:#e5c07b;">1</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">64</span><span>]; </span><span style="color:#5c6370;">// E
+</span><span>  frequencies[</span><span style="color:#e5c07b;">2</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">67</span><span>]; </span><span style="color:#5c6370;">// G
 </span><span>  
-</span><span>  </span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  </span><span style="color:#e06c75;">sleep</span><span>(</span><span style="color:#e5c07b;">1</span><span>);
 </span><span>  
-</span><span>  frequencies[</span><span style="color:#d08770;">0</span><span>] = notes[</span><span style="color:#d08770;">64</span><span>];
-</span><span>  frequencies[</span><span style="color:#d08770;">1</span><span>] = notes[</span><span style="color:#d08770;">67</span><span>];
-</span><span>  frequencies[</span><span style="color:#d08770;">2</span><span>] = notes[</span><span style="color:#d08770;">71</span><span>];
+</span><span>  frequencies[</span><span style="color:#e5c07b;">0</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">64</span><span>];
+</span><span>  frequencies[</span><span style="color:#e5c07b;">1</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">67</span><span>];
+</span><span>  frequencies[</span><span style="color:#e5c07b;">2</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">71</span><span>];
 </span><span>  
-</span><span>  </span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  </span><span style="color:#e06c75;">sleep</span><span>(</span><span style="color:#e5c07b;">1</span><span>);
 </span><span>  
-</span><span>  frequencies[</span><span style="color:#d08770;">0</span><span>] = notes[</span><span style="color:#d08770;">74</span><span>];
-</span><span>  frequencies[</span><span style="color:#d08770;">1</span><span>] = notes[</span><span style="color:#d08770;">67</span><span>];
-</span><span>  frequencies[</span><span style="color:#d08770;">2</span><span>] = notes[</span><span style="color:#d08770;">70</span><span>];
+</span><span>  frequencies[</span><span style="color:#e5c07b;">0</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">74</span><span>];
+</span><span>  frequencies[</span><span style="color:#e5c07b;">1</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">67</span><span>];
+</span><span>  frequencies[</span><span style="color:#e5c07b;">2</span><span>] </span><span style="color:#c678dd;">=</span><span> notes[</span><span style="color:#e5c07b;">70</span><span>];
 </span><span>  
 </span><span>  
-</span><span>  </span><span style="color:#b48ead;">return</span><span> status;
+</span><span>  </span><span style="color:#c678dd;">return</span><span> status;
 </span><span>}
 </span><span>
-</span><span>-(OSStatus)</span><span style="color:#8fa1b3;">stop</span><span>{
-</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">AudioOutputUnitStop</span><span>(audioUnit);
+</span><span>-(OSStatus)</span><span style="color:#61afef;">stop</span><span>{
+</span><span>  </span><span style="color:#c678dd;">return </span><span style="color:#e06c75;">AudioOutputUnitStop</span><span>(audioUnit);
 </span><span>}
 </span><span>
-</span><span>-(</span><span style="color:#b48ead;">void</span><span>)</span><span style="color:#8fa1b3;">cleanUp</span><span>{
-</span><span>  </span><span style="color:#bf616a;">AudioUnitUninitialize</span><span>(audioUnit);
+</span><span>-(</span><span style="color:#c678dd;">void</span><span>)</span><span style="color:#61afef;">cleanUp</span><span>{
+</span><span>  </span><span style="color:#e06c75;">AudioUnitUninitialize</span><span>(audioUnit);
 </span><span>}
 </span><span>
-</span><span>-(AudioStreamBasicDescription)</span><span style="color:#8fa1b3;">audioFormat</span><span>{
-</span><span>  </span><span style="color:#b48ead;">return</span><span> audioFormat;
+</span><span>-(AudioStreamBasicDescription)</span><span style="color:#61afef;">audioFormat</span><span>{
+</span><span>  </span><span style="color:#c678dd;">return</span><span> audioFormat;
 </span><span>}
 </span><span>
-</span><span style="color:#65737e;">// Below code is a cut down version (for output only) of the code written by
-</span><span style="color:#65737e;">// Micheal &quot;Code Fighter&quot; Tyson (punch on Mike)
-</span><span style="color:#65737e;">// See http://michael.tyson.id.au/2008/11/04/using-remoteio-audio-unit/ for details
-</span><span>-(</span><span style="color:#b48ead;">void</span><span>)</span><span style="color:#8fa1b3;">intialiseAudio</span><span>{
+</span><span style="color:#5c6370;">// Below code is a cut down version (for output only) of the code written by
+</span><span style="color:#5c6370;">// Micheal &quot;Code Fighter&quot; Tyson (punch on Mike)
+</span><span style="color:#5c6370;">// See http://michael.tyson.id.au/2008/11/04/using-remoteio-audio-unit/ for details
+</span><span>-(</span><span style="color:#c678dd;">void</span><span>)</span><span style="color:#61afef;">intialiseAudio</span><span>{
 </span><span>  OSStatus status;
 </span><span>  
-</span><span>  </span><span style="color:#65737e;">// Describe audio component
+</span><span>  </span><span style="color:#5c6370;">// Describe audio component
 </span><span>  AudioComponentDescription desc;
-</span><span>  desc.</span><span style="color:#bf616a;">componentType </span><span>= </span><span style="color:#d08770;">kAudioUnitType_Output</span><span>;
-</span><span>  desc.</span><span style="color:#bf616a;">componentSubType </span><span>= </span><span style="color:#d08770;">kAudioUnitSubType_RemoteIO</span><span>;
-</span><span>  desc.</span><span style="color:#bf616a;">componentFlags </span><span>= </span><span style="color:#d08770;">0</span><span>;
-</span><span>  desc.</span><span style="color:#bf616a;">componentFlagsMask </span><span>= </span><span style="color:#d08770;">0</span><span>;
-</span><span>  desc.</span><span style="color:#bf616a;">componentManufacturer </span><span>= </span><span style="color:#d08770;">kAudioUnitManufacturer_Apple</span><span>;
+</span><span>  desc.</span><span style="color:#e06c75;">componentType </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">kAudioUnitType_Output</span><span>;
+</span><span>  desc.</span><span style="color:#e06c75;">componentSubType </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">kAudioUnitSubType_RemoteIO</span><span>;
+</span><span>  desc.</span><span style="color:#e06c75;">componentFlags </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0</span><span>;
+</span><span>  desc.</span><span style="color:#e06c75;">componentFlagsMask </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0</span><span>;
+</span><span>  desc.</span><span style="color:#e06c75;">componentManufacturer </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">kAudioUnitManufacturer_Apple</span><span>;
 </span><span>  
-</span><span>  </span><span style="color:#65737e;">// Get component
-</span><span>  AudioComponent inputComponent = </span><span style="color:#bf616a;">AudioComponentFindNext</span><span>(</span><span style="color:#d08770;">NULL</span><span>, &amp;desc);
+</span><span>  </span><span style="color:#5c6370;">// Get component
+</span><span>  AudioComponent inputComponent </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioComponentFindNext</span><span>(</span><span style="color:#e5c07b;">NULL</span><span>, </span><span style="color:#c678dd;">&amp;</span><span>desc);
 </span><span>  
-</span><span>  </span><span style="color:#65737e;">// Get audio units
-</span><span>  status = </span><span style="color:#bf616a;">AudioComponentInstanceNew</span><span>(inputComponent, &amp;audioUnit);
+</span><span>  </span><span style="color:#5c6370;">// Get audio units
+</span><span>  status </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioComponentInstanceNew</span><span>(inputComponent, </span><span style="color:#c678dd;">&amp;</span><span>audioUnit);
 </span><span>  
-</span><span>  UInt32 flag = </span><span style="color:#d08770;">1</span><span>;
-</span><span>  </span><span style="color:#65737e;">// Enable IO for playback
-</span><span>  status = </span><span style="color:#bf616a;">AudioUnitSetProperty</span><span>(audioUnit, 
-</span><span>                  </span><span style="color:#d08770;">kAudioOutputUnitProperty_EnableIO</span><span>, 
-</span><span>                  </span><span style="color:#d08770;">kAudioUnitScope_Output</span><span>, 
-</span><span>                  </span><span style="color:#d08770;">kOutputBus</span><span>,
-</span><span>                  &amp;flag, 
-</span><span>                  sizeof(flag));
+</span><span>  UInt32 flag </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">1</span><span>;
+</span><span>  </span><span style="color:#5c6370;">// Enable IO for playback
+</span><span>  status </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioUnitSetProperty</span><span>(audioUnit, 
+</span><span>                  </span><span style="color:#e5c07b;">kAudioOutputUnitProperty_EnableIO</span><span>, 
+</span><span>                  </span><span style="color:#e5c07b;">kAudioUnitScope_Output</span><span>, 
+</span><span>                  </span><span style="color:#e5c07b;">kOutputBus</span><span>,
+</span><span>                  </span><span style="color:#c678dd;">&amp;</span><span>flag, 
+</span><span>                  </span><span style="color:#c678dd;">sizeof</span><span>(flag));
 </span><span>
-</span><span>  </span><span style="color:#65737e;">// Describe format
-</span><span>        audioFormat.</span><span style="color:#bf616a;">mSampleRate </span><span>= </span><span style="color:#bf616a;">gSampleRate</span><span>;
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mFormatID </span><span>= </span><span style="color:#d08770;">kAudioFormatLinearPCM</span><span>;
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mFormatFlags </span><span>= </span><span style="color:#d08770;">kAudioFormatFlagsNativeFloatPacked </span><span>| </span><span style="color:#d08770;">kAudioFormatFlagIsNonInterleaved</span><span>;
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mFramesPerPacket </span><span>= </span><span style="color:#d08770;">1</span><span>;
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mBytesPerPacket </span><span>= sizeof(Float32);
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mBytesPerFrame </span><span>= sizeof(Float32);
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mChannelsPerFrame </span><span>= </span><span style="color:#d08770;">kNumChannels</span><span>;
-</span><span>  audioFormat.</span><span style="color:#bf616a;">mBitsPerChannel </span><span>= </span><span style="color:#d08770;">32</span><span>;
+</span><span>  </span><span style="color:#5c6370;">// Describe format
+</span><span>        audioFormat.</span><span style="color:#e06c75;">mSampleRate </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">gSampleRate</span><span>;
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mFormatID </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">kAudioFormatLinearPCM</span><span>;
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mFormatFlags </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">kAudioFormatFlagsNativeFloatPacked </span><span style="color:#c678dd;">| </span><span style="color:#e5c07b;">kAudioFormatFlagIsNonInterleaved</span><span>;
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mFramesPerPacket </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">1</span><span>;
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mBytesPerPacket </span><span style="color:#c678dd;">= sizeof</span><span>(Float32);
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mBytesPerFrame </span><span style="color:#c678dd;">= sizeof</span><span>(Float32);
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mChannelsPerFrame </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">kNumChannels</span><span>;
+</span><span>  audioFormat.</span><span style="color:#e06c75;">mBitsPerChannel </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">32</span><span>;
 </span><span>  
-</span><span>  </span><span style="color:#65737e;">//Apply format
-</span><span>  status = </span><span style="color:#bf616a;">AudioUnitSetProperty</span><span>(audioUnit, 
-</span><span>                  </span><span style="color:#d08770;">kAudioUnitProperty_StreamFormat</span><span>, 
-</span><span>                  </span><span style="color:#d08770;">kAudioUnitScope_Input</span><span>, 
-</span><span>                  </span><span style="color:#d08770;">kOutputBus</span><span>, 
-</span><span>                  &amp;audioFormat, 
-</span><span>                  sizeof(audioFormat));
+</span><span>  </span><span style="color:#5c6370;">//Apply format
+</span><span>  status </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioUnitSetProperty</span><span>(audioUnit, 
+</span><span>                  </span><span style="color:#e5c07b;">kAudioUnitProperty_StreamFormat</span><span>, 
+</span><span>                  </span><span style="color:#e5c07b;">kAudioUnitScope_Input</span><span>, 
+</span><span>                  </span><span style="color:#e5c07b;">kOutputBus</span><span>, 
+</span><span>                  </span><span style="color:#c678dd;">&amp;</span><span>audioFormat, 
+</span><span>                  </span><span style="color:#c678dd;">sizeof</span><span>(audioFormat));
 </span><span>   
-</span><span>  </span><span style="color:#65737e;">// Set up the playback  callback
+</span><span>  </span><span style="color:#5c6370;">// Set up the playback  callback
 </span><span>  AURenderCallbackStruct callbackStruct;
-</span><span>  callbackStruct.</span><span style="color:#bf616a;">inputProc </span><span>= RenderCallback;
-</span><span>  </span><span style="color:#65737e;">//set the reference to &quot;self&quot; this becomes *inRefCon in the playback callback
-</span><span>  callbackStruct.</span><span style="color:#bf616a;">inputProcRefCon </span><span>= </span><span style="color:#bf616a;">self</span><span>;
+</span><span>  callbackStruct.</span><span style="color:#e06c75;">inputProc </span><span style="color:#c678dd;">=</span><span> RenderCallback;
+</span><span>  </span><span style="color:#5c6370;">//set the reference to &quot;self&quot; this becomes *inRefCon in the playback callback
+</span><span>  callbackStruct.</span><span style="color:#e06c75;">inputProcRefCon </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">self</span><span>;
 </span><span>  
-</span><span>  status = </span><span style="color:#bf616a;">AudioUnitSetProperty</span><span>(audioUnit, 
-</span><span>                  </span><span style="color:#d08770;">kAudioUnitProperty_SetRenderCallback</span><span>, 
-</span><span>                  </span><span style="color:#d08770;">kAudioUnitScope_Global</span><span>, 
-</span><span>                  </span><span style="color:#d08770;">kOutputBus</span><span>,
-</span><span>                  &amp;callbackStruct, 
-</span><span>                  sizeof(callbackStruct));
+</span><span>  status </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioUnitSetProperty</span><span>(audioUnit, 
+</span><span>                  </span><span style="color:#e5c07b;">kAudioUnitProperty_SetRenderCallback</span><span>, 
+</span><span>                  </span><span style="color:#e5c07b;">kAudioUnitScope_Global</span><span>, 
+</span><span>                  </span><span style="color:#e5c07b;">kOutputBus</span><span>,
+</span><span>                  </span><span style="color:#c678dd;">&amp;</span><span>callbackStruct, 
+</span><span>                  </span><span style="color:#c678dd;">sizeof</span><span>(callbackStruct));
 </span><span>  
-</span><span>  </span><span style="color:#65737e;">// Initialise
-</span><span>  status = </span><span style="color:#bf616a;">AudioUnitInitialize</span><span>(audioUnit);
+</span><span>  </span><span style="color:#5c6370;">// Initialise
+</span><span>  status </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">AudioUnitInitialize</span><span>(audioUnit);
 </span><span>}
 </span><span>
-</span><span style="color:#b48ead;">@end
+</span><span style="color:#c678dd;">@end
 </span></code></pre>
 <p>I really wish that I could remember how most of it worked, or, more
 importantly, the multitude of projects whose code we had to look at to

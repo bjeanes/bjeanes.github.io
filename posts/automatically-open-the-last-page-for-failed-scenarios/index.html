@@ -159,11 +159,11 @@ passing step to see why the story is currently failing.</p>
 in just a few lines that really helps this process of seeing what webrat
 sees when a scenario fails. Throw this snippet of code in a file in your
 <code>features/support/</code> directory:</p>
-<pre data-lang="ruby" style="background-color:#2b303b;color:#c0c5ce;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#bf616a;">After </span><span style="color:#b48ead;">do </span><span>|</span><span style="color:#bf616a;">scenario</span><span>|
-</span><span>  </span><span style="color:#b48ead;">if</span><span> scenario.</span><span style="color:#96b5b4;">respond_to? </span><span>&amp;&amp; scenario.status == </span><span style="color:#a3be8c;">:failed
+<pre data-lang="ruby" style="background-color:#282c34;color:#dcdfe4;" class="language-ruby "><code class="language-ruby" data-lang="ruby"><span style="color:#e06c75;">After </span><span style="color:#c678dd;">do </span><span>|</span><span style="color:#e06c75;">scenario</span><span>|
+</span><span>  </span><span style="color:#c678dd;">if</span><span> scenario.</span><span style="color:#61afef;">respond_to? </span><span style="color:#c678dd;">&amp;&amp;</span><span> scenario.status </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">:failed
 </span><span>    save_and_open_page
-</span><span>  </span><span style="color:#b48ead;">end
-</span><span style="color:#b48ead;">end
+</span><span>  </span><span style="color:#c678dd;">end
+</span><span style="color:#c678dd;">end
 </span></code></pre>
 
 	</div>

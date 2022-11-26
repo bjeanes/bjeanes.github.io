@@ -155,59 +155,59 @@ to implement as the new UI for an app we are building at
 it started to feel a little moist (i.e. not DRY).</p>
 <p>For example, around all the apps form the client’s design had a rounded
 white box, the HTML of which went something like this:</p>
-<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">content-wht</span><span>&quot;&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">content-wht-inside</span><span>&quot;&gt;
-</span><span>        &lt;</span><span style="color:#bf616a;">fieldset</span><span>&gt;
-</span><span>            &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">frow</span><span>&quot;&gt;
-</span><span>                &lt;</span><span style="color:#bf616a;">label</span><span>&gt;Currency:&lt;/</span><span style="color:#bf616a;">label</span><span>&gt;
-</span><span>                &lt;</span><span style="color:#bf616a;">select </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">fs</span><span>&quot;&gt;&lt;</span><span style="color:#bf616a;">option</span><span>&gt;EUR&lt;/</span><span style="color:#bf616a;">option</span><span>&gt;&lt;/</span><span style="color:#bf616a;">select</span><span>&gt;
-</span><span>            &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+<pre data-lang="html" style="background-color:#282c34;color:#dcdfe4;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;content-wht&quot;</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;content-wht-inside&quot;</span><span>&gt;
+</span><span>        &lt;</span><span style="color:#e06c75;">fieldset</span><span>&gt;
+</span><span>            &lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;frow&quot;</span><span>&gt;
+</span><span>                &lt;</span><span style="color:#e06c75;">label</span><span>&gt;Currency:&lt;/</span><span style="color:#e06c75;">label</span><span>&gt;
+</span><span>                &lt;</span><span style="color:#e06c75;">select </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;fs&quot;</span><span>&gt;&lt;</span><span style="color:#e06c75;">option</span><span>&gt;EUR&lt;/</span><span style="color:#e06c75;">option</span><span>&gt;&lt;/</span><span style="color:#e06c75;">select</span><span>&gt;
+</span><span>            &lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
 </span><span>
-</span><span>            &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">frow frlast</span><span>&quot;&gt;
-</span><span>                &lt;</span><span style="color:#bf616a;">label</span><span>&gt;File:&lt;/</span><span style="color:#bf616a;">label</span><span>&gt;
-</span><span>                &lt;</span><span style="color:#bf616a;">input </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">file</span><span>&quot; </span><span style="color:#d08770;">name</span><span>=&quot;&quot; /&gt;
-</span><span>            &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
-</span><span>        &lt;/</span><span style="color:#bf616a;">fieldset</span><span>&gt;
-</span><span>    &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
-</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>            &lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;frow frlast&quot;</span><span>&gt;
+</span><span>                &lt;</span><span style="color:#e06c75;">label</span><span>&gt;File:&lt;/</span><span style="color:#e06c75;">label</span><span>&gt;
+</span><span>                &lt;</span><span style="color:#e06c75;">input </span><span style="color:#e5c07b;">type</span><span>=</span><span style="color:#98c379;">&quot;file&quot; </span><span style="color:#e5c07b;">name</span><span>=</span><span style="color:#98c379;">&quot;&quot; </span><span>/&gt;
+</span><span>            &lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
+</span><span>        &lt;/</span><span style="color:#e06c75;">fieldset</span><span>&gt;
+</span><span>    &lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
 </span><span>
-</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">cround</span><span>&quot; </span><span style="color:#d08770;">align</span><span>=&quot;</span><span style="color:#a3be8c;">center</span><span>&quot;&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">img </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">/images/round-corners-bottom.gif</span><span>&quot; </span><span style="color:#d08770;">alt</span><span>=&quot;&quot; /&gt;
-</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;cround&quot; </span><span style="color:#e5c07b;">align</span><span>=</span><span style="color:#98c379;">&quot;center&quot;</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#e06c75;">img </span><span style="color:#e5c07b;">src</span><span>=</span><span style="color:#98c379;">&quot;/images/round-corners-bottom.gif&quot; </span><span style="color:#e5c07b;">alt</span><span>=</span><span style="color:#98c379;">&quot;&quot; </span><span>/&gt;
+</span><span>&lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
 </span></code></pre>
 <p>It’s a lot of <code>div</code> tags to have to repeat around every form that has
 this style. Luckily a nice feature of Rails partials can help out.
 Create a shared partial file that will act as a layout like this:</p>
-<pre data-lang="rhtml" style="background-color:#2b303b;color:#c0c5ce;" class="language-rhtml "><code class="language-rhtml" data-lang="rhtml"><span style="color:#65737e;">&lt;!-- app/views/shared/_fieldset.html.erb --&gt;
-</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">content-wht</span><span>&quot;&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">content-wht-inside</span><span>&quot;&gt;
-</span><span>        &lt;</span><span style="color:#bf616a;">fieldset</span><span>&gt;
-</span><span>            </span><span style="color:#ab7967;">&lt;%= </span><span style="color:#b48ead;">yield </span><span style="color:#ab7967;">%&gt;
-</span><span>        &lt;/</span><span style="color:#bf616a;">fieldset</span><span>&gt;
-</span><span>    &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
-</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+<pre data-lang="rhtml" style="background-color:#282c34;color:#dcdfe4;" class="language-rhtml "><code class="language-rhtml" data-lang="rhtml"><span style="color:#5c6370;">&lt;!-- app/views/shared/_fieldset.html.erb --&gt;
+</span><span>&lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;content-wht&quot;</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;content-wht-inside&quot;</span><span>&gt;
+</span><span>        &lt;</span><span style="color:#e06c75;">fieldset</span><span>&gt;
+</span><span>            &lt;%= </span><span style="color:#c678dd;">yield </span><span>%&gt;
+</span><span>        &lt;/</span><span style="color:#e06c75;">fieldset</span><span>&gt;
+</span><span>    &lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
 </span><span>
-</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">cround</span><span>&quot; </span><span style="color:#d08770;">align</span><span>=&quot;</span><span style="color:#a3be8c;">center</span><span>&quot;&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">img </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">/images/round-corners-bottom.gif</span><span>&quot; </span><span style="color:#d08770;">alt</span><span>=&quot;&quot; /&gt;
-</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;cround&quot; </span><span style="color:#e5c07b;">align</span><span>=</span><span style="color:#98c379;">&quot;center&quot;</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#e06c75;">img </span><span style="color:#e5c07b;">src</span><span>=</span><span style="color:#98c379;">&quot;/images/round-corners-bottom.gif&quot; </span><span style="color:#e5c07b;">alt</span><span>=</span><span style="color:#98c379;">&quot;&quot; </span><span>/&gt;
+</span><span>&lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
 </span></code></pre>
 <p>Then in your views that need to have this white box, simply wrap your
 content in that layout like so:</p>
-<pre data-lang="rhtml" style="background-color:#2b303b;color:#c0c5ce;" class="language-rhtml "><code class="language-rhtml" data-lang="rhtml"><span style="color:#ab7967;">&lt;% </span><span style="color:#96b5b4;">render </span><span style="color:#a3be8c;">:layout </span><span>=&gt; &#39;</span><span style="color:#a3be8c;">shared/fieldset</span><span>&#39; </span><span style="color:#b48ead;">do </span><span style="color:#ab7967;">%&gt;
-</span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">frow</span><span>&quot;&gt;
-</span><span>      &lt;</span><span style="color:#bf616a;">label</span><span>&gt;Currency:&lt;/</span><span style="color:#bf616a;">label</span><span>&gt;
-</span><span>      &lt;</span><span style="color:#bf616a;">select </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">fs</span><span>&quot;&gt;&lt;</span><span style="color:#bf616a;">option</span><span>&gt;EUR&lt;/</span><span style="color:#bf616a;">option</span><span>&gt;&lt;/</span><span style="color:#bf616a;">select</span><span>&gt;
-</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+<pre data-lang="rhtml" style="background-color:#282c34;color:#dcdfe4;" class="language-rhtml "><code class="language-rhtml" data-lang="rhtml"><span>&lt;% </span><span style="color:#61afef;">render </span><span style="color:#e5c07b;">:layout </span><span>=&gt; </span><span style="color:#98c379;">&#39;shared/fieldset&#39; </span><span style="color:#c678dd;">do </span><span>%&gt;
+</span><span>  &lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;frow&quot;</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#e06c75;">label</span><span>&gt;Currency:&lt;/</span><span style="color:#e06c75;">label</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#e06c75;">select </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;fs&quot;</span><span>&gt;&lt;</span><span style="color:#e06c75;">option</span><span>&gt;EUR&lt;/</span><span style="color:#e06c75;">option</span><span>&gt;&lt;/</span><span style="color:#e06c75;">select</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
 </span><span>
-</span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">frow frlast</span><span>&quot;&gt;
-</span><span>      &lt;</span><span style="color:#bf616a;">label</span><span>&gt;File:&lt;/</span><span style="color:#bf616a;">label</span><span>&gt;
-</span><span>      &lt;</span><span style="color:#bf616a;">input </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">file</span><span>&quot; </span><span style="color:#d08770;">name</span><span>=&quot;&quot; /&gt;
-</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
-</span><span style="color:#ab7967;">&lt;% </span><span style="color:#b48ead;">end </span><span style="color:#ab7967;">%&gt;
+</span><span>  &lt;</span><span style="color:#e06c75;">div </span><span style="color:#e5c07b;">class</span><span>=</span><span style="color:#98c379;">&quot;frow frlast&quot;</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#e06c75;">label</span><span>&gt;File:&lt;/</span><span style="color:#e06c75;">label</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#e06c75;">input </span><span style="color:#e5c07b;">type</span><span>=</span><span style="color:#98c379;">&quot;file&quot; </span><span style="color:#e5c07b;">name</span><span>=</span><span style="color:#98c379;">&quot;&quot; </span><span>/&gt;
+</span><span>  &lt;/</span><span style="color:#e06c75;">div</span><span>&gt;
+</span><span>&lt;% </span><span style="color:#c678dd;">end </span><span>%&gt;
 </span><span>
-</span><span style="color:#65737e;">&lt;!-- Or, if the inner content is already in a partial --&gt;
+</span><span style="color:#5c6370;">&lt;!-- Or, if the inner content is already in a partial --&gt;
 </span><span>
-</span><span style="color:#ab7967;">&lt;%= </span><span style="color:#96b5b4;">render</span><span>, </span><span style="color:#a3be8c;">:partial </span><span>=&gt; &#39;</span><span style="color:#a3be8c;">form</span><span>&#39;, </span><span style="color:#a3be8c;">:layout </span><span>=&gt; &#39;</span><span style="color:#a3be8c;">shared/fieldset</span><span>&#39; </span><span style="color:#ab7967;">%&gt;
+</span><span>&lt;%= </span><span style="color:#61afef;">render</span><span>, </span><span style="color:#e5c07b;">:partial </span><span>=&gt; </span><span style="color:#98c379;">&#39;form&#39;</span><span>, </span><span style="color:#e5c07b;">:layout </span><span>=&gt; </span><span style="color:#98c379;">&#39;shared/fieldset&#39; </span><span>%&gt;
 </span></code></pre>
 
 	</div>
