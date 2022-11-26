@@ -4,6 +4,8 @@ date = 2009-07-03T07:01:00Z
 slug = "using-fields-for-with-nested-attributes-calling-it-multiple-times"
 title = "Using fields_for with Nested Attributes, Calling it Multiple Times"
 updated = 2011-08-28T21:12:55Z
+[taxonomies]
+tags = ["ruby", "rails"]
 +++
 
 There has been quite an annoying problem that has been bugging

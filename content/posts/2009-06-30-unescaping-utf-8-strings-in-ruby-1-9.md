@@ -4,13 +4,13 @@ date = 2009-06-30T02:49:00Z
 slug = "unescaping-utf-8-strings-in-ruby-1-9"
 title = "Unescaping UTF-8 Strings in Ruby 1.9"
 updated = 2011-08-28T21:55:46Z
+[taxonomies]
+tags = ["ruby"]
 +++
 
-Today [Radar](http://frozenplague.net) and I encountered a little issue
-with `String` encodings in Ruby 1.9. In this project, some Merb UTF-8
-params needed to be unescaped. We spent some trying to force strings
-into UTF-8 encoding but for some reason while the encoding was UTF–8,
-the actual contents of the strings were getting massacred.
+Today, Ryan Bigg and I encountered a little issue with `String` encodings in Ruby 1.9. In this project, some Merb UTF-8
+params needed to be unescaped. We spent some trying to force strings into UTF-8 encoding but for some reason while the
+encoding was UTF–8, the actual contents of the strings were getting massacred.
 
 Long story short:
 

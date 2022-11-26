@@ -4,16 +4,18 @@ date = 2009-07-30T03:47:00Z
 slug = "using-fields-for-can-generate-invalid-html"
 title = "Using fields_for can generate invalid HTML"
 updated = 2011-08-28T20:39:47Z
+
+[taxonomies]
+tags = ["rails"]
 +++
 
-Just a quick post so show you how `fields_for` form
-helper can cause invalid HTML when used in combination with
+Just a quick post so show you how `fields_for` form helper can cause invalid HTML when used in combination with
 `accepts_nested_attributes_for` in your views.
 
-If you are for any reason editing/creating your child objects in a
-tabular form, your view might look something like this:
+If you are for any reason editing/creating your child objects in a tabular form, your view might look something like
+this:
 
-``` rhtml
+``` erb
 <% form_for(@todo_list) do |f| %>
   <%= f.label      :name %>
   <%= f.text_field :name %>
@@ -37,15 +39,13 @@ tabular form, your view might look something like this:
       <% end %>
     </tbody>
   </table>
-  
+
   <%= f.submit 'Save' %>
 <% end %>
 ```
 
-At first glance this looks fine. However, when the `ToDoList`
-model has `accepts_nested_attributes_for :items`, the
-`fields_for` helper also outputs a hidden field for each
-existing `Item` instance with it’s ID.
+At first glance this looks fine. However, when the `ToDoList` model has `accepts_nested_attributes_for :items`, the
+`fields_for` helper also outputs a hidden field for each existing `Item` instance with it’s ID.
 
 This means that we get the following HTML:
 
@@ -82,13 +82,12 @@ This means that we get the following HTML:
         </tr>
     </tbody>
   </table>
-  
+
   <input id="to_do_list_submit" name="commit" type="submit" value="Save" />
 </form>
 ```
 
-The keen eye will notice the hidden `<input>` tags that are direct
-children of the `tbody`:
+The keen eye will notice the hidden `<input>` tags that are direct children of the `tbody`:
 
 ``` html
 <tbody>
@@ -101,5 +100,4 @@ children of the `tbody`:
 
 This is not a valid place for an `<input>` tag.
 
-I’ve put an example project demonstrating this on [my
-GitHub](http://github.com/bjeanes/fields_for_invalid_html)
+I’ve put an example project demonstrating this on [my GitHub](http://github.com/bjeanes/fields_for_invalid_html)

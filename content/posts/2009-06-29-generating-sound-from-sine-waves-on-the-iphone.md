@@ -4,6 +4,8 @@ date = 2009-06-29T11:31:00Z
 slug = "generating-sound-from-sine-waves-on-the-iphone"
 title = "Generating Sound from Sine Waves on the iPhone"
 updated = 2011-08-28T21:24:26Z
+[taxonomies]
+tags = ["obj-c"]
 +++
 
 A few months ago I saw this extremely addictive flash game/toy called
@@ -78,20 +80,20 @@ typedef struct {
 
 static float gSampleRate = 44100.;
 static float notes[111]  = {
-      8.1758, 8.6620, 9.1770, 9.7227, 10.3009, 10.9134, 11.5623, 12.2499, 
+      8.1758, 8.6620, 9.1770, 9.7227, 10.3009, 10.9134, 11.5623, 12.2499,
       12.9783, 13.7500, 14.5676, 15.4339, 16.3516, 17.3239, 18.3540, 19.4454,
-      20.6017, 21.8268, 23.1247, 24.4997, 25.9565, 27.5000, 29.1352, 30.8677, 
-      32.7032, 34.6478, 36.7081, 38.8909, 41.2034, 43.6535, 46.2493, 48.9994, 
-      51.9131, 55.0000, 58.2705, 61.7354, 65.4064, 69.2957, 73.4162, 77.7817, 
+      20.6017, 21.8268, 23.1247, 24.4997, 25.9565, 27.5000, 29.1352, 30.8677,
+      32.7032, 34.6478, 36.7081, 38.8909, 41.2034, 43.6535, 46.2493, 48.9994,
+      51.9131, 55.0000, 58.2705, 61.7354, 65.4064, 69.2957, 73.4162, 77.7817,
       82.4069, 87.3071, 92.4986, 97.9989, 103.8262, 110.0000, 116.5409, 123.4708,
-      130.8128, 138.5913, 146.8324, 155.5635, 164.8138, 174.6141, 184.9972, 
-      195.9977, 207.6523, 220.0000, 233.0819, 246.9417, 261.6256, 277.1826, 
-      293.6648, 311.1270, 329.6276, 349.2282, 369.9944, 391.9954, 415.3047, 
-      440.0000, 466.1638, 493.8833, 523.2511, 554.3653, 587.3295, 622.2540, 
-      659.2551, 698.4565, 739.9888, 783.9909, 830.6094, 880.0000, 932.3275, 
-      987.7666, 1046.5023, 1108.7305, 1174.6591, 1244.5079, 1318.5102, 1396.9129, 
-      1479.9777, 1567.9817, 1661.2188, 1760.0000, 1864.6550, 1975.5332, 2093.0045, 
-      2217.4610, 2349.3181, 2489.0159, 2637.0205, 2793.8259, 2959.9554, 3135.9635, 
+      130.8128, 138.5913, 146.8324, 155.5635, 164.8138, 174.6141, 184.9972,
+      195.9977, 207.6523, 220.0000, 233.0819, 246.9417, 261.6256, 277.1826,
+      293.6648, 311.1270, 329.6276, 349.2282, 369.9944, 391.9954, 415.3047,
+      440.0000, 466.1638, 493.8833, 523.2511, 554.3653, 587.3295, 622.2540,
+      659.2551, 698.4565, 739.9888, 783.9909, 830.6094, 880.0000, 932.3275,
+      987.7666, 1046.5023, 1108.7305, 1174.6591, 1244.5079, 1318.5102, 1396.9129,
+      1479.9777, 1567.9817, 1661.2188, 1760.0000, 1864.6550, 1975.5332, 2093.0045,
+      2217.4610, 2349.3181, 2489.0159, 2637.0205, 2793.8259, 2959.9554, 3135.9635,
       3322.4376, 3520.0000, 3729.3101, 3951.0664, 4186.0090, 4434.9221, 4698.6363
   };
 
@@ -103,32 +105,32 @@ OSStatus    RenderCallback(void                          *inRefCon,
                            AudioBufferList               *ioData)
 {
   SinewaveDef* def = inRefCon;
-  
+
   float *outL = ioData->mBuffers[0].mData;
   float *outR = ioData->mBuffers[1].mData;
 
   float wave, j;
   float freqs[kTonesAvailable];
-  
+
   memset(freqs, 0.0f, sizeof(freqs));
-  
+
   for (int i=0; i< inNumberFrames; i++){
     wave = 0.0f;
     j = 0.0f;
-    
+
     for(int m = 0; m < kTonesAvailable; ++m) {
       if(def->frequencies[m] != 0) {
         if(freqs[m] == 0) freqs[m] = phaseOffsetFromFrequency(def->frequencies[m]);
 
         wave += 0.5 * sinf(def->phase[m]);
         def->phase[m] += freqs[m];
-        
+
         ++j;
       }
     }
-    
+
     wave /= j;
-    
+
     *outL++ = wave;
     *outR++ = wave;
   }
@@ -148,25 +150,25 @@ float phaseOffsetFromFrequency(float frequency) {
 -(OSStatus)start{
   [self resetFrequencies];
   OSStatus status = AudioOutputUnitStart(audioUnit);
-  
+
   // See http://www.phys.unsw.edu.au/jw/notes.html for note numbers
   frequencies[0] = notes[60]; // C
   frequencies[1] = notes[64]; // E
   frequencies[2] = notes[67]; // G
-  
+
   sleep(1);
-  
+
   frequencies[0] = notes[64];
   frequencies[1] = notes[67];
   frequencies[2] = notes[71];
-  
+
   sleep(1);
-  
+
   frequencies[0] = notes[74];
   frequencies[1] = notes[67];
   frequencies[2] = notes[70];
-  
-  
+
+
   return status;
 }
 
@@ -187,7 +189,7 @@ float phaseOffsetFromFrequency(float frequency) {
 // See http://michael.tyson.id.au/2008/11/04/using-remoteio-audio-unit/ for details
 -(void)intialiseAudio{
   OSStatus status;
-  
+
   // Describe audio component
   AudioComponentDescription desc;
   desc.componentType = kAudioUnitType_Output;
@@ -195,20 +197,20 @@ float phaseOffsetFromFrequency(float frequency) {
   desc.componentFlags = 0;
   desc.componentFlagsMask = 0;
   desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  
+
   // Get component
   AudioComponent inputComponent = AudioComponentFindNext(NULL, &desc);
-  
+
   // Get audio units
   status = AudioComponentInstanceNew(inputComponent, &audioUnit);
-  
+
   UInt32 flag = 1;
   // Enable IO for playback
-  status = AudioUnitSetProperty(audioUnit, 
-                  kAudioOutputUnitProperty_EnableIO, 
-                  kAudioUnitScope_Output, 
+  status = AudioUnitSetProperty(audioUnit,
+                  kAudioOutputUnitProperty_EnableIO,
+                  kAudioUnitScope_Output,
                   kOutputBus,
-                  &flag, 
+                  &flag,
                   sizeof(flag));
 
   // Describe format
@@ -220,28 +222,28 @@ float phaseOffsetFromFrequency(float frequency) {
   audioFormat.mBytesPerFrame = sizeof(Float32);
   audioFormat.mChannelsPerFrame = kNumChannels;
   audioFormat.mBitsPerChannel = 32;
-  
+
   //Apply format
-  status = AudioUnitSetProperty(audioUnit, 
-                  kAudioUnitProperty_StreamFormat, 
-                  kAudioUnitScope_Input, 
-                  kOutputBus, 
-                  &audioFormat, 
+  status = AudioUnitSetProperty(audioUnit,
+                  kAudioUnitProperty_StreamFormat,
+                  kAudioUnitScope_Input,
+                  kOutputBus,
+                  &audioFormat,
                   sizeof(audioFormat));
-   
+
   // Set up the playback  callback
   AURenderCallbackStruct callbackStruct;
   callbackStruct.inputProc = RenderCallback;
   //set the reference to "self" this becomes *inRefCon in the playback callback
   callbackStruct.inputProcRefCon = self;
-  
-  status = AudioUnitSetProperty(audioUnit, 
-                  kAudioUnitProperty_SetRenderCallback, 
-                  kAudioUnitScope_Global, 
+
+  status = AudioUnitSetProperty(audioUnit,
+                  kAudioUnitProperty_SetRenderCallback,
+                  kAudioUnitScope_Global,
                   kOutputBus,
-                  &callbackStruct, 
+                  &callbackStruct,
                   sizeof(callbackStruct));
-  
+
   // Initialise
   status = AudioUnitInitialize(audioUnit);
 }

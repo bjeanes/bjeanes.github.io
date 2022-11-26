@@ -4,18 +4,19 @@ date = 2009-07-04T15:34:00Z
 slug = "fish-shell-version-of---git-ps1-function-that-is-bundled-with-git"
 title = "Fish Shell version of __git_ps1 Function That is Bundled with Git"
 updated = 2011-08-28T21:04:52Z
+
+[taxonomies]
+tags = ["shell"]
 +++
 
-Today at ActionHack, I was showing off Fish Shell to
-"`geoffreyd":http://twitter.com/geoffreyd. I was showing off all the cool fish prompt features I had, but pointed out that my git branch portion needed some beefing up, as it didn't show the current mode nor commit shas when not in a branch.
+Today at ActionHack, I was showing off Fish Shell to [@geoffreyd](http://twitter.com/geoffreyd). I was showing off all
+the cool fish prompt features I had, but pointed out that my git branch portion needed some beefing up, as it didn't
+show the current mode nor commit shas when not in a branch.
 
-Knowing that git came with a `\_*git*ps1 ()@ function for Bash
-that achieves this, I decided to port it to Fish tonight. My shell
-scripting fu is pretty weak but as far as I can tell it works great and
-I am now using it in my shell.
+Knowing that git came with a `__git_ps1()` function for Bash that achieves this, I decided to port it to Fish tonight.
+My shell scripting fu is pretty weak but as far as I can tell it works great and I am now using it in my shell.
 
-Here is the Fish function (I’ve kept the function name the same as the
-bash one):
+Here is the Fish function (I’ve kept the function name the same as the bash one):
 
 ``` bash
 function __git_ps1
@@ -23,7 +24,7 @@ function __git_ps1
   if [ -n "$g" ]
     set -l r ""
     set -l b ""
-    
+
     if [ -d "$g/../.dotest" ]
       if [ -f "$g/../.dotest/rebasing" ]
         set r "|REBASE"
@@ -32,7 +33,7 @@ function __git_ps1
       else
         set r "|AM/REBASE"
       end
-      
+
       set b (git symbolic-ref HEAD ^/dev/null)
     elseif [ -f "$g/.dotest-merge/interactive" ]
       set r "|REBASE-i"
@@ -47,7 +48,7 @@ function __git_ps1
       if [ -f "$g/BISECT_LOG" ]
         set r "|BISECTING"
       end
-      
+
       set b (git symbolic-ref HEAD ^/dev/null)
       if [ -z $b ]
         set b (git describe --exact-match HEAD ^/dev/null)
@@ -57,22 +58,16 @@ function __git_ps1
         end
       end
     end
-    
+
     if not test $argv
   		set argv " (%s)"
   	end
-  	
+
   	set b (echo $b | sed -e 's|^refs/heads/||')
-  	
+
     printf $argv "$b$r" ^/dev/null
   end
 end
 ```
-I have also pushed it to my `dot-files` repository
-[here](http://github.com/bjeanes/dot-files/blob/master/fish/functions/__git_ps1.fish).
 
 Enjoy :)
-
-**UPDATE:** Here it is in action:
-
-<img src="http://img.skitch.com/20090704-tis4etf4hnt9rsadapu8kx85rm.jpg" alt="__git_ps1 for Fish"/>

@@ -4,49 +4,41 @@ date = 2008-04-10T12:00:00Z
 slug = "rubycocoa-and-keychain-access"
 title = "RubyCocoa and Keychain access"
 updated = 2011-08-28T21:21:57Z
+
+[taxonomies]
+tags = ["mac", "ruby"]
 +++
 
-There have been a few posts asking how to access and manipulate the
-Keychain from within RubyCocoa but no answers supplied. As someone who
-is just getting into RubyCocoa (and Cocoa all together for that matter),
-I thought I’d document once and for all the process I took to get it
-working.
+There have been a few posts asking how to access and manipulate the Keychain from within RubyCocoa but no answers
+supplied. As someone who is just getting into RubyCocoa (and Cocoa all together for that matter), I thought I’d document
+once and for all the process I took to get it working.
 
-I am running on Leopard and while 10.5 is supposed to ship with
-BridgeSupport for most frameworks, the Security framework must have been
-left out. After playing around with using other frameworks (such as the
-AddressBook framework) and seeing how they were used, I did a bit of
-digging in the Apple Developer Documentation (incredible resource for
+I am running on Leopard and while 10.5 is supposed to ship with BridgeSupport for most frameworks, the Security
+framework must have been left out. After playing around with using other frameworks (such as the AddressBook framework)
+and seeing how they were used, I did a bit of digging in the Apple Developer Documentation (incredible resource for
 anyone starting out) and stumbled across this gem: [Generate Framework
-Metadata](http://developer.apple.com/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html#//apple_ref/doc/uid/TP40005426)
+Metadata](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html#//apple_ref/doc/uid/TP40005426-SW9)
 
-After reading this, I was accessing the keychain within 5 minutes.
-Here’s how:
+After reading this, I was accessing the keychain within 5 minutes.  Here’s how:
 
 1.  Run the following commands (first one will take some time):
 
-    ```bash
+    ``` bash
     gen_bridge_metadata -f Security -o Security.bridgesupport
     mkdir -p /Library/BridgeSupport
     mv Security.bridgesupport /Library/BridgeSupport
     ```
 2. Open an IRB session to test it:
 
-```ruby
->> require 'osx/cocoa'
-=> true
->> OSX.require_framework 'Security'
-=> true
->> defined? OSX::SecKeychainAddGenericPassword()
-=> "method"
+``` ruby
+require 'osx/cocoa'                           #=> true
+OSX.require_framework 'Security'              #=> true
+defined? OSX::SecKeychainAddGenericPassword() #=> "method"
 ```
-Hoorah! Two steps! Well, one because the second one was just testing…
-Now go make password-able RubyCocoa application! I am not sure how to
-pull this off with deployable apps but I suggest your apps could ship
-with the file or run those commands on first-run or if the
-Security.bridgesupport file doesn’t exist. Note: I have not tested
-either of those scenarios, but I would guess the latter would be more
-reliable for cross-version development (i.e. Tiger + Leopard)
+Hoorah! Two steps! Well, one because the second one was just testing… Now go make password-able RubyCocoa application! I
+am not sure how to pull this off with deployable apps but I suggest your apps could ship with the file or run those
+commands on first-run or if the Security.bridgesupport file doesn’t exist. Note: I have not tested either of those
+scenarios, but I would guess the latter would be more reliable for cross-version development (i.e. Tiger + Leopard)
 
 ### How to use these methods
 
@@ -92,26 +84,23 @@ been getting (myself included)
 
 There is good news for anyone that has been getting the following error:
 
-```
+``` text
 undefined local variable or method `trans’ for <UNDEFINED> … </>:REXML::Document
 Usage: gen_bridge_metadata [options] <headers…>
 Use the `-h’ flag or consult gen_bridge_metadata(1) for help.
 ```
 
-There is a very simple fix. This is caused by a typo in the source of
-REXML. It’s such a massive bug I can’t believe it made it into the
-release of Ruby but i did some poking around and it looks like they
-renamed a method and didn’t change all references to it.
+There is a very simple fix. This is caused by a typo in the source of REXML. It’s such a massive bug I can’t believe it
+made it into the release of Ruby but i did some poking around and it looks like they renamed a method and didn’t change
+all references to it.
 
-There are two ways to fix it—patching REXML; and patching `gen_bridge_metadata`.
+There are two ways to fix it: patching REXML and patching `gen_bridge_metadata`.
 
-Personally I prefer patching the generator for peace of mind and have submitted the patch at
-[http://bridgesupport.macosforge.org/trac/ticket/1](http://bridgesupport.macosforge.org/trac/ticket/1),
-but I’ll show both fixes.
+Personally I prefer patching the generator for peace of mind and I submitted the patch upstream, but never heard back.
 
-#### Patching gen*bridge*metadata
+#### Patching `gen_bridge_metadata`
 
-1.  Open `/usr/bin/gen_bridge_metadata and find the method definition for
+1.  Open `/usr/bin/gen_bridge_metadata` and find the method definition for
     `generate_xml`
 2.  Replace `0` in the `xml_document.write()` with `-1` (both occurrences)
 3.  Save!

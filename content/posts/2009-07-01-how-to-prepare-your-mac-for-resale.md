@@ -4,33 +4,30 @@ date = 2009-07-01T03:30:00Z
 slug = "how-to-prepare-your-mac-for-resale"
 title = "How to Prepare Your Mac for Resale"
 updated = 2011-08-28T21:15:51Z
+
+[taxonomies]
+tags = ["mac"]
 +++
 
-First thing is first: you want to re-install Mac OS X (this guide
-requires Leopard). Insert your OS X disk and boot off it. Make sure you
-do a “Clean Install” so as not to leave any of your files on the system.
+First thing is first: you want to re-install Mac OS X (this guide requires Leopard). Insert your OS X disk and boot off
+it. Make sure you do a "Clean Install" so as not to leave any of your files on the system.
 
-When the install is finished, your computer will restart and you’ll see
-the traditional OS X welcome screen and the setup assistant. Go through
-all the settings, choosing anything just to get the system booted up.
-However, make sure you take note of the user account login you use. For
-this guide, I will assume login of `temp`, and if you don’t have a good
-reason not to, you should do the same.
+When the install is finished, your computer will restart and you’ll see the traditional OS X welcome screen and the
+setup assistant. Go through all the settings, choosing anything just to get the system booted up.  However, make sure
+you take note of the user account login you use. For this guide, I will assume login of `temp`, and if you don’t have a
+good reason not to, you should do the same.
 
-At this point you want to download any Apple updates and install them,
-as well as install any bundled software you plan to advertise the
-machine coming with. When all your installs are finished and the machine
-is as you want it for the customer/recipient, shut down the machine.
+At this point you want to download any Apple updates and install them, as well as install any bundled software you plan
+to advertise the machine coming with. When all your installs are finished and the machine is as you want it for the
+customer/recipient, shut down the machine.
 
-Next, turn the machine back on but as soon as you hear the Mac chime
-noise, press and hold ⌘S until you are taken to a console (white text on
-black screen — looks real nerdy and sci-fi).
+Next, turn the machine back on but as soon as you hear the Mac chime noise, press and hold ⌘S until you are taken to a
+console (white text on black screen — looks real nerdy and sci-fi).
 
-The next step is to run all the commands in the code block below
+The next step is to run all the commands in the code block below.
 
-NOTE: If you didn’t use `temp` as your username you created in the setup
-assistant, make sure you replace **all** instances of `temp` with your
-actual username.
+_NOTE: If you didn’t use `temp` as your username you created in the setup assistant, make sure you replace **all**
+instances of `temp` with your actual username._
 
 ``` bash
 # Mount the file system so we can modify it

@@ -8,21 +8,16 @@ updated = 2011-08-28T21:05:42Z
 
 This article isn’t named ideally so if you have a better title, tell me.
 
-This is the scenario: we have a simple HTTP resource on the internal
-network at [Mocra](http://mocra.com). This resource is a closed source
-tool which is great except that it has one drawback — there are only two
-security modes: basic authentication on, or basic authentication off.
-There is only one username/password and you can’t control when or by
+This is the scenario: we have a simple HTTP resource on the internal network at [Mocra](http://mocra.com). This resource
+is a closed source tool which is great except that it has one drawback — there are only two security modes: basic
+authentication on, or basic authentication off.  There is only one username/password and you can’t control when or by
 whom it is required.
 
-Now, my preferred behaviour here is to be able to give out multiple
-login/passwords and also to only require authentication **outside** of
-our local network. I set out to get this working.
+Now, my preferred behaviour here is to be able to give out multiple login/passwords and also to only require
+authentication **outside** of our local network. I set out to get this working.
 
-I devised this solution a few months ago (which is why it’s using Apache
-at all) but I thought it might be of some use to someone. I created an
-Apache VirtualHost to act as a proxy between this resource and its
-clients. It looks like this:
+I devised this solution a few months ago (which is why it’s using Apache at all) but I thought it might be of some use
+to someone. I created an Apache VirtualHost to act as a proxy between this resource and its clients. It looks like this:
 
 ```
 <VirtualHost *:80>

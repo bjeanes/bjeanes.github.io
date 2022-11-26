@@ -4,6 +4,9 @@ date = 2009-07-06T04:45:00Z
 slug = "using-accepts-nested-attributes-for-when-the-child-object-validates-presence-of-parent"
 title = "Using accepts_nested_attributes_for When the Child Object validates_presence_of Parent"
 updated = 2011-08-28T21:10:08Z
+
+[taxonomies]
+tags = ["rails"]
 +++
 
 I came across an interesting dilemma today in Rails 2.3 whilst trying to

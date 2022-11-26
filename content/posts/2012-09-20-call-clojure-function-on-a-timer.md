@@ -4,9 +4,12 @@ date = 2012-09-20T16:07:00Z
 slug = "call-clojure-function-on-a-timer"
 title = "Call Clojure function on a timer"
 updated = 2012-09-20T16:28:53Z
+
+[taxonomies]
+tags = ["clojure", "fp"]
 +++
 
-In Clojure, I didn't see a nice way to simply call a function on a timer (e.g. to poll for changes in another service). 
+In Clojure, I didn't see a nice way to simply call a function on a timer (e.g. to poll for changes in another service).
 
 I didn't find something in `clojure.core` to achieve this readily (but `clojure.core` is quite big, so I may have missed something obvious — let me know), so I whipped up the following to put in my project's `util.clj` file:
 
