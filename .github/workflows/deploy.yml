@@ -1,0 +1,28 @@
+name: Deploy GH Pages
+on:
+  push:
+    branches: [source]
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: "deploy"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+          submodules: true
+
+      - name: Build site
+        uses: shalzz/zola-deploy-action@v0.16.1
+        env:
+          OUT_DIR: public
+          BUILD_ONLY: true
+          # CHECK_LINKS: true
+
+      - run: bin/deploy main public
